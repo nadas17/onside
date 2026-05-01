@@ -1,108 +1,99 @@
-# Onside
+<div align="center">
 
-> Find a nearby pickup football match, join in, play with auto-balanced teams, track your stats.
+<img src="public/halisaha-wordmark.svg" alt="Halısaha" width="180" />
 
-A web app for Gdańsk and Warsaw that lists nearby open pickup matches based on the user's location, runs **position-weighted automatic team balancing** when the roster fills, hosts an event-scoped **real-time chat** room, lets players submit scores and vote MVP after the match, maintains an Elo-style skill rating, and is GDPR/RODO compliant.
+### Pickup football, organized.
 
-The user-facing brand is **Halısaha** (Turkish for "carpet pitch") — the small synthetic-turf pitches that define neighborhood football culture in Turkey. The codebase is published as `onside`.
+Find a match nearby. Auto-balanced teams. Real-time chat. MVP voting. Elo rating.
+Built for the neighborhood pitches of **Gdańsk** and **Warszawa**.
 
-Spec document: [HALISAHA_SPEC.md](HALISAHA_SPEC.md) (the source of truth — never modified, referenced for any open question).
+<br />
 
-## Status
+[![Next.js](https://img.shields.io/badge/Next.js-15.5-000?logo=nextdotjs&logoColor=white&style=flat-square)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white&style=flat-square)](https://www.typescriptlang.org)
+[![Supabase](https://img.shields.io/badge/Supabase-Postgres_+_Realtime-3ECF8E?logo=supabase&logoColor=white&style=flat-square)](https://supabase.com)
+[![Tailwind](https://img.shields.io/badge/Tailwind-v4-06B6D4?logo=tailwindcss&logoColor=white&style=flat-square)](https://tailwindcss.com)
+[![Tests](https://img.shields.io/badge/40_tests-passing-22c55e?style=flat-square)](tests/unit)
+[![MVP](https://img.shields.io/badge/MVP-complete-22c55e?style=flat-square)](CHANGELOG.md)
 
-All phases (0–9) complete. See [CHANGELOG.md](CHANGELOG.md) for the per-phase narrative.
+<br />
 
-## Architecture overview
+<img src="design/halisaha-landing.png" alt="Pitch Notation — design philosophy poster" width="420" />
 
-```
-┌─────────────────────────┐
-│  Browser (Next.js 15)   │  Server Components by default + client islands ("use client")
-│  - MapLibre GL          │  Tailwind v4 · shadcn/ui · next-intl (tr/en/pl)
-│  - @dnd-kit drag-drop   │  TanStack Query + Sonner · MapLibre lazy
-└────────────┬────────────┘
-             │
-             │ Server Actions (revalidatePath) + Supabase JS (RPC + Realtime)
-             ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                       Supabase Cloud (eu-central-1)                  │
-│  ┌────────────┐  ┌─────────────┐  ┌─────────────┐  ┌──────────────┐ │
-│  │ PostgreSQL │  │ Auth        │  │ Realtime    │  │ Storage      │ │
-│  │ + PostGIS  │  │ Anonymous   │  │ postgres_   │  │ (avatar —    │ │
-│  │            │  │             │  │  changes    │  │  backlog)    │ │
-│  └─────┬──────┘  └─────────────┘  └─────────────┘  └──────────────┘ │
-│        │                                                              │
-│        ▼                                                              │
-│  RLS + SECURITY DEFINER RPC (advisory locks):                        │
-│   join_event · approve/reject_participant · cancel_rsvp · save_teams │
-│   submit_score · edit_score · submit_mvp_vote · finalize_mvp         │
-│   mark_notification_read · derive_skill_level                        │
-│                                                                       │
-│  Triggers: organizer auto-join · notification fan-out                │
-└─────────────────────────────────────────────────────────────────────┘
-```
+</div>
 
-## Tech stack (locked, spec §2)
+<br />
 
-| Layer                | Choice                                                                                                                                |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Framework            | Next.js 15.5.x (App Router, Server Components, Server Actions, Turbopack) — see [ADR-0001](docs/decisions/0001-next-js-15-lock-in.md) |
-| Runtime              | Node ≥ 22, TypeScript strict, `noUncheckedIndexedAccess`                                                                              |
-| Auth + DB + Realtime | Supabase Cloud (Postgres + PostGIS + Auth + Realtime)                                                                                 |
-| Auth mode            | Anonymous Auth + nickname (ADR-0002)                                                                                                  |
-| ORM                  | Drizzle ORM + drizzle-kit (tables/enums/indexes only — RLS lives in hand-written SQL)                                                 |
-| Styling              | Tailwind v4 (CSS-first config) + shadcn/ui convention + lucide-react                                                                  |
-| Forms                | react-hook-form + zod v4                                                                                                              |
-| Server state         | TanStack Query v5                                                                                                                     |
-| Drag-drop            | @dnd-kit/core + @dnd-kit/sortable (Phase 6)                                                                                           |
-| Charts               | Pure SVG (Phase 8 — recharts alternative, ~0 KB bundle)                                                                               |
-| i18n                 | next-intl (tr default / en / pl)                                                                                                      |
-| Map                  | MapLibre GL JS + OpenStreetMap raster                                                                                                 |
-| Geocoding            | Nominatim (used by venue seed runbook only)                                                                                           |
-| Time                 | date-fns + date-fns-tz (Europe/Warsaw default)                                                                                        |
-| Test                 | Vitest (40 unit tests: 15 balance + 25 elo)                                                                                           |
-| Package manager      | pnpm 10+                                                                                                                              |
+## What it does
 
-## Prerequisites
-
-- Node 22+ (`node --version`)
-- pnpm 10+ (`npm i -g pnpm@latest`)
-- Git
-- A Supabase Cloud account (https://supabase.com)
-- Optional: psql CLI, or use `node --env-file=.env.local scripts/apply-migration.mjs ...` to apply migrations
+- **Find a match** — map of nearby open pickup events in your city
+- **Join a roster** — organizer-approval flow, position pick (GK / DEF / MID / FWD)
+- **Auto-balance** — position-weighted snake-draft + hill-climb, with drag-drop manual override
+- **Chat live** — event-scoped real-time room, system messages on every state change
+- **Submit & rate** — score entry, K=32 Elo, 7-day MVP voting, +10 bonus
+- **Track progress** — pure-SVG rating chart, recent matches, public profile at `/u/[username]`
+- **Stay private** — anonymous auth, no email, no IP tracking, GDPR/RODO aligned
+- **Speak your language** — TR · EN · PL
 
 ## Quick start
 
 ```bash
 pnpm install
-
-# 1) Create a Supabase Cloud project
-#    Dashboard → New project (region: eu-central-1, recommended for GDPR/RODO)
-#    Authentication → Providers → Anonymous Sign-Ins → Enable
-
-# 2) .env.local
-cp .env.example .env.local
-# Edit:
-#   NEXT_PUBLIC_SUPABASE_URL
-#   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY  (browser-safe)
-#   SUPABASE_SECRET_KEY                   (server-only — never ship to the client)
-#   DATABASE_URL                          (Transaction pooler 6543, region prefix must match)
-#   NOMINATIM_USER_AGENT                  (optional, for venue seed)
-
-# 3) Apply migrations in order (Supabase SQL Editor, or:)
+cp .env.example .env.local        # fill in Supabase keys
 for f in supabase/migrations/*.sql; do
   node --env-file=.env.local scripts/apply-migration.mjs "$f"
 done
-
-# 4) Seed venues (Warsaw + Gdańsk · 20 real pitches)
 node --env-file=.env.local scripts/seed-venues.mjs
-
-# 5) Dev server
-pnpm dev
-# → http://localhost:3000 → redirects to /tr
-# → On first visit: JoinModal asks for a nickname → anonymous auth + profile created
+pnpm dev                          # → http://localhost:3000
 ```
 
-## Migration runbook
+Full setup notes (Supabase project creation, env vars, anonymous auth toggle): see [docs/setup.md][setup] _(coming soon — for now, the comments inside `.env.example` and the runbook below)._
+
+## The stack
+
+**Frontend** Next.js 15 · TypeScript strict · Tailwind v4 · shadcn/ui · MapLibre GL · @dnd-kit
+**Backend** Supabase (Postgres + PostGIS + Auth + Realtime) · Drizzle ORM · SECURITY DEFINER RPCs
+**Quality** Vitest (40 unit tests) · ESLint · Prettier · Husky pre-commit
+**i18n** next-intl with TR (default) · EN · PL
+**Tooling** pnpm · Turbopack · date-fns-tz (Europe/Warsaw)
+
+## Documentation
+
+| Read                                                                   | When                                                                              |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| [HALISAHA_SPEC.md](HALISAHA_SPEC.md)                                   | The single source of truth — 23 sections, 929 lines                               |
+| [CHANGELOG.md](CHANGELOG.md)                                           | Phase-by-phase narrative (Phases 0–9)                                             |
+| [docs/decisions/](docs/decisions/)                                     | Four ADRs (Next 15 lock-in, anonymous auth, organizer approval, RLS for Realtime) |
+| [design/halisaha-pitch-notation.md](design/halisaha-pitch-notation.md) | Brand visual philosophy                                                           |
+
+<details>
+<summary><strong>Architecture overview</strong></summary>
+
+```
+┌─────────────────────────┐
+│  Browser (Next.js 15)   │  Server Components + client islands
+│  - MapLibre GL          │  Tailwind v4 · shadcn/ui · next-intl
+│  - @dnd-kit drag-drop   │  TanStack Query + Sonner
+└────────────┬────────────┘
+             │  Server Actions + Supabase JS (RPC + Realtime)
+             ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                       Supabase Cloud (eu-central-1)                  │
+│  PostgreSQL + PostGIS  ·  Anonymous Auth  ·  Realtime postgres_changes
+│                                                                      │
+│  Read paths:    public RLS                                           │
+│  Write paths:   SECURITY DEFINER RPCs with advisory locks            │
+│                 join_event · approve/reject_participant · save_teams │
+│                 submit_score · edit_score · finalize_mvp · …         │
+│                                                                      │
+│  Triggers:      organizer auto-join · notification fan-out           │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+</details>
+
+<details>
+<summary><strong>Migration runbook</strong></summary>
 
 Migrations are numbered SQL files (`supabase/migrations/000N_*.sql`). They are not idempotent — apply each exactly once.
 
@@ -115,156 +106,116 @@ for f in supabase/migrations/*.sql; do
   node --env-file=.env.local scripts/apply-migration.mjs "$f"
 done
 
-# Drizzle: generate a migration from schema changes
+# Drizzle: schema → migration
 pnpm db:generate
 
-# Drizzle: push schema directly to a dev DB (local/staging only)
+# Drizzle: push to dev DB
 pnpm db:push
 ```
 
-> **Important:** RLS policies, SECURITY DEFINER RPCs, and triggers do **not** live in the Drizzle schema — they live in the hand-written SQL files. Drizzle is used only for tables, enums, and indexes. To change RLS or RPC, add a new numbered SQL file and apply it via `apply-migration.mjs`.
+> RLS, SECURITY DEFINER RPCs, and triggers live in the hand-written SQL files — not the Drizzle schema. Drizzle covers tables, enums, and indexes only.
 
-## Scripts
+</details>
 
-| Command             | Purpose                                              |
-| ------------------- | ---------------------------------------------------- |
-| `pnpm dev`          | Turbopack dev server (port 3000, falls back if busy) |
-| `pnpm build`        | Production build (Turbopack)                         |
-| `pnpm start`        | Production server                                    |
-| `pnpm typecheck`    | `tsc --noEmit`                                       |
-| `pnpm lint`         | ESLint                                               |
-| `pnpm format`       | Prettier write                                       |
-| `pnpm format:check` | Prettier check (CI)                                  |
-| `pnpm test`         | Vitest run (40 unit tests)                           |
-| `pnpm test:watch`   | Vitest watch                                         |
-| `pnpm db:generate`  | Drizzle: schema → migration                          |
-| `pnpm db:push`      | Drizzle: apply schema directly to DB                 |
-| `pnpm db:studio`    | Drizzle Studio                                       |
-
-## Deployment (Vercel)
+<details>
+<summary><strong>Deployment (Vercel)</strong></summary>
 
 ```bash
-# Vercel CLI
 pnpm i -g vercel
 vercel link
-
-# Production env vars (Settings → Environment Variables → Production):
-#   NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
-#   SUPABASE_SECRET_KEY, DATABASE_URL, NEXT_PUBLIC_SITE_URL (final domain)
-#   Optional: SENTRY_DSN, NOMINATIM_USER_AGENT
-
 vercel --prod
 ```
 
-Production checklist:
+Production env: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `DATABASE_URL`, `NEXT_PUBLIC_SITE_URL`.
 
-- [ ] Supabase Auth → Anonymous sign-ins **enabled**
-- [ ] Supabase Realtime publication includes every relevant table (event, event_participant, chat_message, team, team_assignment, match_result, mvp_vote, notification) — verify with `node --env-file=.env.local scripts/check-publication.mjs`
-- [ ] All migrations applied to the production DB (0001..0016)
-- [ ] Venue seed has been run
-- [ ] Privacy + Terms placeholders replaced with the real text + `contact@halisaha.example` swapped for a real address
-- [ ] Custom domain bound on Vercel
-- [ ] SSL active (Vercel handles this automatically)
+Pre-flight checklist:
 
-## Folder layout
+- [ ] Anonymous sign-ins enabled in Supabase Auth
+- [ ] Realtime publication includes every relevant table — verify with `node --env-file=.env.local scripts/check-publication.mjs`
+- [ ] All migrations applied (0001..0016)
+- [ ] Venues seeded
+- [ ] Privacy + Terms placeholders replaced; `contact@halisaha.example` swapped for a real address
+
+</details>
+
+<details>
+<summary><strong>Scripts</strong></summary>
+
+| Command            | Purpose                     |
+| ------------------ | --------------------------- |
+| `pnpm dev`         | Turbopack dev server        |
+| `pnpm build`       | Production build            |
+| `pnpm typecheck`   | `tsc --noEmit`              |
+| `pnpm lint`        | ESLint                      |
+| `pnpm format`      | Prettier write              |
+| `pnpm test`        | Vitest run (40 tests)       |
+| `pnpm test:watch`  | Vitest watch                |
+| `pnpm db:generate` | Drizzle: schema → migration |
+| `pnpm db:push`     | Drizzle: apply to dev DB    |
+| `pnpm db:studio`   | Drizzle Studio              |
+
+</details>
+
+<details>
+<summary><strong>Folder layout</strong></summary>
 
 ```
 src/
-  app/[locale]/
-    layout.tsx                  Inter font, NextIntlClientProvider, skip-link, footer, cookie banner
-    page.tsx                    Landing + JoinModal
-    events/(page,new,[id])/     Event feed + create + detail (RSVP/teams/score/MVP/chat all on one page)
-    venues/(page,[id])/         Venue list + detail (with upcoming events)
-    profile/(page,edit)/        Self profile + edit
-    u/[username]/               Public profile (read-only)
-    legal/(privacy,terms)/      GDPR/RODO placeholder
+  app/[locale]/             Localised routes (tr/en/pl)
+    layout.tsx              Inter font, providers, skip-link, footer, cookie banner
+    page.tsx                Landing + JoinModal
+    events/(page,new,[id])/ Event feed, create form, detail with all panels
+    venues/(page,[id])/     Venue list and detail
+    profile/(page,edit)/    Self profile + edit
+    u/[username]/           Public profile
+    legal/(privacy,terms)/  GDPR/RODO placeholders
   components/
-    ui/                         shadcn primitives (Button, Input, Label, Dialog, EmptyState)
-    auth/                       JoinModal, geolocation prompt
-    event/                      EventForm, EventCard, JoinButton, RosterList, PendingRequests,
-                                MyPendingCard, ChatRoom, TeamPanel, TeamBuilder, ResultPanel,
-                                ScoreSubmitForm
-    map/                        MapView (lazy MapLibre), VenueMapPage
-    profile/                    RatingChart (pure SVG), RecentMatches
-    notification/               NotificationBell (header dropdown + realtime)
-    header-actions.tsx          Bell + Locale + Theme bundle (server component)
-    cookie-banner.tsx           Essential-only consent
-    providers.tsx               TanStack Query + ThemeProvider + Toaster
+    ui/                     shadcn primitives (Button, Input, Dialog, EmptyState…)
+    auth, event, map, profile, notification, …
   lib/
     supabase/{server,client,middleware}.ts
-    event/{state,rsvp-actions,team-actions,result-actions,chat-actions}.ts
+    event/{state,rsvp,team,result,chat}-actions.ts
+    balance/algorithm.ts    Snake-draft + hill-climb
+    elo.ts                  K=32 + skill_level derivation
     profile/stats-queries.ts
     notification/actions.ts
-    balance/algorithm.ts        Pure-function snake-draft + hill-climb
-    elo.ts                      Pure-function K=32 Elo + skill_level
-    rate-limit.ts               In-memory (Upstash optional, backlog)
-    types.ts                    ActionResult contract
-  db/
-    index.ts                    Drizzle client (server-only)
-    schema.ts                   Single file — all tables (mirrors spec §5)
-  i18n/
-    routing.ts                  Locales, default, prefix
-    request.ts                  getRequestConfig
-    navigation.ts               Typed Link/router
-  middleware.ts                 Supabase session refresh + i18n routing
-supabase/migrations/            0001_profile..0016_notifications (16 SQL files)
-scripts/
-  apply-migration.mjs           Single-file migration runner
-  seed-venues.mjs               Warsaw + Gdańsk 20-venue seed
-  check-publication.mjs         Verify Realtime publication membership
-  check-replication.mjs         Replication slot diagnostic
-tests/unit/                     balance.test.ts (15) + elo.test.ts (25)
-messages/                       tr.json (default) en.json pl.json
-docs/decisions/                 ADR-0001..0004
-public/                         halisaha-logo.svg, halisaha-wordmark.svg
-design/                         Pitch-notation poster artifact (PDF + PNG + philosophy)
-HALISAHA_SPEC.md                Source of truth (929 lines, 23 sections)
-CHANGELOG.md
-.env.example
-vitest.config.ts
-drizzle.config.ts
+  db/schema.ts              All tables in one file
+  i18n/{routing,request,navigation}.ts
+  middleware.ts             Supabase session + locale routing
+supabase/migrations/        16 numbered SQL files
+scripts/                    apply-migration · seed-venues · check-publication
+tests/unit/                 balance.test.ts (15) · elo.test.ts (25)
+messages/                   tr.json (default) · en.json · pl.json
+docs/decisions/             ADR-0001..0004
+design/                     Brand poster artifact (PDF + PNG + philosophy)
 ```
 
-## Engineering principles (spec §3)
+</details>
 
-- TypeScript strict, **no `any`**. Use `unknown` + zod parse for unknown data.
-- Server Components by default. `"use client"` only when interaction or a browser API is required.
-- Form submission and mutation: Server Actions (no REST/GraphQL).
-- Drizzle schema lives in a single file: `src/db/schema.ts`.
-- Path alias: `@/*` → `./src/*`. No `../../..`.
-- Every public route is locale-prefixed (`/tr`, `/en`, `/pl`); default TR.
-- Database stores `timestamptz`. UI converts to the user's TZ on render (date-fns-tz, Europe/Warsaw default).
-- Server Action contract: `{ ok: true, data } | { ok: false, error, code }`.
-- Read vs write split: public RLS for SELECT, mutations only via atomic SECURITY DEFINER RPCs.
-- Realtime: tables broadcasting via postgres_changes use `REPLICA IDENTITY FULL` + `supabase_realtime` publication. RLS must be `TO anon, authenticated USING (...)` — `TO authenticated` only is silently dropped by the broadcaster (ADR-0004).
-- Privacy: PII (lat/lng) is **not** in the public profile select list. Email is not in the schema (anonymous auth).
-- `console.log` does not get committed. ESLint enforces `no-console` (warn/error allowed).
+<details>
+<summary><strong>Engineering principles</strong></summary>
 
-## Roadmap
+- TypeScript strict, no `any` — `unknown` + zod parse for unknown data
+- Server Components by default; `"use client"` only when interaction or a browser API requires it
+- Mutations via Server Actions; no REST or GraphQL
+- Single Drizzle schema file at `src/db/schema.ts`
+- Path alias `@/*` → `./src/*`; never `../../..`
+- Every public route is locale-prefixed (`/tr`, `/en`, `/pl`); default TR
+- Postgres stores `timestamptz`; UI converts on render via date-fns-tz (Europe/Warsaw)
+- Server Action contract: `{ ok: true, data } | { ok: false, error, code }`
+- Read paths via public RLS; write paths only through atomic SECURITY DEFINER RPCs
+- Realtime tables: `REPLICA IDENTITY FULL` + `supabase_realtime` publication; RLS must be `TO anon, authenticated USING (...)` (see [ADR-0004](docs/decisions/0004-chat-rls-relaxed-for-realtime.md))
+- No PII in public profile selects (lat/lng excluded); no email in schema (anonymous auth)
+- ESLint enforces `no-console`
 
-1. Phase 0 — Bootstrap (Next + Supabase + Drizzle + i18n scaffolding) **[done]**
-2. Phase 1 — Auth & Profile (Anonymous Auth + nickname, RLS, profile view/edit) **[done]**
-3. Phase 2 — Venue & Map (20 real venues, MapLibre + OSM, geolocation, /venues + detail) **[done]**
-4. Phase 3 — Event Core (event CRUD, /events feed + filters, /events/new form, detail + cancel) **[done]**
-5. Phase 4 — RSVP (organizer-approval, JoinButton, pending requests, organizer auto-join, "My Events") **[done]**
-6. Phase 5 — Real-time Chat (Supabase Realtime + ChatRoom + system messages + roster realtime sync) **[done]**
-7. Phase 6 — Team Balancing (pure algorithm + 15 unit tests + drag-drop override + realtime sync) **[done]**
-8. Phase 7 — Match Result + MVP + Elo (score, K=32 Elo, 7-day MVP voting, +10 bonus, skill_snapshot, 25 unit tests) **[done]**
-9. Phase 8 — Stats & Profile (inline-SVG rating chart, W/L/D recent matches, /u/[username] public profile) **[done]**
-10. Phase 9 — Polish (notifications, /legal/\*, cookie banner, skip-link, footer, deploy guide) **[done]**
+</details>
 
-Post-MVP backlog:
+## Status
 
-- Playwright E2E smoke (sign-up → join → balance → score → MVP)
-- Lighthouse CI: ≥ 90 perf, ≥ 95 a11y
-- Profanity filter (TR/EN/PL lists) + chat edit + emoji picker
-- Auto-finalize MVP (cron job; spec §10 V3 — 7-day automation)
-- "Save my account" — anonymous → email/Google linkIdentity (ADR-0002 upgrade path)
-- Avatar upload (Supabase Storage)
-- Sentry + Upstash rate-limit (replacing in-memory)
-
-For detail see the roadmap file and `HALISAHA_SPEC.md` Section 20.
+**MVP complete.** All ten phases shipped — see [CHANGELOG.md](CHANGELOG.md). Next steps live in the post-MVP backlog: Playwright smoke, Lighthouse CI, profanity filter, MVP auto-finalize cron, "save my account" upgrade path, avatar upload, Sentry + Upstash.
 
 ## License
 
 Not yet decided — placeholder until post-MVP (spec §15.2).
+
+[setup]: docs/setup.md
