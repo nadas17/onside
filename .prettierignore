@@ -1,0 +1,10 @@
+node_modules
+.next
+.vercel
+build
+out
+coverage
+pnpm-lock.yaml
+public
+supabase/migrations
+HALISAHA_SPEC.md

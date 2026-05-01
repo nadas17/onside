@@ -1,0 +1,454 @@
+{
+  "Home": {
+    "title": "Halisaha",
+    "greeting": "Welcome, {name}!",
+    "tagline": "Find a nearby pickup football match, join, play with balanced teams, track your stats.",
+    "browseEvents": "Browse nearby matches",
+    "browseVenues": "Venues",
+    "createEvent": "Create a match",
+    "viewProfile": "Profile",
+    "phase3Notice": "Phase 3 — event creation & feed live. RSVP & chat next."
+  },
+  "Theme": {
+    "toggle": "Toggle dark mode"
+  },
+  "Locale": {
+    "tr": "Türkçe",
+    "en": "English",
+    "pl": "Polski",
+    "switch": "Language"
+  },
+  "Brand": {
+    "wordmarkAlt": "Halisaha"
+  },
+  "Auth": {
+    "welcome": "Welcome!",
+    "nicknamePrompt": "Pick a nickname to start. You can add an email later to secure your account.",
+    "nickname": "Nickname",
+    "nicknamePlaceholder": "dogukan",
+    "nicknameFormat": "3-20 characters; only lowercase letters, digits, and underscore (_)",
+    "checking": "Checking…",
+    "available": "Available ✓",
+    "taken": "This nickname is taken.",
+    "trySuggestion": "Try one of these:",
+    "start": "Start",
+    "starting": "Starting…",
+    "anonNotice": "Your account is stored anonymously on this device. Clearing browser data will lose it."
+  },
+  "Cities": {
+    "Warsaw": "Warsaw",
+    "Gdańsk": "Gdańsk"
+  },
+  "Geolocation": {
+    "title": "Use your location?",
+    "description": "We'll use it to show the closest venues and matches. If you decline, we'll fall back to Warsaw center.",
+    "allow": "Use my location",
+    "deny": "Not now",
+    "note": "Your location stays on your device; we only re-center the map."
+  },
+  "Chat": {
+    "title": "Chat",
+    "scope": "Only approved roster and the organizer can see and post.",
+    "empty": "No messages yet. Be the first!",
+    "placeholder": "Type a message… (Enter to send, Shift+Enter for newline)",
+    "send": "Send",
+    "sendError": "Could not send",
+    "sendFailed": "(failed)",
+    "notInRoster": "You need to be approved to chat.",
+    "locked": "The organizer has locked this chat.",
+    "eventCancelled": "Event cancelled — chat is closed.",
+    "eventCompleted": "Event ended.",
+    "delete": "Delete",
+    "deleted": "Message deleted.",
+    "deleteError": "Could not delete",
+    "confirmDelete": "Delete this message?",
+    "messageDeleted": "[message deleted]",
+    "report": "Report",
+    "reportPrompt": "Reason: spam, harassment, inappropriate, other",
+    "reportInvalidReason": "Invalid reason.",
+    "reportError": "Could not report",
+    "reported": "Message reported.",
+    "alreadyReported": "You already reported this message.",
+    "organizer": "Organizer",
+    "unknownUser": "Unknown"
+  },
+  "MyEvents": {
+    "title": "My events",
+    "goToEvent": "Open event",
+    "organizerBadge": "Organizer",
+    "seeAll": "See all ({count})",
+    "plusMore": "+ {count} more"
+  },
+  "Roster": {
+    "rosterTitle": "Roster",
+    "noParticipants": "No approved players yet.",
+    "emptyOrganizerHint": "First requests will land here.",
+    "emptyJoinerHint": "Be the first — pick your position and send a request.",
+    "requestToJoin": "Request to join",
+    "joining": "Sending…",
+    "requested": "Request sent! Awaiting organizer approval.",
+    "alreadyRequested": "Your request is already pending.",
+    "joinError": "Could not send request",
+    "requestPending": "Pending as {position}",
+    "withdrawRequest": "Withdraw request",
+    "confirmedAs": "Approved as {position}",
+    "cancelRsvp": "Cancel RSVP",
+    "cancelling": "Cancelling…",
+    "rsvpCancelled": "RSVP cancelled.",
+    "cancelError": "Could not cancel",
+    "lockedNoCancel": "No cancellation after teams are formed",
+    "signInToJoin": "Sign in to join",
+    "alreadyStarted": "Match has started",
+    "eventCancelled": "Event cancelled",
+    "eventCompleted": "Event ended",
+    "rosterFull": "Roster full",
+    "rosterLocked": "Teams formed",
+    "pickPositionTitle": "Pick your position",
+    "pickPositionDesc": "What position do you want to play?",
+    "confirmJoin": "Send request",
+    "cancel": "Cancel",
+    "kick": "Remove",
+    "confirmKick": "Remove {name} from the roster?",
+    "kicked": "Player removed",
+    "kickError": "Could not remove",
+    "pendingTitle": "Pending requests ({count})",
+    "remainingSpots": "{count} spots left",
+    "approve": "Approve",
+    "reject": "Reject",
+    "approved": "Request approved",
+    "rejected": "Request rejected",
+    "approveError": "Could not approve",
+    "rejectError": "Could not reject",
+    "rejecting": "Rejecting…",
+    "confirmReject": "Confirm reject",
+    "rejectReasonPlaceholder": "Optional reason (e.g. skill mismatch)…",
+    "myPendingTitle": "Your join request is awaiting approval",
+    "myPendingDescription": "Submitted as {position} {elapsed}.",
+    "rejectedNote": "Rejected",
+    "justNow": "just now",
+    "minutesAgo": "{count} min ago",
+    "hoursAgo": "{count} hr ago",
+    "daysAgo": "{count} d ago"
+  },
+  "A11y": {
+    "skipToContent": "Skip to main content"
+  },
+  "Footer": {
+    "tagline": "Halisaha — Gdańsk + Warsaw pickup football",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "Cookie": {
+    "title": "Cookie notice",
+    "body": "Halisaha only uses essential cookies to keep you signed in. No ads or analytics cookies.",
+    "privacyLink": "Privacy Policy",
+    "ack": "Got it",
+    "dismiss": "Close"
+  },
+  "Notifications": {
+    "title": "Notifications",
+    "toggle": "Toggle notifications",
+    "unreadCount": "{count} unread",
+    "empty": "No notifications yet.",
+    "markAllRead": "Mark all read",
+    "kinds": {
+      "rsvp_approved": { "title": "Your join request was approved" },
+      "rsvp_rejected": { "title": "Your join request was declined" },
+      "event_full": { "title": "Your event roster is full" },
+      "event_cancelled": { "title": "Event cancelled" },
+      "team_assignment": { "title": "Teams have been built" },
+      "match_completed": { "title": "Match ended — MVP voting open" },
+      "mvp_received": { "title": "You were voted MVP! +10 bonus" },
+      "chat_mention": { "title": "You were mentioned in chat" }
+    }
+  },
+  "Legal": {
+    "common": {
+      "lastUpdated": "Last updated",
+      "draftNotice": "Draft",
+      "seeTerms": "Terms of Service",
+      "seePrivacy": "Privacy Policy"
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "draftBody": "This is a draft for MVP; will be finalised with legal counsel before production.",
+      "collected": {
+        "title": "Data we collect",
+        "intro": "Halisaha applies data minimisation. We collect:",
+        "item1": "Anonymous session identifier (UUID issued by Supabase Auth — contains no personal info)",
+        "item2": "Profile info: nickname, display name, bio, preferred position, skill level (entered by you)",
+        "item3": "Event activity: RSVPs, chat messages, match stats, MVP votes",
+        "item4": "Location (optional): browser geolocation only to centre the map; never stored on server",
+        "notCollected": "What we don't collect",
+        "notCollectedList": "We do NOT collect email, phone, payment info, IP-based tracking, or third-party advertising cookies."
+      },
+      "purpose": {
+        "title": "Why we process data",
+        "body": "To find matches near you, manage rosters, run chat and team-balancing, store Elo history and MVP stats. Never used for advertising, profiling, or sale."
+      },
+      "storage": {
+        "title": "Where data is stored",
+        "body": "All data lives in Supabase Cloud (eu-central-1, Frankfurt — within GDPR boundaries). Backups are encrypted in the same region."
+      },
+      "retention": {
+        "title": "Retention",
+        "body": "Anonymous session stays active for 30 days; if you don't open the app within that window, the profile becomes unreachable. Active profile data is kept until you close your account. Chat messages are soft-deleted; event deletion cascades."
+      },
+      "rights": {
+        "title": "Your rights (GDPR)",
+        "intro": "If you live in or are a citizen of the EU, you have:",
+        "access": "Access — contact us for a downloadable copy",
+        "rectify": "Rectification — edit your profile yourself",
+        "erase": "Erasure — request account closure",
+        "export": "Portability — JSON export",
+        "complaint": "The right to lodge a complaint with your data-protection authority"
+      },
+      "contact": {
+        "title": "Contact",
+        "body": "Data controller contact: contact@halisaha.example (placeholder — replace with real address before production)."
+      }
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "draftBody": "This is a draft for MVP; will be finalised with legal counsel before production.",
+      "eligibility": {
+        "title": "Age & eligibility",
+        "body": "Halisaha is for users 16 and older. By creating an account you confirm you're 16+. Pickup football is physical activity; assess your own health conditions."
+      },
+      "account": {
+        "title": "Account",
+        "body": "Your account is anonymously bound to the device. Clearing browser data or switching devices permanently loses your profile + history. \"Save my account\" arrives in a future release."
+      },
+      "conduct": {
+        "title": "Conduct",
+        "intro": "These are forbidden and may lead to suspension:",
+        "item1": "Aggressive, discriminatory, or harassing language",
+        "item2": "Spam, advertising, fraud",
+        "item3": "Selling, transferring, or operating multiple accounts",
+        "item4": "Repeated no-shows — 3+ no-shows trigger automatic review"
+      },
+      "liability": {
+        "title": "Liability",
+        "body": "Halisaha is a discovery platform — it doesn't reserve pitches, take payments, or provide insurance. Injuries or damage during events are users' own responsibility. Relations with pitch owners/operators are between users."
+      },
+      "changes": {
+        "title": "Changes",
+        "body": "These terms may be updated; significant changes will be sent as in-app notifications."
+      },
+      "contact": {
+        "title": "Contact",
+        "body": "Questions: contact@halisaha.example (placeholder)."
+      }
+    }
+  },
+  "Stats": {
+    "ratingChart": "Skill rating over time",
+    "ratingChartAlt": "Skill rating change over time",
+    "chartEmpty": "No matches yet. Current rating: {rating}.",
+    "matches": "matches",
+    "recentMatches": "Recent matches",
+    "recentEmpty": "No matches played yet.",
+    "recentEmptyHint": "After your first match, your W/L history, goals, and Elo changes will appear here.",
+    "chartEmptyHint": "As you play, your rating changes will be plotted on a timeline here.",
+    "goalsLabel": "{count} goals",
+    "winRate": "Win rate",
+    "outcome": {
+      "win": "W",
+      "loss": "L",
+      "draw": "D",
+      "noShow": "N"
+    }
+  },
+  "Result": {
+    "title": "Match result",
+    "description": "Match over? Submit the score; Elo updates automatically and MVP voting opens (7 days).",
+    "submit": "Submit score",
+    "submitTitle": "Submit match score",
+    "submitted": "Score saved",
+    "submitError": "Couldn't save score",
+    "edit": "Edit score",
+    "editTitle": "Edit match score",
+    "edited": "Score updated",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "teamA": "Team A",
+    "teamB": "Team B",
+    "notes": "Notes (optional)",
+    "notesPlaceholder": "Pitch condition, weather, highlights…",
+    "waitingForKickoff": "You can submit the score once the match has started."
+  },
+  "Mvp": {
+    "title": "MVP voting",
+    "openHint": "Attended players can vote for best performance ({total} votes so far).",
+    "closedHint": "Voting window closed ({total} votes). Organizer can finalize.",
+    "voteFor": "Vote",
+    "voted": "Vote saved",
+    "voteError": "Couldn't vote",
+    "winnerLabel": "MVP",
+    "noCandidates": "No candidates yet.",
+    "finalize": "Finalize MVP",
+    "finalizing": "Finalizing…",
+    "finalized": "MVP confirmed, +10 bonus applied",
+    "finalizeError": "Couldn't finalize",
+    "tieWarning": "There's a tie — pick one of the candidates manually using the crown icon.",
+    "manualPick": "Pick as MVP",
+    "noVotes": "No votes received; closed without an MVP."
+  },
+  "Teams": {
+    "title": "Teams",
+    "editTitle": "Edit teams",
+    "description": "Auto-balance the confirmed roster into 2 teams. You can manually adjust afterwards.",
+    "balanceNow": "Build teams",
+    "balancing": "Building…",
+    "balanced": "Teams created",
+    "balanceError": "Couldn't build teams",
+    "edit": "Edit",
+    "rebalance": "Rebalance",
+    "rebalanced": "Teams rebalanced",
+    "confirmRebalance": "Rebalance and reshuffle teams?",
+    "unlock": "Unlock",
+    "unlocking": "Unlocking…",
+    "unlocked": "Unlocked",
+    "unlockError": "Couldn't unlock",
+    "confirmUnlock": "Unlocking will delete the teams and reopen the roster. Continue?",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Teams saved",
+    "saveError": "Couldn't save",
+    "cancel": "Cancel",
+    "teamA": "Team A",
+    "teamB": "Team B",
+    "dragHint": "Drag players between teams.",
+    "emptyTeamError": "Cannot save an empty team.",
+    "skillDelta": "Skill delta: {value}",
+    "warnNoGk": "Warning: No goalkeeper.",
+    "warnSingleGk": "Warning: Only one goalkeeper — one team will play without one.",
+    "warnOddCount": "Warning: Odd number of players — one team has one extra.",
+    "waitingForMinPlayers": "Once min players is reached you can build teams ({current}/{min})."
+  },
+  "Events": {
+    "feedTitle": "Nearby matches",
+    "createTitle": "Create a match",
+    "createEvent": "Create a match",
+    "create": "Create",
+    "creating": "Creating…",
+    "createSuccess": "Event created",
+    "createError": "Could not create event",
+    "cancel": "Cancel",
+    "cancelEvent": "Cancel event",
+    "cancelDescription": "Provide a reason; all participants will be notified.",
+    "cancelReason": "Cancellation reason",
+    "cancelReasonPlaceholder": "Pitch closed, bad weather, not enough players…",
+    "confirmCancel": "Confirm cancellation",
+    "cancelling": "Cancelling…",
+    "cancelled": "Event cancelled",
+    "cancelError": "Could not cancel",
+    "cancelledNotice": "This event was cancelled —",
+    "title": "Title",
+    "titlePlaceholder": "Wednesday evening 5-a-side",
+    "description": "Description",
+    "descriptionPlaceholder": "Short note about the match…",
+    "notes": "Notes",
+    "notesPlaceholder": "Bring boots and a kit…",
+    "venue": "Venue",
+    "date": "Date",
+    "time": "Time",
+    "startAt": "Start",
+    "endAt": "End",
+    "format": "Format",
+    "capacity": "Capacity",
+    "capacityHint": "{format} → {size} per team, suggested capacity {suggested}.",
+    "capacityValue": "{count} players",
+    "minPlayers": "Min players",
+    "minPlayersHint": "Below this, the event is auto-cancelled.",
+    "minPlayersValue": "min {count}",
+    "minSkill": "Min level",
+    "maxSkill": "Max level",
+    "skillLevel": "Level",
+    "organizedBy": "Organizer:",
+    "rosterTitle": "Roster",
+    "rosterPlaceholder": "Coming in Phase 4 — players pick a position and join.",
+    "chatTitle": "Chat",
+    "chatPlaceholder": "Coming in Phase 5 — real-time event chat room.",
+    "filterFormat": "Format filter",
+    "filterSkill": "Skill filter",
+    "allFormats": "All formats",
+    "allSkills": "All levels",
+    "emptyFeed": "No upcoming matches match these filters.",
+    "emptyFeedHint": "Loosen the filters or create your own match.",
+    "createFirst": "Create the first one",
+    "noVenues": "No venues yet. Run the Phase 2 seed.",
+    "upcomingHere": "Upcoming matches at this venue",
+    "noUpcoming": "No upcoming matches scheduled here.",
+    "invalidDate": "Invalid date/time",
+    "statuses": {
+      "draft": "Draft",
+      "open": "Open",
+      "full": "Full",
+      "locked": "Locked",
+      "in_progress": "In progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "skillLevels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "pro": "Pro"
+    }
+  },
+  "Venues": {
+    "title": "Venues",
+    "emptyForCity": "No venues registered for this city yet.",
+    "surface": "Surface",
+    "surfaces": {
+      "artificial": "Artificial turf",
+      "grass": "Grass",
+      "indoor": "Indoor"
+    },
+    "floodlights": "Floodlights",
+    "covered": "Covered",
+    "yes": "Yes",
+    "no": "No",
+    "officialSite": "Official site",
+    "eventsTeaser": "Events at this venue will be listed in Phase 3.",
+    "backToList": "Venues"
+  },
+  "Profile": {
+    "title": "Profile",
+    "edit": "Edit",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "saveError": "Could not save",
+    "username": "Username",
+    "displayName": "Display name",
+    "bio": "Bio",
+    "bioPlaceholder": "Tell people a bit about yourself…",
+    "homeCity": "City",
+    "homeCityPlaceholder": "Warsaw / Gdańsk",
+    "preferredPosition": "Preferred position",
+    "secondaryPosition": "Secondary position",
+    "skillLevel": "Level",
+    "skillRating": "Skill rating",
+    "matchesPlayed": "Matches",
+    "matchesWon": "Wins",
+    "goalsScored": "Goals",
+    "mvpCount": "MVP",
+    "noPosition": "Not selected",
+    "positions": {
+      "GK": "Goalkeeper",
+      "DEF": "Defender",
+      "MID": "Midfielder",
+      "FWD": "Forward"
+    },
+    "skillLevels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "pro": "Pro"
+    },
+    "languageSetting": "Language"
+  }
+}

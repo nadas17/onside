@@ -1,0 +1,454 @@
+{
+  "Home": {
+    "title": "Halisaha",
+    "greeting": "Witaj, {name}!",
+    "tagline": "Znajdź pobliski pickup-mecz piłki nożnej, dołącz, graj w zrównoważonych drużynach, zbieraj statystyki.",
+    "browseEvents": "Mecze w pobliżu",
+    "browseVenues": "Boiska",
+    "createEvent": "Utwórz mecz",
+    "viewProfile": "Profil",
+    "phase3Notice": "Faza 3 — tworzenie wydarzeń i lista aktywne. RSVP i czat w kolejce."
+  },
+  "Theme": {
+    "toggle": "Przełącz tryb ciemny"
+  },
+  "Locale": {
+    "tr": "Türkçe",
+    "en": "English",
+    "pl": "Polski",
+    "switch": "Język"
+  },
+  "Brand": {
+    "wordmarkAlt": "Halisaha"
+  },
+  "Auth": {
+    "welcome": "Witaj!",
+    "nicknamePrompt": "Wybierz pseudonim, aby zacząć. Później możesz dodać e-mail, aby zabezpieczyć konto.",
+    "nickname": "Pseudonim",
+    "nicknamePlaceholder": "dogukan",
+    "nicknameFormat": "3-20 znaków; tylko małe litery, cyfry i podkreślenie (_)",
+    "checking": "Sprawdzanie…",
+    "available": "Dostępne ✓",
+    "taken": "Ten pseudonim jest zajęty.",
+    "trySuggestion": "Spróbuj jednego z tych:",
+    "start": "Zaczynaj",
+    "starting": "Uruchamianie…",
+    "anonNotice": "Twoje konto jest przechowywane anonimowo na tym urządzeniu. Wyczyszczenie danych przeglądarki je usunie."
+  },
+  "Cities": {
+    "Warsaw": "Warszawa",
+    "Gdańsk": "Gdańsk"
+  },
+  "Geolocation": {
+    "title": "Czy możemy użyć Twojej lokalizacji?",
+    "description": "Pokażemy najbliższe boiska i mecze. Jeśli odmówisz, ustawimy mapę na centrum Warszawy.",
+    "allow": "Użyj mojej lokalizacji",
+    "deny": "Nie teraz",
+    "note": "Lokalizacja nie opuszcza Twojego urządzenia; jedynie centrowymy mapę."
+  },
+  "Chat": {
+    "title": "Czat",
+    "scope": "Tylko zatwierdzony skład i organizator widzi i pisze.",
+    "empty": "Brak wiadomości. Bądź pierwszy!",
+    "placeholder": "Wpisz wiadomość… (Enter wysyła, Shift+Enter nowa linia)",
+    "send": "Wyślij",
+    "sendError": "Nie udało się wysłać",
+    "sendFailed": "(błąd)",
+    "notInRoster": "Musisz być zatwierdzony, aby pisać.",
+    "locked": "Organizator zablokował czat.",
+    "eventCancelled": "Wydarzenie anulowane — czat zamknięty.",
+    "eventCompleted": "Wydarzenie zakończone.",
+    "delete": "Usuń",
+    "deleted": "Wiadomość usunięta.",
+    "deleteError": "Nie udało się usunąć",
+    "confirmDelete": "Usunąć tę wiadomość?",
+    "messageDeleted": "[wiadomość usunięta]",
+    "report": "Zgłoś",
+    "reportPrompt": "Powód: spam, harassment, inappropriate, other",
+    "reportInvalidReason": "Nieprawidłowy powód.",
+    "reportError": "Nie udało się zgłosić",
+    "reported": "Wiadomość zgłoszona.",
+    "alreadyReported": "Już zgłosiłeś tę wiadomość.",
+    "organizer": "Organizator",
+    "unknownUser": "Nieznany"
+  },
+  "MyEvents": {
+    "title": "Moje wydarzenia",
+    "goToEvent": "Otwórz wydarzenie",
+    "organizerBadge": "Organizator",
+    "seeAll": "Zobacz wszystkie ({count})",
+    "plusMore": "+ {count} więcej"
+  },
+  "Roster": {
+    "rosterTitle": "Skład",
+    "noParticipants": "Brak zatwierdzonych graczy.",
+    "emptyOrganizerHint": "Pierwsze zgłoszenia pojawią się tutaj.",
+    "emptyJoinerHint": "Bądź pierwszy — wybierz pozycję i wyślij prośbę.",
+    "requestToJoin": "Wyślij prośbę o dołączenie",
+    "joining": "Wysyłanie…",
+    "requested": "Prośba wysłana! Czekaj na zatwierdzenie organizatora.",
+    "alreadyRequested": "Twoja prośba już oczekuje.",
+    "joinError": "Nie udało się wysłać prośby",
+    "requestPending": "Oczekuje jako {position}",
+    "withdrawRequest": "Wycofaj prośbę",
+    "confirmedAs": "Zatwierdzony jako {position}",
+    "cancelRsvp": "Anuluj zapis",
+    "cancelling": "Anulowanie…",
+    "rsvpCancelled": "Zapis anulowany.",
+    "cancelError": "Nie udało się anulować",
+    "lockedNoCancel": "Brak anulowania po utworzeniu drużyn",
+    "signInToJoin": "Zaloguj się, aby dołączyć",
+    "alreadyStarted": "Mecz już się zaczął",
+    "eventCancelled": "Wydarzenie anulowane",
+    "eventCompleted": "Wydarzenie zakończone",
+    "rosterFull": "Pełny skład",
+    "rosterLocked": "Drużyny utworzone",
+    "pickPositionTitle": "Wybierz pozycję",
+    "pickPositionDesc": "Na której pozycji chcesz grać?",
+    "confirmJoin": "Wyślij prośbę",
+    "cancel": "Anuluj",
+    "kick": "Usuń",
+    "confirmKick": "Usunąć {name} ze składu?",
+    "kicked": "Gracz usunięty",
+    "kickError": "Nie udało się usunąć",
+    "pendingTitle": "Oczekujące prośby ({count})",
+    "remainingSpots": "Pozostało {count} miejsc",
+    "approve": "Zatwierdź",
+    "reject": "Odrzuć",
+    "approved": "Prośba zatwierdzona",
+    "rejected": "Prośba odrzucona",
+    "approveError": "Nie udało się zatwierdzić",
+    "rejectError": "Nie udało się odrzucić",
+    "rejecting": "Odrzucanie…",
+    "confirmReject": "Potwierdź odrzucenie",
+    "rejectReasonPlaceholder": "Opcjonalny powód (np. niezgodny poziom)…",
+    "myPendingTitle": "Twoja prośba czeka na zatwierdzenie",
+    "myPendingDescription": "Wysłana jako {position} {elapsed}.",
+    "rejectedNote": "Odrzucono",
+    "justNow": "przed chwilą",
+    "minutesAgo": "{count} min temu",
+    "hoursAgo": "{count} godz. temu",
+    "daysAgo": "{count} dni temu"
+  },
+  "A11y": {
+    "skipToContent": "Przejdź do treści głównej"
+  },
+  "Footer": {
+    "tagline": "Halisaha — Gdańsk + Warszawa pickup football",
+    "privacy": "Prywatność",
+    "terms": "Regulamin"
+  },
+  "Cookie": {
+    "title": "Powiadomienie o plikach cookie",
+    "body": "Halisaha używa wyłącznie niezbędnych plików cookie do utrzymania sesji. Bez plików reklamowych lub analitycznych.",
+    "privacyLink": "Polityka prywatności",
+    "ack": "Rozumiem",
+    "dismiss": "Zamknij"
+  },
+  "Notifications": {
+    "title": "Powiadomienia",
+    "toggle": "Włącz/wyłącz powiadomienia",
+    "unreadCount": "{count} nieprzeczytanych",
+    "empty": "Brak powiadomień.",
+    "markAllRead": "Oznacz wszystkie",
+    "kinds": {
+      "rsvp_approved": { "title": "Twoja prośba została zatwierdzona" },
+      "rsvp_rejected": { "title": "Twoja prośba została odrzucona" },
+      "event_full": { "title": "Skład wydarzenia jest pełny" },
+      "event_cancelled": { "title": "Wydarzenie anulowane" },
+      "team_assignment": { "title": "Drużyny zostały utworzone" },
+      "match_completed": { "title": "Mecz zakończony — MVP do głosowania" },
+      "mvp_received": { "title": "Wybrano cię na MVP! +10 bonusu" },
+      "chat_mention": { "title": "Wspomniano cię w czacie" }
+    }
+  },
+  "Legal": {
+    "common": {
+      "lastUpdated": "Ostatnia aktualizacja",
+      "draftNotice": "Wersja robocza",
+      "seeTerms": "Regulamin",
+      "seePrivacy": "Polityka prywatności"
+    },
+    "privacy": {
+      "title": "Polityka prywatności",
+      "draftBody": "Wersja robocza na etapie MVP; przed produkcją zostanie sfinalizowana z prawnikiem.",
+      "collected": {
+        "title": "Jakie dane zbieramy",
+        "intro": "Halisaha stosuje zasadę minimalizacji danych. Zbieramy:",
+        "item1": "Anonimowy identyfikator sesji (UUID generowany przez Supabase Auth — bez danych osobowych)",
+        "item2": "Dane profilu: nick, nazwa wyświetlana, biogram, preferowana pozycja, poziom umiejętności (wpisywane przez ciebie)",
+        "item3": "Aktywność: zgłoszenia do meczów, wiadomości w czacie, statystyki, głosy MVP",
+        "item4": "Lokalizacja (opcjonalnie): tylko do wyśrodkowania mapy, nigdy nie wysyłana na serwer",
+        "notCollected": "Czego NIE zbieramy",
+        "notCollectedList": "NIE zbieramy adresu e-mail, telefonu, płatności, śledzenia po IP ani plików reklamowych stron trzecich."
+      },
+      "purpose": {
+        "title": "Dlaczego przetwarzamy dane",
+        "body": "By znaleźć mecze w pobliżu, zarządzać składem, obsłużyć czat, balansować drużyny, prowadzić historię Elo i statystyki MVP. Nigdy do reklam, profilowania ani sprzedaży."
+      },
+      "storage": {
+        "title": "Gdzie są przechowywane dane",
+        "body": "Wszystkie dane w Supabase Cloud (eu-central-1, Frankfurt — w granicach RODO). Kopie zapasowe szyfrowane w tym samym regionie."
+      },
+      "retention": {
+        "title": "Okres przechowywania",
+        "body": "Sesja anonimowa aktywna 30 dni; bez aktywności w tym czasie profil staje się niedostępny. Dane profilu trzymamy do zamknięcia konta. Wiadomości czatu — soft-delete; usunięcie wydarzenia kaskadowo."
+      },
+      "rights": {
+        "title": "Twoje prawa (RODO)",
+        "intro": "Jako mieszkaniec UE / obywatel UE masz:",
+        "access": "Dostęp — skontaktuj się o pobranie kopii",
+        "rectify": "Sprostowanie — edytuj profil samodzielnie",
+        "erase": "Usunięcie — żądanie zamknięcia konta",
+        "export": "Przenoszalność — eksport JSON",
+        "complaint": "Prawo skargi do organu ochrony danych"
+      },
+      "contact": {
+        "title": "Kontakt",
+        "body": "Administrator: contact@halisaha.example (placeholder — zostanie zastąpiony prawdziwym adresem przed produkcją)."
+      }
+    },
+    "terms": {
+      "title": "Regulamin",
+      "draftBody": "Wersja robocza na etapie MVP; przed produkcją zostanie sfinalizowana z prawnikiem.",
+      "eligibility": {
+        "title": "Wiek i kwalifikacja",
+        "body": "Halisaha jest dla osób 16+. Tworząc konto potwierdzasz, że masz 16+. Pickup football to aktywność fizyczna; oceń swój stan zdrowia samodzielnie."
+      },
+      "account": {
+        "title": "Konto",
+        "body": "Twoje konto jest anonimowo powiązane z urządzeniem. Wyczyszczenie danych przeglądarki lub zmiana urządzenia trwale usuwa profil i historię. Funkcja zachowania konta pojawi się w przyszłej wersji."
+      },
+      "conduct": {
+        "title": "Zasady",
+        "intro": "Następujące zachowania są zabronione i mogą skutkować zawieszeniem:",
+        "item1": "Agresywny, dyskryminujący lub nękający język",
+        "item2": "Spam, reklamy, oszustwa",
+        "item3": "Sprzedaż, przekazywanie lub posiadanie wielu kont",
+        "item4": "Wielokrotne nie-pojawianie się — 3+ no-show uruchamia przegląd"
+      },
+      "liability": {
+        "title": "Odpowiedzialność",
+        "body": "Halisaha to platforma odkrywcza — nie rezerwuje boisk, nie pobiera płatności ani nie zapewnia ubezpieczenia. Kontuzje i szkody są na własną odpowiedzialność. Relacje z właścicielami boisk są między użytkownikami."
+      },
+      "changes": {
+        "title": "Zmiany",
+        "body": "Regulamin może być aktualizowany; istotne zmiany przyjdą jako powiadomienie."
+      },
+      "contact": {
+        "title": "Kontakt",
+        "body": "Pytania: contact@halisaha.example (placeholder)."
+      }
+    }
+  },
+  "Stats": {
+    "ratingChart": "Wykres ratingu",
+    "ratingChartAlt": "Zmiana ratingu w czasie",
+    "chartEmpty": "Brak meczów. Aktualny rating: {rating}.",
+    "matches": "meczów",
+    "recentMatches": "Ostatnie mecze",
+    "recentEmpty": "Brak rozegranych meczów.",
+    "recentEmptyHint": "Po pierwszym meczu pojawią się tu wyniki W/L, gole i zmiany Elo.",
+    "chartEmptyHint": "W miarę grania zmiany ratingu pokażą się na osi czasu.",
+    "goalsLabel": "{count} goli",
+    "winRate": "Procent zwycięstw",
+    "outcome": {
+      "win": "W",
+      "loss": "P",
+      "draw": "R",
+      "noShow": "N"
+    }
+  },
+  "Result": {
+    "title": "Wynik meczu",
+    "description": "Mecz skończony? Wprowadź wynik; punkty Elo i głosowanie MVP zaktualizują się automatycznie (7 dni).",
+    "submit": "Wprowadź wynik",
+    "submitTitle": "Wprowadź wynik meczu",
+    "submitted": "Wynik zapisany",
+    "submitError": "Nie udało się zapisać wyniku",
+    "edit": "Edytuj wynik",
+    "editTitle": "Edytuj wynik meczu",
+    "edited": "Wynik zaktualizowany",
+    "save": "Zapisz",
+    "saving": "Zapisywanie…",
+    "cancel": "Anuluj",
+    "teamA": "Drużyna A",
+    "teamB": "Drużyna B",
+    "notes": "Uwagi (opcjonalnie)",
+    "notesPlaceholder": "Stan boiska, pogoda, ciekawe momenty…",
+    "waitingForKickoff": "Wynik możesz wprowadzić po rozpoczęciu meczu."
+  },
+  "Mvp": {
+    "title": "Głosowanie MVP",
+    "openHint": "Gracze, którzy zagrali, mogą głosować na najlepszą postawę ({total} głosów do tej pory).",
+    "closedHint": "Okno głosowania zamknięte ({total} głosów). Organizator może rozstrzygnąć.",
+    "voteFor": "Głosuj",
+    "voted": "Głos zapisany",
+    "voteError": "Nie udało się zagłosować",
+    "winnerLabel": "MVP",
+    "noCandidates": "Brak kandydatów.",
+    "finalize": "Rozstrzygnij MVP",
+    "finalizing": "Rozstrzyganie…",
+    "finalized": "MVP zatwierdzony, +10 bonusu",
+    "finalizeError": "Nie udało się rozstrzygnąć",
+    "tieWarning": "Remis — wybierz kandydata ręcznie ikoną korony.",
+    "manualPick": "Wybierz jako MVP",
+    "noVotes": "Brak głosów; zamknięto bez MVP."
+  },
+  "Teams": {
+    "title": "Drużyny",
+    "editTitle": "Edytuj drużyny",
+    "description": "Automatycznie zrównoważ zatwierdzony skład w 2 drużyny. Później możesz ręcznie poprawić.",
+    "balanceNow": "Utwórz drużyny",
+    "balancing": "Tworzenie…",
+    "balanced": "Drużyny utworzone",
+    "balanceError": "Nie udało się utworzyć drużyn",
+    "edit": "Edytuj",
+    "rebalance": "Przemieszaj",
+    "rebalanced": "Drużyny zostały przemieszane",
+    "confirmRebalance": "Czy na pewno przemieszać drużyny?",
+    "unlock": "Odblokuj",
+    "unlocking": "Odblokowywanie…",
+    "unlocked": "Odblokowano",
+    "unlockError": "Nie udało się odblokować",
+    "confirmUnlock": "Odblokowanie usunie drużyny i przywróci skład do zatwierdzania. Kontynuować?",
+    "save": "Zapisz",
+    "saving": "Zapisywanie…",
+    "saved": "Drużyny zapisane",
+    "saveError": "Nie udało się zapisać",
+    "cancel": "Anuluj",
+    "teamA": "Drużyna A",
+    "teamB": "Drużyna B",
+    "dragHint": "Przeciągnij graczy między drużynami.",
+    "emptyTeamError": "Nie można zapisać pustej drużyny.",
+    "skillDelta": "Różnica skilla: {value}",
+    "warnNoGk": "Uwaga: Brak bramkarza.",
+    "warnSingleGk": "Uwaga: Tylko jeden bramkarz — jedna drużyna zagra bez bramkarza.",
+    "warnOddCount": "Uwaga: Nieparzysta liczba graczy — jedna drużyna ma jednego więcej.",
+    "waitingForMinPlayers": "Po osiągnięciu minimum graczy możesz utworzyć drużyny ({current}/{min})."
+  },
+  "Events": {
+    "feedTitle": "Mecze w pobliżu",
+    "createTitle": "Utwórz mecz",
+    "createEvent": "Utwórz mecz",
+    "create": "Utwórz",
+    "creating": "Tworzenie…",
+    "createSuccess": "Wydarzenie utworzone",
+    "createError": "Nie udało się utworzyć",
+    "cancel": "Anuluj",
+    "cancelEvent": "Anuluj wydarzenie",
+    "cancelDescription": "Podaj powód; wszyscy uczestnicy zostaną powiadomieni.",
+    "cancelReason": "Powód anulowania",
+    "cancelReasonPlaceholder": "Boisko zamknięte, zła pogoda, za mało graczy…",
+    "confirmCancel": "Potwierdź anulowanie",
+    "cancelling": "Anulowanie…",
+    "cancelled": "Wydarzenie anulowane",
+    "cancelError": "Nie udało się anulować",
+    "cancelledNotice": "To wydarzenie zostało anulowane —",
+    "title": "Tytuł",
+    "titlePlaceholder": "Środa wieczór, halówka",
+    "description": "Opis",
+    "descriptionPlaceholder": "Krótka notatka o meczu…",
+    "notes": "Notatki",
+    "notesPlaceholder": "Korki obowiązkowe, weź strój…",
+    "venue": "Boisko",
+    "date": "Data",
+    "time": "Godzina",
+    "startAt": "Początek",
+    "endAt": "Koniec",
+    "format": "Format",
+    "capacity": "Pojemność",
+    "capacityHint": "{format} → {size} na drużynę, sugerowana pojemność {suggested}.",
+    "capacityValue": "{count} graczy",
+    "minPlayers": "Min. graczy",
+    "minPlayersHint": "Poniżej tej liczby wydarzenie zostaje anulowane.",
+    "minPlayersValue": "min {count}",
+    "minSkill": "Min. poziom",
+    "maxSkill": "Maks. poziom",
+    "skillLevel": "Poziom",
+    "organizedBy": "Organizator:",
+    "rosterTitle": "Skład",
+    "rosterPlaceholder": "Pojawi się w fazie 4 — gracze wybierają pozycję i dołączają.",
+    "chatTitle": "Czat",
+    "chatPlaceholder": "Pojawi się w fazie 5 — czat na żywo dla wydarzenia.",
+    "filterFormat": "Filtr formatu",
+    "filterSkill": "Filtr poziomu",
+    "allFormats": "Wszystkie formaty",
+    "allSkills": "Wszystkie poziomy",
+    "emptyFeed": "Brak meczów spełniających te kryteria.",
+    "emptyFeedHint": "Poluzuj filtry albo utwórz własny mecz.",
+    "createFirst": "Utwórz pierwszy",
+    "noVenues": "Brak boisk. Uruchom seed z fazy 2.",
+    "upcomingHere": "Nadchodzące mecze na tym boisku",
+    "noUpcoming": "Brak zaplanowanych meczów.",
+    "invalidDate": "Nieprawidłowa data/godzina",
+    "statuses": {
+      "draft": "Szkic",
+      "open": "Otwarte",
+      "full": "Pełne",
+      "locked": "Zamknięte",
+      "in_progress": "W trakcie",
+      "completed": "Zakończone",
+      "cancelled": "Anulowane"
+    },
+    "skillLevels": {
+      "beginner": "Początkujący",
+      "intermediate": "Średni",
+      "advanced": "Zaawansowany",
+      "pro": "Profesjonalny"
+    }
+  },
+  "Venues": {
+    "title": "Boiska",
+    "emptyForCity": "Brak zarejestrowanych boisk w tym mieście.",
+    "surface": "Nawierzchnia",
+    "surfaces": {
+      "artificial": "Sztuczna trawa",
+      "grass": "Trawa",
+      "indoor": "Hala"
+    },
+    "floodlights": "Oświetlenie",
+    "covered": "Zadaszone",
+    "yes": "Tak",
+    "no": "Nie",
+    "officialSite": "Strona oficjalna",
+    "eventsTeaser": "Wydarzenia na tym boisku będą widoczne w fazie 3.",
+    "backToList": "Boiska"
+  },
+  "Profile": {
+    "title": "Profil",
+    "edit": "Edytuj",
+    "save": "Zapisz",
+    "saving": "Zapisywanie…",
+    "saved": "Zapisano",
+    "saveError": "Nie udało się zapisać",
+    "username": "Nazwa użytkownika",
+    "displayName": "Nazwa wyświetlana",
+    "bio": "Bio",
+    "bioPlaceholder": "Opowiedz coś o sobie…",
+    "homeCity": "Miasto",
+    "homeCityPlaceholder": "Warsaw / Gdańsk",
+    "preferredPosition": "Preferowana pozycja",
+    "secondaryPosition": "Pozycja drugorzędna",
+    "skillLevel": "Poziom",
+    "skillRating": "Ocena umiejętności",
+    "matchesPlayed": "Mecze",
+    "matchesWon": "Wygrane",
+    "goalsScored": "Bramki",
+    "mvpCount": "MVP",
+    "noPosition": "Nie wybrano",
+    "positions": {
+      "GK": "Bramkarz",
+      "DEF": "Obrońca",
+      "MID": "Pomocnik",
+      "FWD": "Napastnik"
+    },
+    "skillLevels": {
+      "beginner": "Początkujący",
+      "intermediate": "Średnio zaawansowany",
+      "advanced": "Zaawansowany",
+      "pro": "Profesjonalista"
+    },
+    "languageSetting": "Język"
+  }
+}

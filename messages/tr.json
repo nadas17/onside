@@ -1,0 +1,454 @@
+{
+  "Home": {
+    "title": "Halısaha",
+    "greeting": "Hoş geldin, {name}!",
+    "tagline": "Yakındaki pickup futbol maçını bul, katıl, dengeli takımlarda oyna, istatistiğini biriktir.",
+    "browseEvents": "Yakındaki maçlar",
+    "browseVenues": "Sahalar",
+    "createEvent": "Maç oluştur",
+    "viewProfile": "Profil",
+    "phase3Notice": "Phase 3 — etkinlik oluşturma & feed aktif. RSVP & chat sırada."
+  },
+  "Theme": {
+    "toggle": "Karanlık modu değiştir"
+  },
+  "Locale": {
+    "tr": "Türkçe",
+    "en": "English",
+    "pl": "Polski",
+    "switch": "Dil"
+  },
+  "Brand": {
+    "wordmarkAlt": "Halısaha"
+  },
+  "Auth": {
+    "welcome": "Hoş geldin!",
+    "nicknamePrompt": "Başlamak için bir nickname seç. İlerde istersen email ekleyip hesabını koruyabilirsin.",
+    "nickname": "Nickname",
+    "nicknamePlaceholder": "dogukan",
+    "nicknameFormat": "3-20 karakter; sadece küçük harf, rakam ve alt çizgi (_)",
+    "checking": "Kontrol ediliyor…",
+    "available": "Müsait ✓",
+    "taken": "Bu nickname alınmış.",
+    "trySuggestion": "Bunlardan birini dene:",
+    "start": "Başla",
+    "starting": "Başlatılıyor…",
+    "anonNotice": "Hesabın bu cihazda anonim olarak saklanır. Tarayıcı verilerini silersen kaybolur."
+  },
+  "Cities": {
+    "Warsaw": "Varşova",
+    "Gdańsk": "Gdańsk"
+  },
+  "Geolocation": {
+    "title": "Konumunu kullanalım mı?",
+    "description": "Sana en yakın sahaları ve maçları göstermek için tarayıcının konum servisini kullanmamızı isteriz. Reddedersen Varşova merkez olarak alınır.",
+    "allow": "Konumumu kullan",
+    "deny": "Şimdi değil",
+    "note": "Konumun cihazından çıkmaz; biz sadece harita merkezini ayarlarız."
+  },
+  "Chat": {
+    "title": "Sohbet",
+    "scope": "Sadece kadrodaki onaylı oyuncular ve organizatör görür ve yazabilir.",
+    "empty": "Henüz mesaj yok. İlk mesajı sen yaz!",
+    "placeholder": "Mesajını yaz… (Enter gönder, Shift+Enter alt satır)",
+    "send": "Gönder",
+    "sendError": "Mesaj gönderilemedi",
+    "sendFailed": "(gönderilemedi)",
+    "notInRoster": "Sohbet için kadroda onaylanmış olman gerek.",
+    "locked": "Sohbet organizatör tarafından kilitlendi.",
+    "eventCancelled": "Etkinlik iptal — sohbet kapalı.",
+    "eventCompleted": "Etkinlik bitti.",
+    "delete": "Sil",
+    "deleted": "Mesaj silindi.",
+    "deleteError": "Silinemedi",
+    "confirmDelete": "Bu mesajı silmek istediğine emin misin?",
+    "messageDeleted": "[mesaj silindi]",
+    "report": "Bildir",
+    "reportPrompt": "Sebep yaz: spam, harassment, inappropriate, other",
+    "reportInvalidReason": "Geçersiz sebep.",
+    "reportError": "Raporlanamadı",
+    "reported": "Mesaj raporlandı.",
+    "alreadyReported": "Bu mesajı zaten raporlamışsın.",
+    "organizer": "Organizatör",
+    "unknownUser": "Bilinmeyen"
+  },
+  "MyEvents": {
+    "title": "Etkinliklerim",
+    "goToEvent": "Etkinliğe git",
+    "organizerBadge": "Organizatör",
+    "seeAll": "Tümünü gör ({count})",
+    "plusMore": "+ {count} etkinlik daha"
+  },
+  "Roster": {
+    "rosterTitle": "Kadro",
+    "noParticipants": "Henüz onaylanmış katılımcı yok.",
+    "emptyOrganizerHint": "İlk talep geldiğinde burada görünür.",
+    "emptyJoinerHint": "İlk katılımcı sen ol — pozisyonunu seç ve talep gönder.",
+    "requestToJoin": "Katılım talebi gönder",
+    "joining": "Gönderiliyor…",
+    "requested": "Talebin gönderildi! Organizatör onayı bekleniyor.",
+    "alreadyRequested": "Talebin zaten beklemede.",
+    "joinError": "Talep gönderilemedi",
+    "requestPending": "Talebin {position} olarak onay bekliyor",
+    "withdrawRequest": "Talebimi geri çek",
+    "confirmedAs": "{position} olarak onaylandın",
+    "cancelRsvp": "Kaydımı iptal et",
+    "cancelling": "İptal ediliyor…",
+    "rsvpCancelled": "Kayıt iptal edildi.",
+    "cancelError": "İptal edilemedi",
+    "lockedNoCancel": "Takımlar oluşturulduktan sonra iptal yok",
+    "signInToJoin": "Katılmak için giriş yap",
+    "alreadyStarted": "Maç başlamış",
+    "eventCancelled": "Etkinlik iptal",
+    "eventCompleted": "Etkinlik bitti",
+    "rosterFull": "Kadro dolu",
+    "rosterLocked": "Takımlar oluşturuldu",
+    "pickPositionTitle": "Pozisyonunu seç",
+    "pickPositionDesc": "Bu maçta hangi pozisyonda oynamak istersin?",
+    "confirmJoin": "Talep gönder",
+    "cancel": "Vazgeç",
+    "kick": "Çıkar",
+    "confirmKick": "{name} kadrodan çıkarılsın mı?",
+    "kicked": "Oyuncu çıkarıldı",
+    "kickError": "Çıkarılamadı",
+    "pendingTitle": "Onay bekleyen talepler ({count})",
+    "remainingSpots": "{count} boş yer kaldı",
+    "approve": "Onayla",
+    "reject": "Reddet",
+    "approved": "Talep onaylandı",
+    "rejected": "Talep reddedildi",
+    "approveError": "Onaylanamadı",
+    "rejectError": "Reddedilemedi",
+    "rejecting": "Reddediliyor…",
+    "confirmReject": "Reddi onayla",
+    "rejectReasonPlaceholder": "İsteğe bağlı sebep (örn. seviyeniz uygun değil)…",
+    "myPendingTitle": "Talebin organizatör onayını bekliyor",
+    "myPendingDescription": "{position} olarak {elapsed} gönderildi.",
+    "rejectedNote": "Reddedildi",
+    "justNow": "az önce",
+    "minutesAgo": "{count} dk önce",
+    "hoursAgo": "{count} sa önce",
+    "daysAgo": "{count} gün önce"
+  },
+  "A11y": {
+    "skipToContent": "Ana içeriğe atla"
+  },
+  "Footer": {
+    "tagline": "Halısaha — Gdańsk + Warszawa pickup futbol",
+    "privacy": "Gizlilik",
+    "terms": "Koşullar"
+  },
+  "Cookie": {
+    "title": "Çerez bilgilendirmesi",
+    "body": "Halısaha sadece oturumunu sürdürmek için zorunlu çerez kullanır. Reklam veya analiz çerezi yok.",
+    "privacyLink": "Gizlilik Politikası",
+    "ack": "Anladım",
+    "dismiss": "Kapat"
+  },
+  "Notifications": {
+    "title": "Bildirimler",
+    "toggle": "Bildirimleri aç/kapa",
+    "unreadCount": "{count} okunmamış",
+    "empty": "Henüz bildirim yok.",
+    "markAllRead": "Hepsini okundu say",
+    "kinds": {
+      "rsvp_approved": { "title": "Katılım talebin onaylandı" },
+      "rsvp_rejected": { "title": "Katılım talebin reddedildi" },
+      "event_full": { "title": "Etkinliğin kadrosu doldu" },
+      "event_cancelled": { "title": "Etkinlik iptal edildi" },
+      "team_assignment": { "title": "Takımlar oluşturuldu" },
+      "match_completed": { "title": "Maç bitti — MVP oylaması açık" },
+      "mvp_received": { "title": "MVP seçildin! +10 bonus" },
+      "chat_mention": { "title": "Sohbette etiketlendin" }
+    }
+  },
+  "Legal": {
+    "common": {
+      "lastUpdated": "Son güncelleme",
+      "draftNotice": "Taslak",
+      "seeTerms": "Kullanım Koşulları",
+      "seePrivacy": "Gizlilik Politikası"
+    },
+    "privacy": {
+      "title": "Gizlilik Politikası",
+      "draftBody": "Bu politika MVP aşaması için taslaktır; production öncesi hukuk danışmanlığıyla finalize edilecek.",
+      "collected": {
+        "title": "Topladığımız veriler",
+        "intro": "Halısaha asgari veri prensibiyle çalışır. Şunları toplarız:",
+        "item1": "Anonim oturum tanımlayıcısı (Supabase Auth tarafından üretilen UUID — kişisel bilgi içermez)",
+        "item2": "Profil bilgileri: nickname, görünen ad, biyografi, tercih ettiğin pozisyon, beceri seviyesi (kullanıcı tarafından girilir)",
+        "item3": "Etkinlik aktivitesi: katılımlar, sohbet mesajları, maç istatistikleri, MVP oyları",
+        "item4": "Konum (opsiyonel): tarayıcı geolocation izniyle yalnızca harita merkezini ayarlamak için; sunucuya gönderilmez",
+        "notCollected": "Topladığımız veriler",
+        "notCollectedList": "E-posta, telefon, ödeme bilgisi, IP-bazlı izleme, üçüncü-taraf reklam çerezleri TOPLAMIYORUZ."
+      },
+      "purpose": {
+        "title": "Veriyi neden işliyoruz",
+        "body": "Eşleşme bulma (yakındaki etkinlikler), kadro yönetimi, sohbet, takım dengeleme algoritması, Elo puan tarihçesi ve MVP istatistiği için. Reklam, profil oluşturma veya satış amaçlı kullanılmaz."
+      },
+      "storage": {
+        "title": "Veri nerede saklanıyor",
+        "body": "Tüm veriler Supabase Cloud (eu-central-1, Frankfurt — RODO sınırları içinde) üzerinde tutulur. Yedekler aynı bölgede şifreli olarak saklanır."
+      },
+      "retention": {
+        "title": "Saklama süresi",
+        "body": "Anonim oturum 30 gün boyunca aktif kalır; bu sürede uygulamayı açmazsan profilin erişilemez hale gelir. Aktif profil verisi hesabını silene kadar saklanır. Sohbet mesajları soft-delete'tir; etkinlik silinirse cascade silinir."
+      },
+      "rights": {
+        "title": "Haklarınız (GDPR/RODO)",
+        "intro": "Avrupa Birliği'nde yaşıyorsan veya AB vatandaşıysan şu haklara sahipsin:",
+        "access": "Verine erişim — bize ulaş, indirilebilir kopyasını sağlayalım",
+        "rectify": "Düzeltme — profili kendin düzenleyebilirsin",
+        "erase": "Silme — hesabını kapatma talebi",
+        "export": "Taşınabilirlik — JSON export",
+        "complaint": "Yetkili veri koruma kurumuna şikâyet etme hakkı"
+      },
+      "contact": {
+        "title": "İletişim",
+        "body": "Veri sorumlusu ile iletişime geçmek için: contact@halisaha.example (placeholder — production'da gerçek adresle değiştirilecek)."
+      }
+    },
+    "terms": {
+      "title": "Kullanım Koşulları",
+      "draftBody": "Bu koşullar MVP aşaması için taslaktır; production öncesi hukuk danışmanlığıyla finalize edilecek.",
+      "eligibility": {
+        "title": "Yaş ve uygunluk",
+        "body": "Halısaha 16 yaş ve üstü kullanıcılar içindir. Hesap oluşturarak 16+ olduğunu beyan etmiş olursun. Pickup futbol fiziksel aktivitedir; sağlık koşullarını kendin değerlendirmelisin."
+      },
+      "account": {
+        "title": "Hesap",
+        "body": "Hesabın anonim olarak cihazına bağlıdır. Tarayıcı verilerini silersen veya cihazını değiştirirsen profil + tarihçen kalıcı olarak kaybolur. \"Hesabımı koru\" özelliği sonraki sürümlerde eklenecek."
+      },
+      "conduct": {
+        "title": "Davranış kuralları",
+        "intro": "Şunlar yasaktır ve hesap askıya alma sebebidir:",
+        "item1": "Saldırgan, ayrımcı, taciz edici dil kullanmak",
+        "item2": "Spam, reklam, dolandırıcılık",
+        "item3": "Hesabı satmak, devretmek veya birden fazla hesap oluşturmak",
+        "item4": "Maça katılım talebine düzenli no-show — 3+ no-show otomatik incelemeye düşer"
+      },
+      "liability": {
+        "title": "Sorumluluk reddi",
+        "body": "Halısaha buluşma platformudur — saha rezervasyonu, ödeme veya sigorta sağlamaz. Etkinlikteki yaralanma veya zarar kullanıcıların kendi sorumluluğundadır. Saha sahibi/işletmesi ile ilişkiler kullanıcılar arasındadır."
+      },
+      "changes": {
+        "title": "Değişiklikler",
+        "body": "Bu koşullar zaman zaman güncellenebilir. Önemli değişiklikler hesabına bildirim olarak iletilir."
+      },
+      "contact": {
+        "title": "İletişim",
+        "body": "Sorular için: contact@halisaha.example (placeholder)."
+      }
+    }
+  },
+  "Stats": {
+    "ratingChart": "Skill puan grafiği",
+    "ratingChartAlt": "Skill puanının zaman içindeki değişimi",
+    "chartEmpty": "Henüz maç yok. Şu anki rating: {rating}.",
+    "matches": "maç",
+    "recentMatches": "Son maçlar",
+    "recentEmpty": "Henüz oynanmış bir maç yok.",
+    "recentEmptyHint": "İlk maçından sonra burada W/L geçmişin, gol istatistiklerin ve Elo değişimlerin görünür.",
+    "chartEmptyHint": "Maç oynadıkça rating değişimleri burada zaman çizgisinde işaretlenir.",
+    "goalsLabel": "{count} gol",
+    "winRate": "Galibiyet oranı",
+    "outcome": {
+      "win": "G",
+      "loss": "M",
+      "draw": "B",
+      "noShow": "Y"
+    }
+  },
+  "Result": {
+    "title": "Maç sonucu",
+    "description": "Maç bitti mi? Skoru gir; Elo puanları otomatik güncellenir ve MVP oylaması açılır (7 gün).",
+    "submit": "Skoru gir",
+    "submitTitle": "Maç skorunu gir",
+    "submitted": "Skor kaydedildi",
+    "submitError": "Skor kaydedilemedi",
+    "edit": "Skoru düzenle",
+    "editTitle": "Maç skorunu düzenle",
+    "edited": "Skor güncellendi",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor…",
+    "cancel": "Vazgeç",
+    "teamA": "Takım A",
+    "teamB": "Takım B",
+    "notes": "Notlar (opsiyonel)",
+    "notesPlaceholder": "Sahanın durumu, hava, ilginç anlar…",
+    "waitingForKickoff": "Maç başladıktan sonra skoru girebilirsin."
+  },
+  "Mvp": {
+    "title": "MVP oylaması",
+    "openHint": "Maça katılan oyuncular en iyi performans için oy verebilir ({total} oy şu ana kadar).",
+    "closedHint": "Oylama penceresi kapandı ({total} oy alındı). Organizatör sonuçlandırabilir.",
+    "voteFor": "Oy ver",
+    "voted": "Oy kaydedildi",
+    "voteError": "Oy verilemedi",
+    "winnerLabel": "MVP",
+    "noCandidates": "Henüz aday yok.",
+    "finalize": "MVP'yi sonuçlandır",
+    "finalizing": "Sonuçlandırılıyor…",
+    "finalized": "MVP kesinleşti, +10 bonus uygulandı",
+    "finalizeError": "Sonuçlandırılamadı",
+    "tieWarning": "Beraberlik var — adaylardan biri yanındaki taç ikonuna tıklayarak manuel seç.",
+    "manualPick": "MVP olarak seç",
+    "noVotes": "Hiç oy alınmadı; MVP olmadan kapatıldı."
+  },
+  "Teams": {
+    "title": "Takımlar",
+    "editTitle": "Takımları düzenle",
+    "description": "Onaylı oyunculardan otomatik dengelenmiş 2 takım oluştur. Sonra manuel düzenleyebilirsin.",
+    "balanceNow": "Takımları oluştur",
+    "balancing": "Oluşturuluyor…",
+    "balanced": "Takımlar oluşturuldu",
+    "balanceError": "Takımlar oluşturulamadı",
+    "edit": "Düzenle",
+    "rebalance": "Yeniden dağıt",
+    "rebalanced": "Takımlar yeniden dağıtıldı",
+    "confirmRebalance": "Takımları yeniden mi dağıtacaksın?",
+    "unlock": "Kilidi aç",
+    "unlocking": "Kilit açılıyor…",
+    "unlocked": "Kilit açıldı",
+    "unlockError": "Kilit açılamadı",
+    "confirmUnlock": "Kilidi açarsan takımlar silinir, tekrar onay alma sürecine döner. Devam edilsin mi?",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor…",
+    "saved": "Takımlar kaydedildi",
+    "saveError": "Kaydedilemedi",
+    "cancel": "Vazgeç",
+    "teamA": "Takım A",
+    "teamB": "Takım B",
+    "dragHint": "Oyuncuları sürükleyerek takımlar arası taşı.",
+    "emptyTeamError": "Boş takım kaydedilemez.",
+    "skillDelta": "Skill farkı: {value}",
+    "warnNoGk": "Uyarı: Hiç kaleci yok.",
+    "warnSingleGk": "Uyarı: Sadece bir kaleci var, bir takım kalecisiz oynayacak.",
+    "warnOddCount": "Uyarı: Tek sayıda oyuncu — bir takım bir kişi fazla.",
+    "waitingForMinPlayers": "Min oyuncu sayısına ulaşılınca takımları oluşturabilirsin ({current}/{min})."
+  },
+  "Events": {
+    "feedTitle": "Yakındaki maçlar",
+    "createTitle": "Maç oluştur",
+    "createEvent": "Maç oluştur",
+    "create": "Oluştur",
+    "creating": "Oluşturuluyor…",
+    "createSuccess": "Etkinlik oluşturuldu",
+    "createError": "Etkinlik oluşturulamadı",
+    "cancel": "Vazgeç",
+    "cancelEvent": "Etkinliği iptal et",
+    "cancelDescription": "Sebep yaz; tüm katılımcılar bilgilendirilecek.",
+    "cancelReason": "İptal sebebi",
+    "cancelReasonPlaceholder": "Saha kapandı, hava bozdu, yeter sayı toplanmadı…",
+    "confirmCancel": "İptali onayla",
+    "cancelling": "İptal ediliyor…",
+    "cancelled": "Etkinlik iptal edildi",
+    "cancelError": "İptal edilemedi",
+    "cancelledNotice": "Bu etkinlik iptal edildi —",
+    "title": "Başlık",
+    "titlePlaceholder": "Çarşamba akşam halı saha",
+    "description": "Açıklama",
+    "descriptionPlaceholder": "Maç hakkında kısa not…",
+    "notes": "Notlar",
+    "notesPlaceholder": "Top sahada var, forma getirin…",
+    "venue": "Saha",
+    "date": "Tarih",
+    "time": "Saat",
+    "startAt": "Başlangıç",
+    "endAt": "Bitiş",
+    "format": "Format",
+    "capacity": "Kapasite",
+    "capacityHint": "{format} → her takım {size} kişi, önerilen kapasite {suggested}.",
+    "capacityValue": "{count} oyuncu",
+    "minPlayers": "Min. oyuncu",
+    "minPlayersHint": "Bu sayıya ulaşılmazsa etkinlik iptal sayılır.",
+    "minPlayersValue": "min {count}",
+    "minSkill": "Min. seviye",
+    "maxSkill": "Maks. seviye",
+    "skillLevel": "Seviye",
+    "organizedBy": "Organizatör:",
+    "rosterTitle": "Kadro",
+    "rosterPlaceholder": "Phase 4'te aktive olacak — kullanıcılar pozisyon seçip katılacak.",
+    "chatTitle": "Sohbet",
+    "chatPlaceholder": "Phase 5'te aktive olacak — etkinliğe özel real-time mesajlaşma.",
+    "filterFormat": "Format filtresi",
+    "filterSkill": "Seviye filtresi",
+    "allFormats": "Tüm formatlar",
+    "allSkills": "Tüm seviyeler",
+    "emptyFeed": "Bu kriterlere uygun yaklaşan maç yok.",
+    "emptyFeedHint": "Filtreleri gevşet veya kendi maçını yarat.",
+    "createFirst": "İlkini sen aç",
+    "noVenues": "Henüz saha yok. Phase 2 seed'i çalıştır.",
+    "upcomingHere": "Bu sahada yaklaşan maçlar",
+    "noUpcoming": "Yakında bu sahada planlanmış maç yok.",
+    "invalidDate": "Geçersiz tarih/saat",
+    "statuses": {
+      "draft": "Taslak",
+      "open": "Açık",
+      "full": "Dolu",
+      "locked": "Kilitli",
+      "in_progress": "Devam ediyor",
+      "completed": "Tamamlandı",
+      "cancelled": "İptal"
+    },
+    "skillLevels": {
+      "beginner": "Başlangıç",
+      "intermediate": "Orta",
+      "advanced": "İleri",
+      "pro": "Profesyonel"
+    }
+  },
+  "Venues": {
+    "title": "Sahalar",
+    "emptyForCity": "Bu şehir için kayıtlı saha bulunamadı.",
+    "surface": "Zemin",
+    "surfaces": {
+      "artificial": "Yapay çim",
+      "grass": "Çim",
+      "indoor": "Kapalı"
+    },
+    "floodlights": "Aydınlatma",
+    "covered": "Kapalı",
+    "yes": "Evet",
+    "no": "Hayır",
+    "officialSite": "Resmi site",
+    "eventsTeaser": "Bu sahaya ait etkinlikler Phase 3'te listelenecek.",
+    "backToList": "Sahalar"
+  },
+  "Profile": {
+    "title": "Profil",
+    "edit": "Düzenle",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor…",
+    "saved": "Kaydedildi",
+    "saveError": "Kaydedilemedi",
+    "username": "Kullanıcı adı",
+    "displayName": "Görünen ad",
+    "bio": "Bio",
+    "bioPlaceholder": "Kendinden kısaca bahset…",
+    "homeCity": "Şehir",
+    "homeCityPlaceholder": "Warsaw / Gdańsk",
+    "preferredPosition": "Tercih ettiğin pozisyon",
+    "secondaryPosition": "İkincil pozisyon",
+    "skillLevel": "Seviye",
+    "skillRating": "Skill puanı",
+    "matchesPlayed": "Maç",
+    "matchesWon": "Galibiyet",
+    "goalsScored": "Gol",
+    "mvpCount": "MVP",
+    "noPosition": "Seçilmedi",
+    "positions": {
+      "GK": "Kaleci",
+      "DEF": "Defans",
+      "MID": "Orta saha",
+      "FWD": "Forvet"
+    },
+    "skillLevels": {
+      "beginner": "Başlangıç",
+      "intermediate": "Orta",
+      "advanced": "İleri",
+      "pro": "Profesyonel"
+    },
+    "languageSetting": "Dil"
+  }
+}
