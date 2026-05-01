@@ -35,7 +35,7 @@ export async function createProfileAction(
   // 1. Rate limit (per-IP, 5/dakika)
   const headerList = await headers();
   const ip = getClientIp(headerList);
-  const rl = rateLimit(`signup:${ip}`, 5, 60_000);
+  const rl = await rateLimit(`signup:${ip}`, 5, 60_000);
   if (!rl.allowed) {
     return {
       ok: false,

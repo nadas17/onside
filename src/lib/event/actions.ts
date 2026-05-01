@@ -34,7 +34,7 @@ export async function createEventAction(
 ): Promise<ActionResult<{ id: string }>> {
   const headerList = await headers();
   const ip = getClientIp(headerList);
-  const rl = rateLimit(`event-create:${ip}`, 10, 60_000);
+  const rl = await rateLimit(`event-create:${ip}`, 10, 60_000);
   if (!rl.allowed) {
     return {
       ok: false,

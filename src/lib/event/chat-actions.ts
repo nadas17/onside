@@ -47,7 +47,7 @@ export async function sendMessageAction(
   }
 
   // Per-user rate limit (1 msg/sec + 10 msg/min)
-  const rl1s = rateLimit(`chat:${user.id}:1s`, 1, 1000);
+  const rl1s = await rateLimit(`chat:${user.id}:1s`, 1, 1000);
   if (!rl1s.allowed) {
     return {
       ok: false,
@@ -55,7 +55,7 @@ export async function sendMessageAction(
       code: "rate_limited",
     };
   }
-  const rl1m = rateLimit(`chat:${user.id}:1m`, 10, 60_000);
+  const rl1m = await rateLimit(`chat:${user.id}:1m`, 10, 60_000);
   if (!rl1m.allowed) {
     return {
       ok: false,
