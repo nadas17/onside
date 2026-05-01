@@ -38,7 +38,7 @@ Spec §13 (notifications), §15.1 (legal/cookie), §16 (a11y), §17 (perf budget
 
 - **E2E ve Lighthouse**: Bu phase 9'a daha önce dahildi ama deploy gerektirdiği için MVP sonrasına ertelendi. Lokalde manuel test akışı tüm phase'ler boyunca kullanıldı.
 - **Notification trigger choice**: RPC'leri (approve_participant, save_teams, vs.) değiştirmek yerine tablo-level trigger seçildi — RPC'ler immutable kalıyor, notification fan-out ayrı concern. Trade-off: trigger'lar `BEFORE/AFTER UPDATE OF status` filter'ı ile spam engeller.
-- **Cookie banner**: Reject button yok çünkü essential-only — yarın analytics eklenirse opt-in toggle eklenecek. localStorage `halisaha:cookies-acked` key, 1 yıl TTL kavramı (gerçekte indef, ama timestamp ile audit edilebilir).
+- **Cookie banner**: Reject button yok çünkü essential-only — yarın analytics eklenirse opt-in toggle eklenecek. localStorage `onside:cookies-acked` key, 1 yıl TTL kavramı (gerçekte indef, ama timestamp ile audit edilebilir).
 - **HeaderActions server-component**: NotificationBell client, ama wrapper server. Server tarafında auth.getUser + initial 30 notification fetch → client'a hydration data, sonra realtime subscribe. Anonymous user'da bell görünmez (auth.uid yoksa).
 - **A11y skip-link CSS**: Tailwind `sr-only` + `focus:not-sr-only` pattern. Klavye ile Tab basıldığında görünür hale gelir, fare kullanıcısı için gizli.
 - **Anonymous auth + GDPR**: PII minimum (UUID + nickname). Privacy policy bunu dürüstçe açıklıyor; email/IP toplamadığımızı öne çıkarıyor.
@@ -197,7 +197,7 @@ Spec §5 (team + team_assignment), §9 (algorithm), §11 (state transition).
 - Tooling: ESLint 9 (no-restricted-imports: moment/lodash/axios), Prettier 3 + tailwindcss plugin, Husky pre-commit (lint-staged + tsc)
 - `.env.example`, `.gitignore`, `.prettierignore`
 - README, ADR-0001 (Next 15 lock-in)
-- Logos: `public/halisaha-logo.svg`, `public/halisaha-wordmark.svg`
+- Logos: `public/onside-logo.svg`, `public/onside-wordmark.svg`
 
 #### Notlar
 

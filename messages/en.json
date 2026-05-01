@@ -1,6 +1,6 @@
 {
   "Home": {
-    "title": "Halisaha",
+    "title": "Onside",
     "greeting": "Welcome, {name}!",
     "tagline": "Find a nearby pickup football match, join, play with balanced teams, track your stats.",
     "browseEvents": "Browse nearby matches",
@@ -19,7 +19,7 @@
     "switch": "Language"
   },
   "Brand": {
-    "wordmarkAlt": "Halisaha"
+    "wordmarkAlt": "Onside"
   },
   "Auth": {
     "welcome": "Welcome!",
@@ -134,13 +134,13 @@
     "skipToContent": "Skip to main content"
   },
   "Footer": {
-    "tagline": "Halisaha — Gdańsk + Warsaw pickup football",
+    "tagline": "Onside — Gdańsk + Warsaw pickup football",
     "privacy": "Privacy",
     "terms": "Terms"
   },
   "Cookie": {
     "title": "Cookie notice",
-    "body": "Halisaha only uses essential cookies to keep you signed in. No ads or analytics cookies.",
+    "body": "Onside only uses essential cookies to keep you signed in. No ads or analytics cookies.",
     "privacyLink": "Privacy Policy",
     "ack": "Got it",
     "dismiss": "Close"
@@ -174,7 +174,7 @@
       "draftBody": "This is a draft for MVP; will be finalised with legal counsel before production.",
       "collected": {
         "title": "Data we collect",
-        "intro": "Halisaha applies data minimisation. We collect:",
+        "intro": "Onside applies data minimisation. We collect:",
         "item1": "Anonymous session identifier (UUID issued by Supabase Auth — contains no personal info)",
         "item2": "Profile info: nickname, display name, bio, preferred position, skill level (entered by you)",
         "item3": "Event activity: RSVPs, chat messages, match stats, MVP votes",
@@ -205,7 +205,7 @@
       },
       "contact": {
         "title": "Contact",
-        "body": "Data controller contact: contact@halisaha.example (placeholder — replace with real address before production)."
+        "body": "Data controller contact: contact@onside.example (placeholder — replace with real address before production)."
       }
     },
     "terms": {
@@ -213,7 +213,7 @@
       "draftBody": "This is a draft for MVP; will be finalised with legal counsel before production.",
       "eligibility": {
         "title": "Age & eligibility",
-        "body": "Halisaha is for users 16 and older. By creating an account you confirm you're 16+. Pickup football is physical activity; assess your own health conditions."
+        "body": "Onside is for users 16 and older. By creating an account you confirm you're 16+. Pickup football is physical activity; assess your own health conditions."
       },
       "account": {
         "title": "Account",
@@ -229,7 +229,7 @@
       },
       "liability": {
         "title": "Liability",
-        "body": "Halisaha is a discovery platform — it doesn't reserve pitches, take payments, or provide insurance. Injuries or damage during events are users' own responsibility. Relations with pitch owners/operators are between users."
+        "body": "Onside is a discovery platform — it doesn't reserve pitches, take payments, or provide insurance. Injuries or damage during events are users' own responsibility. Relations with pitch owners/operators are between users."
       },
       "changes": {
         "title": "Changes",
@@ -237,7 +237,7 @@
       },
       "contact": {
         "title": "Contact",
-        "body": "Questions: contact@halisaha.example (placeholder)."
+        "body": "Questions: contact@onside.example (placeholder)."
       }
     }
   },

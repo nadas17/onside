@@ -1,5 +1,5 @@
 /**
- * Halısaha — DB schema (single source of truth, spec §5).
+ * Onside — DB schema (single source of truth, spec §5).
  *
  * Phase 1: profile tablosu + position / skill_level enum'ları.
  * Sonraki phase'lerde event, venue, chat_message, vs. eklenir.

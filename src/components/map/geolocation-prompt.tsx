@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-const STORAGE_KEY = "halisaha:geolocation-decision";
+const STORAGE_KEY = "onside:geolocation-decision";
 
 type Decision = "granted" | "denied" | null;
 

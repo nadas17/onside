@@ -64,8 +64,8 @@ function HomeView({
         <header className="border-border border-b">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
             <Image
-              src="/halisaha-wordmark.svg"
-              alt="Halısaha"
+              src="/onside-wordmark.svg"
+              alt="Onside"
               width={140}
               height={32}
               priority
@@ -87,7 +87,7 @@ function HomeView({
         <main className="flex flex-1 items-center justify-center px-6 py-16">
           <div className="mx-auto flex max-w-2xl flex-col items-center gap-8 text-center">
             <Image
-              src="/halisaha-logo.svg"
+              src="/onside-logo.svg"
               alt=""
               aria-hidden
               width={96}
@@ -125,7 +125,7 @@ function HomeView({
 
         <footer className="border-border border-t">
           <div className="text-muted-foreground mx-auto max-w-6xl px-6 py-4 text-xs">
-            © {new Date().getFullYear()} Halısaha
+            © {new Date().getFullYear()} Onside
           </div>
         </footer>
       </div>

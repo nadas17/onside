@@ -1,5 +1,5 @@
 """
-Halısaha — Pitch Notation
+Onside — Pitch Notation
 A tactical-cartographic landing artifact rendered at poster scale (18 × 24").
 """
 
@@ -33,7 +33,7 @@ INK = HexColor("#1a1f1c")        # near-black for select bodies
 HIGHLIGHT = HexColor("#fbf6e6")  # ultra-cream highlight on emerald
 
 c = canvas.Canvas(
-    "C:/Users/dogkn/Desktop/Pitch/design/halisaha-landing.pdf",
+    "C:/Users/dogkn/Desktop/Pitch/design/onside-landing.pdf",
     pagesize=(W, H),
 )
 
@@ -57,7 +57,7 @@ c.rect(MARGIN, MARGIN, W - 2 * MARGIN, H - 2 * MARGIN, fill=0, stroke=1)
 top_y = H - MARGIN - 28
 c.setFillColor(EMERALD)
 c.setFont("Mono", 7.5)
-c.drawString(MARGIN + 18, top_y, "HALISAHA  ·  FIG. I — TACTICAL CARTOGRAPHY")
+c.drawString(MARGIN + 18, top_y, "ONSIDE  ·  FIG. I — TACTICAL CARTOGRAPHY")
 c.drawRightString(W - MARGIN - 18, top_y, "VOL. I  ·  MMXXVI  ·  PL")
 
 # Hairline beneath header
@@ -68,7 +68,7 @@ c.line(MARGIN + 18, top_y - 12, W - MARGIN - 18, top_y - 12)
 # ─────────────────────────────────────────────────────────────────────────────
 # 4. WORDMARK
 # ─────────────────────────────────────────────────────────────────────────────
-wordmark = "HALISAHA"
+wordmark = "ONSIDE"
 wm_size = 232
 c.setFillColor(EMERALD)
 c.setFont("Display", wm_size)
@@ -374,4 +374,4 @@ c.drawString((W - pw) / 2, 75, princ)
 
 # ─────────────────────────────────────────────────────────────────────────────
 c.save()
-print("Wrote design/halisaha-landing.pdf")
+print("Wrote design/onside-landing.pdf")

@@ -7,7 +7,7 @@
 
 ## Bağlam
 
-`HALISAHA_SPEC.md` §7 email+password + Google OAuth + (env varsa) Apple OAuth + email confirmation şart koşuyor. §15.6 sign-up'ta "16 yaşından büyüğüm" checkbox'ı zorunlu. Spec yazarı kullanıcı şu gerekçeyle bu maddeleri MVP için revize etmek istedi:
+`ONSIDE_SPEC.md` §7 email+password + Google OAuth + (env varsa) Apple OAuth + email confirmation şart koşuyor. §15.6 sign-up'ta "16 yaşından büyüğüm" checkbox'ı zorunlu. Spec yazarı kullanıcı şu gerekçeyle bu maddeleri MVP için revize etmek istedi:
 
 > "Auth için sadece nickname kaydı ile giriş olsun. Kayıt ilk safhada uğraştırıcı olur. Önce insanların alışması lazım."
 

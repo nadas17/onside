@@ -1,6 +1,6 @@
 {
   "Home": {
-    "title": "Halısaha",
+    "title": "Onside",
     "greeting": "Hoş geldin, {name}!",
     "tagline": "Yakındaki pickup futbol maçını bul, katıl, dengeli takımlarda oyna, istatistiğini biriktir.",
     "browseEvents": "Yakındaki maçlar",
@@ -19,7 +19,7 @@
     "switch": "Dil"
   },
   "Brand": {
-    "wordmarkAlt": "Halısaha"
+    "wordmarkAlt": "Onside"
   },
   "Auth": {
     "welcome": "Hoş geldin!",
@@ -134,13 +134,13 @@
     "skipToContent": "Ana içeriğe atla"
   },
   "Footer": {
-    "tagline": "Halısaha — Gdańsk + Warszawa pickup futbol",
+    "tagline": "Onside — Gdańsk + Warszawa pickup futbol",
     "privacy": "Gizlilik",
     "terms": "Koşullar"
   },
   "Cookie": {
     "title": "Çerez bilgilendirmesi",
-    "body": "Halısaha sadece oturumunu sürdürmek için zorunlu çerez kullanır. Reklam veya analiz çerezi yok.",
+    "body": "Onside sadece oturumunu sürdürmek için zorunlu çerez kullanır. Reklam veya analiz çerezi yok.",
     "privacyLink": "Gizlilik Politikası",
     "ack": "Anladım",
     "dismiss": "Kapat"
@@ -174,7 +174,7 @@
       "draftBody": "Bu politika MVP aşaması için taslaktır; production öncesi hukuk danışmanlığıyla finalize edilecek.",
       "collected": {
         "title": "Topladığımız veriler",
-        "intro": "Halısaha asgari veri prensibiyle çalışır. Şunları toplarız:",
+        "intro": "Onside asgari veri prensibiyle çalışır. Şunları toplarız:",
         "item1": "Anonim oturum tanımlayıcısı (Supabase Auth tarafından üretilen UUID — kişisel bilgi içermez)",
         "item2": "Profil bilgileri: nickname, görünen ad, biyografi, tercih ettiğin pozisyon, beceri seviyesi (kullanıcı tarafından girilir)",
         "item3": "Etkinlik aktivitesi: katılımlar, sohbet mesajları, maç istatistikleri, MVP oyları",
@@ -205,7 +205,7 @@
       },
       "contact": {
         "title": "İletişim",
-        "body": "Veri sorumlusu ile iletişime geçmek için: contact@halisaha.example (placeholder — production'da gerçek adresle değiştirilecek)."
+        "body": "Veri sorumlusu ile iletişime geçmek için: contact@onside.example (placeholder — production'da gerçek adresle değiştirilecek)."
       }
     },
     "terms": {
@@ -213,7 +213,7 @@
       "draftBody": "Bu koşullar MVP aşaması için taslaktır; production öncesi hukuk danışmanlığıyla finalize edilecek.",
       "eligibility": {
         "title": "Yaş ve uygunluk",
-        "body": "Halısaha 16 yaş ve üstü kullanıcılar içindir. Hesap oluşturarak 16+ olduğunu beyan etmiş olursun. Pickup futbol fiziksel aktivitedir; sağlık koşullarını kendin değerlendirmelisin."
+        "body": "Onside 16 yaş ve üstü kullanıcılar içindir. Hesap oluşturarak 16+ olduğunu beyan etmiş olursun. Pickup futbol fiziksel aktivitedir; sağlık koşullarını kendin değerlendirmelisin."
       },
       "account": {
         "title": "Hesap",
@@ -229,7 +229,7 @@
       },
       "liability": {
         "title": "Sorumluluk reddi",
-        "body": "Halısaha buluşma platformudur — saha rezervasyonu, ödeme veya sigorta sağlamaz. Etkinlikteki yaralanma veya zarar kullanıcıların kendi sorumluluğundadır. Saha sahibi/işletmesi ile ilişkiler kullanıcılar arasındadır."
+        "body": "Onside buluşma platformudur — saha rezervasyonu, ödeme veya sigorta sağlamaz. Etkinlikteki yaralanma veya zarar kullanıcıların kendi sorumluluğundadır. Saha sahibi/işletmesi ile ilişkiler kullanıcılar arasındadır."
       },
       "changes": {
         "title": "Değişiklikler",
@@ -237,7 +237,7 @@
       },
       "contact": {
         "title": "İletişim",
-        "body": "Sorular için: contact@halisaha.example (placeholder)."
+        "body": "Sorular için: contact@onside.example (placeholder)."
       }
     }
   },

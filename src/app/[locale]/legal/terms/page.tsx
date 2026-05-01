@@ -30,7 +30,7 @@ export default async function TermsPage({
             className="flex items-center gap-1 text-sm font-medium hover:underline"
           >
             <ChevronLeft className="size-4" />
-            Halısaha
+            Onside
           </Link>
           <HeaderActions />
         </div>

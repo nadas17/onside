@@ -3,7 +3,7 @@
 /**
  * Cookie Banner — essential-only (spec §15.1).
  *
- * Halısaha sadece zorunlu çerez kullanır (Supabase auth session). Dolayısıyla
+ * Onside sadece zorunlu çerez kullanır (Supabase auth session). Dolayısıyla
  * GDPR consent bypass mümkün — banner SADECE bilgilendirir, "Tamam" tıklayınca
  * 1 yıl boyunca tekrar göstermez. Reject button yok çünkü essential olmayan
  * çerez yok (yarın analytics eklenirse opt-in toggle eklenir).
@@ -15,7 +15,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Cookie, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const STORAGE_KEY = "halisaha:cookies-acked";
+const STORAGE_KEY = "onside:cookies-acked";
 
 export function CookieBanner() {
   const t = useTranslations("Cookie");

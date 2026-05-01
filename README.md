@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/halisaha-wordmark.svg" alt="Halısaha" width="180" />
+<img src="public/onside-wordmark.svg" alt="Onside" width="180" />
 
 ### Pickup football, organized.
 
@@ -18,7 +18,7 @@ Built for the neighborhood pitches of **Gdańsk** and **Warszawa**.
 
 <br />
 
-<img src="design/halisaha-landing.png" alt="Pitch Notation — design philosophy poster" width="420" />
+<img src="design/onside-landing.png" alt="Pitch Notation — design philosophy poster" width="420" />
 
 </div>
 
@@ -59,12 +59,12 @@ Full setup notes (Supabase project creation, env vars, anonymous auth toggle): s
 
 ## Documentation
 
-| Read                                                                   | When                                                                              |
-| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| [HALISAHA_SPEC.md](HALISAHA_SPEC.md)                                   | The single source of truth — 23 sections, 929 lines                               |
-| [CHANGELOG.md](CHANGELOG.md)                                           | Phase-by-phase narrative (Phases 0–9)                                             |
-| [docs/decisions/](docs/decisions/)                                     | Four ADRs (Next 15 lock-in, anonymous auth, organizer approval, RLS for Realtime) |
-| [design/halisaha-pitch-notation.md](design/halisaha-pitch-notation.md) | Brand visual philosophy                                                           |
+| Read                                                               | When                                                                              |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| [ONSIDE_SPEC.md](ONSIDE_SPEC.md)                                   | The single source of truth — 23 sections, 929 lines                               |
+| [CHANGELOG.md](CHANGELOG.md)                                       | Phase-by-phase narrative (Phases 0–9)                                             |
+| [docs/decisions/](docs/decisions/)                                 | Four ADRs (Next 15 lock-in, anonymous auth, organizer approval, RLS for Realtime) |
+| [design/onside-pitch-notation.md](design/onside-pitch-notation.md) | Brand visual philosophy                                                           |
 
 <details>
 <summary><strong>Architecture overview</strong></summary>
@@ -134,7 +134,7 @@ Pre-flight checklist:
 - [ ] Realtime publication includes every relevant table — verify with `node --env-file=.env.local scripts/check-publication.mjs`
 - [ ] All migrations applied (0001..0016)
 - [ ] Venues seeded
-- [ ] Privacy + Terms placeholders replaced; `contact@halisaha.example` swapped for a real address
+- [ ] Privacy + Terms placeholders replaced; `contact@onside.example` swapped for a real address
 
 </details>
 

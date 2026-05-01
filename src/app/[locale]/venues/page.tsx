@@ -31,7 +31,7 @@ export default async function VenuesPage({
             href={`/${locale}`}
             className="text-lg font-bold tracking-tight"
           >
-            Halısaha
+            Onside
           </Link>
           <HeaderActions />
         </div>

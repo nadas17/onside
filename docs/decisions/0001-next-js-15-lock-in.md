@@ -6,7 +6,7 @@
 
 ## Bağlam
 
-`HALISAHA_SPEC.md` Section 2 "Tech Stack (Kilitli — değiştirme)" tablosunda Next.js 15 belirtilmiş. Phase 0 bootstrap sırasında `npx create-next-app@latest` Next.js 16.2.4 indirdi. Next 16, Next 15'in stable major güncellemesi (Apr 2026 itibarıyla); App Router, Server Components, Server Actions semantics'inde bozucu değişiklik minimal.
+`ONSIDE_SPEC.md` Section 2 "Tech Stack (Kilitli — değiştirme)" tablosunda Next.js 15 belirtilmiş. Phase 0 bootstrap sırasında `npx create-next-app@latest` Next.js 16.2.4 indirdi. Next 16, Next 15'in stable major güncellemesi (Apr 2026 itibarıyla); App Router, Server Components, Server Actions semantics'inde bozucu değişiklik minimal.
 
 ## Karar
 

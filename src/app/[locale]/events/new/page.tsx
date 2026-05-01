@@ -41,7 +41,7 @@ export default async function NewEventPage({
       <header className="border-border h-16 border-b">
         <div className="mx-auto flex h-full max-w-3xl items-center justify-between px-6">
           <Link href={`/${locale}`} className="text-sm font-medium">
-            ← Halısaha
+            ← Onside
           </Link>
           <h1 className="text-base font-semibold">{t("createTitle")}</h1>
           <HeaderActions />

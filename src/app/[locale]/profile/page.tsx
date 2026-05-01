@@ -102,7 +102,7 @@ function ProfileView({
             href={`/${locale}`}
             className="text-lg font-bold tracking-tight"
           >
-            Halısaha
+            Onside
           </Link>
           <HeaderActions />
         </div>

@@ -17,8 +17,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Halısaha",
-    template: "%s — Halısaha",
+    default: "Onside",
+    template: "%s — Onside",
   },
   description:
     "Yakındaki pickup futbol maçını bul, katıl, dengeli takımlarda oyna.",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   ),
   icons: {
-    icon: "/halisaha-logo.svg",
+    icon: "/onside-logo.svg",
   },
 };
 

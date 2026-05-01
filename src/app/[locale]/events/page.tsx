@@ -30,7 +30,7 @@ export default async function EventsPage({
             href={`/${locale}`}
             className="text-lg font-bold tracking-tight"
           >
-            Halısaha
+            Onside
           </Link>
           <HeaderActions />
         </div>
