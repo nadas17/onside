@@ -28,4 +28,4 @@ koşulunun env okuma sırasını incele.
 
 Kod zaten in-memory'ye fallback yapıyor (`rateLimitInMemory`).
 Upstash 503 dönerse hata loglanır, request devam eder
-(`src/lib/rate-limit.ts:127`).
+(`src/lib/rate-limit.ts:83`).
