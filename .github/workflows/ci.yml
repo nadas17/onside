@@ -55,3 +55,45 @@ jobs:
           DATABASE_URL: postgresql://postgres:dummy@localhost:6543/postgres
           NEXT_PUBLIC_SITE_URL: http://localhost:3000
         run: pnpm build
+
+  e2e:
+    name: E2E tests
+    runs-on: ubuntu-latest
+    needs: quality
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci_dummy
+          SUPABASE_SECRET_KEY: sb_secret_ci_dummy
+          DATABASE_URL: postgresql://postgres:dummy@localhost:6543/postgres
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
+        run: pnpm build
+      - name: Run e2e
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci_dummy
+          SUPABASE_SECRET_KEY: sb_secret_ci_dummy
+          DATABASE_URL: postgresql://postgres:dummy@localhost:6543/postgres
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
+        run: pnpm test:e2e
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
