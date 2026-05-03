@@ -5,10 +5,18 @@ import { db } from "@/db";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
+const DB_PROBE_TIMEOUT_MS = 3_000;
+
 export async function GET() {
   let dbStatus: "ok" | "skipped" | "error" = "skipped";
   try {
-    await db.execute(sql`SELECT 1`);
+    const timeout = new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(new Error("db probe timeout")),
+        DB_PROBE_TIMEOUT_MS,
+      ),
+    );
+    await Promise.race([db.execute(sql`SELECT 1`), timeout]);
     dbStatus = "ok";
   } catch {
     dbStatus = "error";
