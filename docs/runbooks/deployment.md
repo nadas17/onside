@@ -18,6 +18,7 @@ Settings → Secrets and variables → Actions → New repository secret:
 
 - `VERCEL_TOKEN` (vercel.com/account/tokens)
 - `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` (Vercel project Settings → General)
+- `SENTRY_AUTH_TOKEN` (Sentry → Settings → Auth Tokens; needed for CI source-map upload)
 
 ### 2. GitHub environment
 

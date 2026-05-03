@@ -33,3 +33,10 @@ GitHub repo → Settings → Secrets and variables → Actions → New repositor
 - `DATABASE_URL`: production Supabase connection string (URI form, sslmode=require)
 
 ⚠️ Read-only kullanıcı tercih edilir. Supabase Cloud → Database → Roles ile read-only role oluşturup connection string'ini kullanmak güvenlidir.
+
+⚠️ **`pg_dump` Transaction pooler ile çalışmaz** (port 6543, `?pgbouncer=true` veya `pooler.supabase.com` host). Backup için **Session pooler** veya **Direct connection** kullan:
+
+- Supabase Cloud → Project → Settings → Database → Connection string → "Session" tab → port 5432 URI
+- Veya direct: `db.<project-ref>.supabase.co:5432`
+
+Uygulamanın `DATABASE_URL`'i transaction pooler ise, backup için ayrı bir `BACKUP_DATABASE_URL` secret kullan ve `backup.yml`'i ona göre güncelle.

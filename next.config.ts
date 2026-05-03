@@ -13,7 +13,7 @@ const csp = [
   `style-src 'self' 'unsafe-inline'`,
   `img-src 'self' data: blob: https://${supabaseHost} https://tile.openstreetmap.org https://*.tile.openstreetmap.org`,
   `font-src 'self' data:`,
-  `connect-src 'self' https://${supabaseHost} wss://${supabaseHost} https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://nominatim.openstreetmap.org`,
+  `connect-src 'self' https://${supabaseHost} wss://${supabaseHost} https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://nominatim.openstreetmap.org https://*.sentry.io https://*.ingest.sentry.io`,
   `worker-src blob:`,
   `frame-ancestors 'none'`,
   `base-uri 'self'`,
