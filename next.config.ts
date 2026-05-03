@@ -38,7 +38,7 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   typedRoutes: true,
-  output: "standalone",
+  output: process.env.STANDALONE_BUILD === "true" ? "standalone" : undefined,
   images: {
     remotePatterns: [
       // Supabase Storage avatar bucket — Phase 1'de aktive olacak
