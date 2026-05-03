@@ -521,5 +521,10 @@
     "description": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie.",
     "retry": "Spróbuj ponownie",
     "home": "Wróć do strony głównej"
+  },
+  "NotFound": {
+    "title": "Strona nie znaleziona",
+    "description": "Strona, której szukasz, nie istnieje.",
+    "home": "Wróć do strony głównej"
   }
 }

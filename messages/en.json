@@ -521,5 +521,10 @@
     "description": "An unexpected error occurred. Please try again.",
     "retry": "Try again",
     "home": "Go to home"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist.",
+    "home": "Back to home"
   }
 }

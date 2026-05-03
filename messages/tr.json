@@ -521,5 +521,10 @@
     "description": "Beklenmeyen bir hata oluştu. Tekrar deneyebilirsin.",
     "retry": "Tekrar dene",
     "home": "Ana sayfaya dön"
+  },
+  "NotFound": {
+    "title": "Sayfa bulunamadı",
+    "description": "Aradığın sayfa mevcut değil.",
+    "home": "Ana sayfaya dön"
   }
 }
