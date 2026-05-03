@@ -166,11 +166,12 @@ export async function getMessagesAction(
     )
     .eq("event_id", eventId)
     .order("created_at", { ascending: false })
-    .limit(limit);
+    .limit(limit)
+    .returns<ChatMessageRow[]>();
 
   if (error) return { ok: false, error: error.message, code: "db_error" };
 
   // Newest-first → oldest-first
-  const sorted = ((data ?? []) as unknown as ChatMessageRow[]).reverse();
+  const sorted = (data ?? []).slice().reverse();
   return { ok: true, data: sorted };
 }

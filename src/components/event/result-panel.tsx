@@ -15,9 +15,12 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
+import { useErrorMessage } from "@/lib/i18n-errors";
 import { toast } from "sonner";
 import { Trophy, Pencil, Crown, Vote, CheckCircle2 } from "lucide-react";
+import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
+import { useMotionPreset } from "@/lib/motion";
 import { createClient } from "@/lib/supabase/client";
 import {
   finalizeMvpAction,
@@ -50,7 +53,9 @@ export function ResultPanel({
   startAt: string;
 }) {
   const t = useTranslations("Result");
+  const errorMsg = useErrorMessage();
   const tMvp = useTranslations("Mvp");
+  const m = useMotionPreset();
 
   const [result, setResult] = React.useState<MatchResultView | null>(
     initialResult,
@@ -59,6 +64,31 @@ export function ResultPanel({
   const [editing, setEditing] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
   const [busy, setBusy] = React.useState<null | "vote" | "finalize">(null);
+  const [, startVoteTransition] = React.useTransition();
+
+  // Optimistic MVP state — vote anında butona checkmark, count'a +1
+  const [optimisticMvp, applyOptimisticVote] = React.useOptimistic<
+    MvpState,
+    string
+  >(mvp, (current, voteeId) => {
+    if (current.myVoteId === voteeId) return current;
+    return {
+      ...current,
+      myVoteId: voteeId,
+      totalVotes:
+        current.myVoteId === null ? current.totalVotes + 1 : current.totalVotes,
+      candidates: current.candidates.map((c) => {
+        let voteCount = c.voteCount;
+        if (c.profileId === current.myVoteId && current.myVoteId !== voteeId) {
+          voteCount = Math.max(0, voteCount - 1);
+        }
+        if (c.profileId === voteeId && current.myVoteId !== voteeId) {
+          voteCount = voteCount + 1;
+        }
+        return { ...c, voteCount };
+      }),
+    };
+  });
 
   React.useEffect(() => setResult(initialResult), [initialResult]);
   React.useEffect(() => setMvp(initialMvpState), [initialMvpState]);
@@ -120,7 +150,7 @@ export function ResultPanel({
 
   if (submitting || editing) {
     return (
-      <section className="border-border rounded-md border p-4">
+      <section className="glass-card rounded-lg border p-4 shadow-md shadow-black/20">
         <ScoreSubmitForm
           eventId={eventId}
           mode={editing ? "edit" : "submit"}
@@ -143,7 +173,7 @@ export function ResultPanel({
   if (!result) {
     if (canSubmitScore) {
       return (
-        <section className="border-border flex flex-col gap-3 rounded-md border p-4">
+        <section className="glass-card flex flex-col gap-3 rounded-lg border p-4 shadow-md shadow-black/20">
           <div className="flex items-center gap-2 text-sm font-semibold">
             <Trophy className="size-4" />
             {t("title")}
@@ -163,7 +193,7 @@ export function ResultPanel({
       !matchHasStarted
     ) {
       return (
-        <section className="border-border flex flex-col gap-2 rounded-md border border-dashed p-4">
+        <section className="glass-card flex flex-col gap-2 rounded-lg border border-dashed p-4">
           <div className="flex items-center gap-2 text-sm font-semibold">
             <Trophy className="size-4" />
             {t("title")}
@@ -185,15 +215,18 @@ export function ResultPanel({
         ? "B"
         : "draw";
 
-  const handleVote = async (voteeId: string) => {
-    setBusy("vote");
-    const r = await submitMvpVoteAction(eventId, voteeId);
-    setBusy(null);
-    if (!r.ok) {
-      toast.error(tMvp("voteError"), { description: r.error });
-      return;
-    }
-    toast.success(tMvp("voted"));
+  const handleVote = (voteeId: string) => {
+    startVoteTransition(async () => {
+      applyOptimisticVote(voteeId);
+      setBusy("vote");
+      const r = await submitMvpVoteAction(eventId, voteeId);
+      setBusy(null);
+      if (!r.ok) {
+        toast.error(tMvp("voteError"), { description: errorMsg(r) });
+        return;
+      }
+      toast.success(tMvp("voted"));
+    });
   };
 
   const handleFinalize = async (voteeId?: string) => {
@@ -205,7 +238,7 @@ export function ResultPanel({
         toast.warning(tMvp("tieWarning"));
         return;
       }
-      toast.error(tMvp("finalizeError"), { description: r.error });
+      toast.error(tMvp("finalizeError"), { description: errorMsg(r) });
       return;
     }
     if (r.data.noVotes) {
@@ -220,27 +253,52 @@ export function ResultPanel({
     !result.mvpFinalizedAt &&
     (!mvp.votingOpen || mvp.totalVotes === 0);
 
+  // Edit window: 24h after submitted_at. Compute remaining time so the user
+  // sees they have a hard deadline (no surprise when the button vanishes).
+  const editWindowMs = 24 * 60 * 60 * 1000;
+  const editWindowEndsAt = result
+    ? new Date(result.submittedAt).getTime() + editWindowMs
+    : 0;
+  const editMsLeft = Math.max(0, editWindowEndsAt - Date.now());
+  const editHoursLeft = Math.floor(editMsLeft / (60 * 60 * 1000));
+  const editMinsLeft = Math.floor((editMsLeft % (60 * 60 * 1000)) / 60_000);
+  const editTimeLeftLabel =
+    editHoursLeft > 0
+      ? t("editWindowHours", { count: editHoursLeft })
+      : t("editWindowMinutes", { count: Math.max(1, editMinsLeft) });
+  const editClosingSoon = editMsLeft > 0 && editMsLeft < 30 * 60 * 1000;
+
   return (
-    <section className="border-border flex flex-col gap-4 rounded-md border p-4">
+    <section className="glass-card flex flex-col gap-4 rounded-lg border p-4 shadow-md shadow-black/20">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-sm font-semibold">
           <Trophy className="size-4" />
           {t("title")}
         </div>
         {canEditScore && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setEditing(true)}
-            disabled={busy !== null}
-          >
-            <Pencil className="mr-1 size-3.5" />
-            {t("edit")}
-          </Button>
+          <div className="flex items-center gap-2">
+            <span
+              className={`text-xs ${
+                editClosingSoon ? "text-amber-warm" : "text-muted-foreground"
+              }`}
+              title={t("editWindowFull")}
+            >
+              {editTimeLeftLabel}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setEditing(true)}
+              disabled={busy !== null}
+            >
+              <Pencil className="mr-1 size-3.5" />
+              {t("edit")}
+            </Button>
+          </div>
         )}
       </div>
 
-      <div className="border-border bg-muted/30 flex items-center justify-center gap-6 rounded-md border p-6">
+      <div className="glass-strong flex items-center justify-center gap-6 rounded-lg border p-6">
         <ScoreColumn
           label={t("teamA")}
           score={result.scoreA}
@@ -261,8 +319,20 @@ export function ResultPanel({
       )}
 
       {result.mvp && (
-        <div className="flex items-center gap-3 rounded-md border border-amber-500/40 bg-amber-500/5 p-3">
-          <Crown className="size-5 text-amber-500" />
+        <motion.div
+          layout
+          initial={{ opacity: 0, scale: 0.92, y: 4 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={m.softSpring}
+          className="flex items-center gap-3 rounded-md border border-amber-500/40 bg-amber-500/5 p-3"
+        >
+          <motion.span
+            initial={{ rotate: -20, scale: 0.6 }}
+            animate={{ rotate: 0, scale: 1 }}
+            transition={{ ...m.snappySpring, delay: m.reduced ? 0 : 0.1 }}
+          >
+            <Crown className="size-5 text-amber-500" />
+          </motion.span>
           <div className="text-sm">
             <div className="font-semibold">{tMvp("winnerLabel")}</div>
             <div className="text-muted-foreground">
@@ -270,7 +340,7 @@ export function ResultPanel({
               <span className="text-xs">@{result.mvp.username}</span>
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {!result.mvpFinalizedAt && (
@@ -289,58 +359,79 @@ export function ResultPanel({
             </p>
           )}
 
-          {mvp.candidates.length > 0 ? (
+          {optimisticMvp.candidates.length > 0 ? (
             <ul className="grid gap-1.5 sm:grid-cols-2">
-              {mvp.candidates.map((c) => {
-                const isMine = mvp.myVoteId === c.profileId;
-                const cantVote = !mvp.votingOpen || c.profileId === myUserId;
+              {optimisticMvp.candidates.map((c) => {
+                const isMine = optimisticMvp.myVoteId === c.profileId;
+                const cantVote =
+                  !optimisticMvp.votingOpen || c.profileId === myUserId;
                 return (
-                  <li
+                  <motion.li
                     key={c.profileId}
+                    layout
+                    animate={
+                      m.reduced
+                        ? undefined
+                        : isMine
+                          ? { scale: 1, borderColor: "var(--brand)" }
+                          : { scale: 1 }
+                    }
+                    transition={m.snappySpring}
                     className={`flex items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm ${
-                      isMine
-                        ? "border-brand bg-brand/5"
-                        : "border-border bg-background"
+                      isMine ? "border-brand bg-brand/5" : "glass-card"
                     }`}
                   >
-                    <div className="flex items-center gap-2 truncate">
+                    <div className="flex min-w-0 items-center gap-2">
                       <Avatar name={c.displayName} />
                       <span className="truncate">{c.displayName}</span>
                       <span className="bg-secondary text-secondary-foreground rounded px-1.5 py-0.5 font-mono text-[9px] uppercase">
                         {c.team}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground text-xs">
+                    <div className="flex shrink-0 items-center gap-2">
+                      <motion.span
+                        key={c.voteCount}
+                        initial={m.reduced ? undefined : { y: -4, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={m.fast}
+                        className="text-muted-foreground text-xs tabular-nums"
+                      >
                         {c.voteCount}
-                      </span>
+                      </motion.span>
                       {!cantVote && (
                         <Button
                           size="sm"
                           variant={isMine ? "default" : "outline"}
                           onClick={() => handleVote(c.profileId)}
                           disabled={busy !== null}
+                          className="tap-target"
+                          aria-label={
+                            isMine
+                              ? tMvp("yourVoteFor", { name: c.displayName })
+                              : tMvp("voteForName", { name: c.displayName })
+                          }
                         >
                           {isMine ? (
-                            <CheckCircle2 className="size-3.5" />
+                            <CheckCircle2 className="size-3.5" aria-hidden />
                           ) : (
                             tMvp("voteFor")
                           )}
                         </Button>
                       )}
-                      {isOrganizer && !mvp.votingOpen && (
+                      {isOrganizer && !optimisticMvp.votingOpen && (
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => handleFinalize(c.profileId)}
                           disabled={busy !== null}
                           title={tMvp("manualPick")}
+                          className="tap-target"
                         >
                           <Crown className="size-3.5" />
                         </Button>
                       )}
                     </div>
-                  </li>
+                  </motion.li>
                 );
               })}
             </ul>

@@ -85,12 +85,13 @@ export async function computeAndSaveTeamsAction(
        profile:profile_id ( id, skill_rating )`,
     )
     .eq("event_id", eventId)
-    .eq("status", "confirmed");
+    .eq("status", "confirmed")
+    .returns<ConfirmedRow[]>();
 
   if (rosterErr) {
     return { ok: false, error: rosterErr.message, code: "db_error" };
   }
-  const rows = (rosterRows ?? []) as unknown as ConfirmedRow[];
+  const rows = rosterRows ?? [];
   if (rows.length < 4) {
     return {
       ok: false,
@@ -223,16 +224,6 @@ export async function getTeamsAction(
   if (tErr) return { ok: false, error: tErr.message, code: "db_error" };
   if (!teams || teams.length === 0) return { ok: true, data: [] };
 
-  const { data: assignments, error: aErr } = await supabase
-    .from("team_assignment")
-    .select(
-      `team_id, position,
-       profile:profile_id ( id, username, display_name, skill_level, skill_rating )`,
-    )
-    .eq("event_id", eventId);
-
-  if (aErr) return { ok: false, error: aErr.message, code: "db_error" };
-
   type AssignmentRow = {
     team_id: string;
     position: Position;
@@ -244,7 +235,19 @@ export async function getTeamsAction(
       skill_rating: number;
     } | null;
   };
-  const assignmentRows = (assignments ?? []) as unknown as AssignmentRow[];
+
+  const { data: assignments, error: aErr } = await supabase
+    .from("team_assignment")
+    .select(
+      `team_id, position,
+       profile:profile_id ( id, username, display_name, skill_level, skill_rating )`,
+    )
+    .eq("event_id", eventId)
+    .returns<AssignmentRow[]>();
+
+  if (aErr) return { ok: false, error: aErr.message, code: "db_error" };
+
+  const assignmentRows = assignments ?? [];
 
   const teamViews: TeamView[] = teams.map((t) => ({
     label: t.label as "A" | "B",

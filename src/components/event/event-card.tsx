@@ -27,7 +27,7 @@ export function EventCard({ event }: { event: EventListItem }) {
   return (
     <Link
       href={`/${locale}/events/${event.id}`}
-      className="border-border hover:bg-accent block rounded-md border p-4 transition"
+      className="glass-card hover:border-brand/30 block rounded-lg border p-4 shadow-md shadow-black/20 transition-all duration-150 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/30 active:translate-y-0 active:scale-[0.985] motion-reduce:transform-none motion-reduce:transition-none"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
@@ -40,17 +40,19 @@ export function EventCard({ event }: { event: EventListItem }) {
           <div className="truncate text-sm font-semibold">{event.title}</div>
           <div className="text-muted-foreground mt-2 flex flex-col gap-1 text-xs">
             <span className="flex items-center gap-1">
-              <Calendar className="size-3" />
+              <Calendar className="size-3 shrink-0" />
               {dateFmt.format(start)} · {timeFmt.format(start)}
             </span>
             {event.venue && (
               <span className="flex items-center gap-1 truncate">
-                <MapPin className="size-3" />
-                {event.venue.name}, {event.venue.city}
+                <MapPin className="size-3 shrink-0" />
+                <span className="truncate">
+                  {event.venue.name}, {event.venue.city}
+                </span>
               </span>
             )}
             <span className="flex items-center gap-1">
-              <Users className="size-3" />
+              <Users className="size-3 shrink-0" />
               {t("capacityValue", { count: event.capacity })}
             </span>
           </div>

@@ -3,16 +3,19 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { motion } from "motion/react";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogDescription,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+} from "@/components/ui/responsive-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useMotionPreset } from "@/lib/motion";
+import { useErrorMessage } from "@/lib/i18n-errors";
 import {
   checkUsernameAvailabilityAction,
   createProfileAction,
@@ -26,10 +29,13 @@ type Availability =
   | { status: "invalid"; message: string };
 
 const NICKNAME_REGEX = /^[a-z0-9_]{3,20}$/;
+const NICKNAME_DRAFT_KEY = "onside:nickname-draft";
 
 export function JoinModal({ open }: { open: boolean }) {
   const t = useTranslations("Auth");
   const router = useRouter();
+  const m = useMotionPreset();
+  const errorMsg = useErrorMessage();
 
   const [nickname, setNickname] = React.useState("");
   const [availability, setAvailability] = React.useState<Availability>({
@@ -37,6 +43,32 @@ export function JoinModal({ open }: { open: boolean }) {
   });
   const [submitError, setSubmitError] = React.useState<string | null>(null);
   const [pending, startTransition] = React.useTransition();
+
+  // Restore nickname draft from sessionStorage on mount — survives browser
+  // back-button, accidental tab close, and reload until profile is created.
+  React.useEffect(() => {
+    if (!open) return;
+    try {
+      const saved = window.sessionStorage.getItem(NICKNAME_DRAFT_KEY);
+      if (saved) setNickname(saved);
+    } catch {
+      // Storage unavailable (private mode, etc.) — silently skip.
+    }
+  }, [open]);
+
+  // Persist nickname draft on every change.
+  React.useEffect(() => {
+    if (!open) return;
+    try {
+      if (nickname) {
+        window.sessionStorage.setItem(NICKNAME_DRAFT_KEY, nickname);
+      } else {
+        window.sessionStorage.removeItem(NICKNAME_DRAFT_KEY);
+      }
+    } catch {
+      // Storage unavailable — drafts won't survive but UI still works.
+    }
+  }, [nickname, open]);
 
   // Real-time uniqueness check — 300ms debounce
   React.useEffect(() => {
@@ -74,7 +106,7 @@ export function JoinModal({ open }: { open: boolean }) {
     startTransition(async () => {
       const result = await createProfileAction(nickname);
       if (!result.ok) {
-        setSubmitError(result.error);
+        setSubmitError(errorMsg(result));
         if (
           result.code === "username_taken" &&
           "suggestions" in result &&
@@ -87,6 +119,13 @@ export function JoinModal({ open }: { open: boolean }) {
         }
         return;
       }
+      // Profile created — clear draft so it doesn't haunt a future signup
+      // (e.g. session expires 30 days later).
+      try {
+        window.sessionStorage.removeItem(NICKNAME_DRAFT_KEY);
+      } catch {
+        /* ignore */
+      }
       router.refresh();
     });
   };
@@ -94,19 +133,16 @@ export function JoinModal({ open }: { open: boolean }) {
   const submitDisabled = pending || availability.status !== "available";
 
   return (
-    <Dialog open={open}>
-      <DialogContent
-        hideCloseButton
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => e.preventDefault()}
-        onInteractOutside={(e) => e.preventDefault()}
-      >
-        <DialogHeader>
-          <DialogTitle>{t("welcome")}</DialogTitle>
-          <DialogDescription>{t("nicknamePrompt")}</DialogDescription>
-        </DialogHeader>
+    <ResponsiveDialog open={open} dismissible={false}>
+      <ResponsiveDialogContent hideCloseButton blockDismiss>
+        <ResponsiveDialogHeader>
+          <ResponsiveDialogTitle>{t("welcome")}</ResponsiveDialogTitle>
+          <ResponsiveDialogDescription>
+            {t("nicknamePrompt")}
+          </ResponsiveDialogDescription>
+        </ResponsiveDialogHeader>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
           <div className="grid gap-2">
             <Label htmlFor="nickname">{t("nickname")}</Label>
             <Input
@@ -117,11 +153,14 @@ export function JoinModal({ open }: { open: boolean }) {
               autoCapitalize="off"
               spellCheck={false}
               maxLength={20}
+              inputMode="text"
+              enterKeyHint="go"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               placeholder={t("nicknamePlaceholder")}
               aria-describedby="nickname-status"
               disabled={pending}
+              className="h-12 text-base sm:h-10 sm:text-sm"
             />
             <p
               id="nickname-status"
@@ -132,7 +171,14 @@ export function JoinModal({ open }: { open: boolean }) {
                 <span className="text-muted-foreground">{t("checking")}</span>
               )}
               {availability.status === "available" && (
-                <span className="text-brand">{t("available")}</span>
+                <motion.span
+                  className="text-brand inline-block"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={m.snappySpring}
+                >
+                  {t("available")}
+                </motion.span>
               )}
               {availability.status === "invalid" && (
                 <span className="text-destructive">{availability.message}</span>
@@ -143,7 +189,12 @@ export function JoinModal({ open }: { open: boolean }) {
             </p>
             {availability.status === "taken" &&
               availability.suggestions.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2 pt-1">
+                <motion.div
+                  className="flex flex-wrap items-center gap-2 pt-1"
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={m.fade}
+                >
                   <span className="text-muted-foreground text-xs">
                     {t("trySuggestion")}
                   </span>
@@ -152,31 +203,39 @@ export function JoinModal({ open }: { open: boolean }) {
                       key={s}
                       type="button"
                       onClick={() => setNickname(s)}
-                      className="bg-secondary hover:bg-secondary/80 rounded-md px-2 py-1 text-xs font-medium"
+                      className="bg-secondary hover:bg-secondary/80 active:bg-secondary/60 tap-target rounded-md px-3 py-2 text-xs font-medium transition-colors sm:px-2 sm:py-1"
                     >
                       {s}
                     </button>
                   ))}
-                </div>
+                </motion.div>
               )}
           </div>
 
           {submitError && (
-            <p
+            <motion.p
               className="bg-destructive/10 text-destructive rounded-md px-3 py-2 text-sm"
               role="alert"
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={m.fade}
             >
               {submitError}
-            </p>
+            </motion.p>
           )}
 
-          <Button type="submit" size="lg" disabled={submitDisabled}>
+          <Button
+            type="submit"
+            size="lg"
+            disabled={submitDisabled}
+            className="h-12 text-base sm:h-11"
+          >
             {pending ? t("starting") : t("start")}
           </Button>
         </form>
 
-        <p className="text-muted-foreground text-xs">{t("anonNotice")}</p>
-      </DialogContent>
-    </Dialog>
+        <p className="text-muted-foreground mt-3 text-xs">{t("anonNotice")}</p>
+      </ResponsiveDialogContent>
+    </ResponsiveDialog>
   );
 }

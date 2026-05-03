@@ -27,7 +27,7 @@ export function RecentMatches({ matches }: { matches: RecentMatch[] }) {
   if (matches.length === 0) {
     return (
       <EmptyState
-        icon={<History className="size-5" />}
+        icon={<History />}
         title={t("recentEmpty")}
         description={t("recentEmptyHint")}
       />
@@ -35,7 +35,7 @@ export function RecentMatches({ matches }: { matches: RecentMatch[] }) {
   }
 
   return (
-    <div className="border-border bg-card rounded-lg border">
+    <div className="glass-card rounded-lg border shadow-md shadow-black/20">
       <div className="border-border border-b px-4 py-3 text-sm font-semibold">
         {t("recentMatches")}
       </div>

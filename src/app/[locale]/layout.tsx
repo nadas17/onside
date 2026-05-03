@@ -7,6 +7,9 @@ import Link from "next/link";
 import { routing } from "@/i18n/routing";
 import { Providers } from "@/components/providers";
 import { CookieBanner } from "@/components/cookie-banner";
+import { MobileBottomNav } from "@/components/mobile-bottom-nav";
+import { FabCreate } from "@/components/fab-create";
+import { createClient } from "@/lib/supabase/server";
 import "../globals.css";
 
 const inter = Inter({
@@ -30,6 +33,16 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover" as const,
+};
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -49,6 +62,12 @@ export default async function LocaleLayout({
   const tA11y = await getTranslations("A11y");
   const tFooter = await getTranslations("Footer");
 
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const isAuthed = !!user;
+
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className={`${inter.variable} font-sans`}>
@@ -60,7 +79,13 @@ export default async function LocaleLayout({
             >
               {tA11y("skipToContent")}
             </a>
-            <div id="main-content">{children}</div>
+            {/* Bottom-padding leaves room for the mobile bottom nav (~64px + safe area). */}
+            <div
+              id="main-content"
+              className="pb-[calc(4rem+env(safe-area-inset-bottom))] lg:pb-0"
+            >
+              {children}
+            </div>
             <SiteFooter
               locale={locale}
               labels={{
@@ -69,6 +94,8 @@ export default async function LocaleLayout({
                 tagline: tFooter("tagline"),
               }}
             />
+            <MobileBottomNav isAuthed={isAuthed} />
+            <FabCreate isAuthed={isAuthed} />
             <CookieBanner />
           </Providers>
         </NextIntlClientProvider>
@@ -85,7 +112,7 @@ function SiteFooter({
   labels: { privacy: string; terms: string; tagline: string };
 }) {
   return (
-    <footer className="border-border text-muted-foreground mt-auto border-t py-4 text-xs">
+    <footer className="border-border text-muted-foreground mt-auto hidden border-t py-4 text-xs lg:block">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-6">
         <span>{labels.tagline}</span>
         <nav aria-label="Legal" className="flex items-center gap-3">

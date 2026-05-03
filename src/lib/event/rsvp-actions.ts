@@ -149,10 +149,11 @@ export async function getEventRosterAction(
     )
     .eq("event_id", eventId)
     .eq("status", "confirmed")
-    .order("joined_at", { ascending: true });
+    .order("joined_at", { ascending: true })
+    .returns<RosterEntry[]>();
 
   if (error) return { ok: false, error: error.message, code: "db_error" };
-  return { ok: true, data: (data ?? []) as unknown as RosterEntry[] };
+  return { ok: true, data: data ?? [] };
 }
 
 /** Bekleyen talepler — sadece organizer'ın görmesi anlamlı (RLS public ama UI'da gizli). */
@@ -168,10 +169,11 @@ export async function getPendingRequestsAction(
     )
     .eq("event_id", eventId)
     .eq("status", "pending")
-    .order("joined_at", { ascending: true });
+    .order("joined_at", { ascending: true })
+    .returns<RosterEntry[]>();
 
   if (error) return { ok: false, error: error.message, code: "db_error" };
-  return { ok: true, data: (data ?? []) as unknown as RosterEntry[] };
+  return { ok: true, data: data ?? [] };
 }
 
 export type MyRsvp = {

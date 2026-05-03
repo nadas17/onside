@@ -3,16 +3,23 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useErrorMessage } from "@/lib/i18n-errors";
 import { toast } from "sonner";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
+import { Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { EmptyState } from "@/components/ui/empty-state";
 import {
   FORMAT_TEAM_SIZE,
   FORMATS,
   SKILL_LEVELS,
 } from "@/lib/validation/event";
 import { createEventAction } from "@/lib/event/actions";
+
+/** All matches happen in Europe/Warsaw — store + display times in that TZ. */
+const VENUE_TZ = "Europe/Warsaw";
 
 type VenueOption = {
   id: string;
@@ -21,6 +28,12 @@ type VenueOption = {
   address_line: string;
 };
 
+/**
+ * Defensive guard — render an EmptyState when no venues are available, so
+ * the EventForm body (which assumes a non-empty list) is never instantiated.
+ * The parent page should also pre-filter this case, but a venue could be
+ * soft-deleted between page render + submit, so we double-check here.
+ */
 export function EventForm({
   venues,
   locale,
@@ -28,19 +41,45 @@ export function EventForm({
   venues: VenueOption[];
   locale: string;
 }) {
+  if (venues.length === 0) return <EventFormEmpty />;
+  return <EventFormInner venues={venues} locale={locale} />;
+}
+
+function EventFormEmpty() {
   const t = useTranslations("Events");
+  return (
+    <EmptyState
+      icon={<Building2 />}
+      title={t("noVenuesTitle")}
+      description={t("noVenuesHint")}
+    />
+  );
+}
+
+function EventFormInner({
+  venues,
+  locale,
+}: {
+  venues: VenueOption[];
+  locale: string;
+}) {
+  const t = useTranslations("Events");
+  const errorMsg = useErrorMessage();
   const router = useRouter();
   const [pending, startTransition] = React.useTransition();
 
+  // Defaults expressed in Warsaw time (regardless of user's browser timezone),
+  // since matches always happen there. `toZonedTime` projects the current
+  // instant into Warsaw's local clock; we then offset by 24/26 hours.
   const defaultStart = React.useMemo(() => {
-    const d = new Date();
-    d.setHours(d.getHours() + 24, 0, 0, 0);
-    return formatLocalDateTime(d);
+    const warsawNow = toZonedTime(new Date(), VENUE_TZ);
+    warsawNow.setHours(warsawNow.getHours() + 24, 0, 0, 0);
+    return formatLocalDateTime(warsawNow);
   }, []);
   const defaultEnd = React.useMemo(() => {
-    const d = new Date();
-    d.setHours(d.getHours() + 26, 0, 0, 0);
-    return formatLocalDateTime(d);
+    const warsawNow = toZonedTime(new Date(), VENUE_TZ);
+    warsawNow.setHours(warsawNow.getHours() + 26, 0, 0, 0);
+    return formatLocalDateTime(warsawNow);
   }, []);
 
   const [venueId, setVenueId] = React.useState(venues[0]?.id ?? "");
@@ -73,11 +112,16 @@ export function EventForm({
     e.preventDefault();
     setError(null);
 
+    // Inputs are typed as "YYYY-MM-DDTHH:mm" without a timezone. Interpret
+    // them as Europe/Warsaw local time (where matches happen), regardless of
+    // the user's browser timezone — so an Istanbul user typing "19:00" stores
+    // the same instant as a Warsaw user typing "19:00".
     let startIso: string;
     let endIso: string;
     try {
-      startIso = new Date(startAt).toISOString();
-      endIso = new Date(endAt).toISOString();
+      startIso = fromZonedTime(startAt, VENUE_TZ).toISOString();
+      endIso = fromZonedTime(endAt, VENUE_TZ).toISOString();
+      if (Number.isNaN(new Date(startIso).getTime())) throw new Error("nan");
     } catch {
       setError(t("invalidDate"));
       return;
@@ -100,7 +144,7 @@ export function EventForm({
 
       if (!result.ok) {
         setError(result.error);
-        toast.error(t("createError"), { description: result.error });
+        toast.error(t("createError"), { description: errorMsg(result) });
         return;
       }
 
@@ -150,6 +194,7 @@ export function EventForm({
           />
         </Field>
       </div>
+      <p className="text-muted-foreground -mt-2 text-xs">{t("timezoneHint")}</p>
 
       <Field label={t("format")}>
         <Select

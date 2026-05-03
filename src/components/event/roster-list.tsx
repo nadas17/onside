@@ -2,10 +2,13 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
+import { useErrorMessage } from "@/lib/i18n-errors";
 import { toast } from "sonner";
 import { UserMinus, Users } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { useMotionPreset } from "@/lib/motion";
 import { kickParticipantAction } from "@/lib/event/rsvp-actions";
 import type { RosterEntry } from "@/lib/event/rsvp-actions";
 
@@ -23,8 +26,10 @@ export function RosterList({
   isOrganizer: boolean;
 }) {
   const t = useTranslations("Roster");
+  const errorMsg = useErrorMessage();
   const tPos = useTranslations("Profile.positions");
   const [kicking, setKicking] = React.useState<string | null>(null);
+  const m = useMotionPreset();
 
   const grouped = React.useMemo(() => {
     const map = new Map<string, RosterEntry[]>();
@@ -41,7 +46,7 @@ export function RosterList({
     const result = await kickParticipantAction(eventId, profileId);
     setKicking(null);
     if (!result.ok) {
-      toast.error(t("kickError"), { description: result.error });
+      toast.error(t("kickError"), { description: errorMsg(result) });
       return;
     }
     toast.success(t("kicked"));
@@ -63,7 +68,7 @@ export function RosterList({
 
       {filled === 0 ? (
         <EmptyState
-          icon={<Users className="size-5" />}
+          icon={<Users />}
           title={t("noParticipants")}
           description={
             isOrganizer ? t("emptyOrganizerHint") : t("emptyJoinerHint")
@@ -76,7 +81,7 @@ export function RosterList({
             const entries = grouped.get(pos) ?? [];
             if (entries.length === 0) return null;
             return (
-              <div key={pos} className="border-border rounded-md border p-3">
+              <div key={pos} className="glass-card rounded-lg border p-3">
                 <div className="mb-2 flex items-center gap-2">
                   <span className="bg-secondary text-secondary-foreground rounded px-2 py-0.5 font-mono text-[10px] uppercase">
                     {pos}
@@ -86,41 +91,49 @@ export function RosterList({
                   </span>
                 </div>
                 <ul className="flex flex-col gap-1.5">
-                  {entries.map((r) => (
-                    <li
-                      key={r.id}
-                      className="flex items-center justify-between gap-2 text-sm"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Avatar name={r.profile.display_name} />
-                        <span className="font-medium">
-                          {r.profile.display_name}
-                        </span>
-                        <span className="text-muted-foreground text-xs">
-                          @{r.profile.username}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground text-xs">
-                          {r.profile.skill_rating}
-                        </span>
-                        {isOrganizer && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() =>
-                              handleKick(r.profile.id, r.profile.display_name)
-                            }
-                            disabled={kicking === r.profile.id}
-                            title={t("kick")}
-                            aria-label={t("kick")}
-                          >
-                            <UserMinus className="text-destructive size-3.5" />
-                          </Button>
-                        )}
-                      </div>
-                    </li>
-                  ))}
+                  <AnimatePresence initial={false}>
+                    {entries.map((r) => (
+                      <motion.li
+                        key={r.id}
+                        layout
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, x: 16, scale: 0.95 }}
+                        transition={m.spring}
+                        className="flex items-center justify-between gap-2 text-sm"
+                      >
+                        <div className="flex min-w-0 items-center gap-2">
+                          <Avatar name={r.profile.display_name} />
+                          <span className="truncate font-medium">
+                            {r.profile.display_name}
+                          </span>
+                          <span className="text-muted-foreground hidden truncate text-xs sm:inline">
+                            @{r.profile.username}
+                          </span>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-2">
+                          <span className="text-muted-foreground text-xs tabular-nums">
+                            {r.profile.skill_rating}
+                          </span>
+                          {isOrganizer && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                handleKick(r.profile.id, r.profile.display_name)
+                              }
+                              disabled={kicking === r.profile.id}
+                              title={t("kick")}
+                              aria-label={t("kick")}
+                              className="tap-target"
+                            >
+                              <UserMinus className="text-destructive size-3.5" />
+                            </Button>
+                          )}
+                        </div>
+                      </motion.li>
+                    ))}
+                  </AnimatePresence>
                 </ul>
               </div>
             );

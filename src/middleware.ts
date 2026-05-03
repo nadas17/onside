@@ -14,7 +14,9 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Statik asset, API ve dahili Next.js path'lerini hariç tut.
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.svg$|.*\\.png$|.*\\.ico$|.*\\.webp$).*)",
+    // Skip API routes, Next internals, and *any* file with an extension
+    // (the trailing `\\..*` clause). Without this, `/bg/foo.jpg` gets a
+    // locale prefix and Next/Image fails to fetch the source (400).
+    "/((?!api|_next|_vercel|.*\\..*).*)",
   ],
 };

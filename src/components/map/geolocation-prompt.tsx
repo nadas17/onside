@@ -4,13 +4,13 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 import { MapPin } from "lucide-react";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+} from "@/components/ui/responsive-dialog";
 import { Button } from "@/components/ui/button";
 
 const STORAGE_KEY = "onside:geolocation-decision";
@@ -94,33 +94,44 @@ export function GeolocationPrompt({
   const t = useTranslations("Geolocation");
 
   return (
-    <Dialog open={open}>
-      <DialogContent
+    <ResponsiveDialog open={open} dismissible={false}>
+      <ResponsiveDialogContent
         hideCloseButton
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => e.preventDefault()}
-        onInteractOutside={(e) => e.preventDefault()}
-        className="max-w-sm"
+        blockDismiss
+        className="sm:max-w-sm"
       >
-        <DialogHeader>
+        <ResponsiveDialogHeader>
           <div className="bg-brand/10 text-brand mx-auto flex size-12 items-center justify-center rounded-full">
             <MapPin className="size-6" />
           </div>
-          <DialogTitle className="text-center">{t("title")}</DialogTitle>
-          <DialogDescription className="text-center">
+          <ResponsiveDialogTitle className="text-center">
+            {t("title")}
+          </ResponsiveDialogTitle>
+          <ResponsiveDialogDescription className="text-center">
             {t("description")}
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter className="flex-col gap-2 sm:flex-col">
-          <Button onClick={onAllow} size="lg" className="w-full">
+          </ResponsiveDialogDescription>
+        </ResponsiveDialogHeader>
+        <ResponsiveDialogFooter className="mt-4 flex-col gap-2 sm:flex-col">
+          <Button
+            onClick={onAllow}
+            size="lg"
+            className="h-12 w-full text-base sm:h-11"
+          >
             {t("allow")}
           </Button>
-          <Button onClick={onDeny} variant="ghost" size="lg" className="w-full">
+          <Button
+            onClick={onDeny}
+            variant="ghost"
+            size="lg"
+            className="h-12 w-full text-base sm:h-11"
+          >
             {t("deny")}
           </Button>
-        </DialogFooter>
-        <p className="text-muted-foreground text-center text-xs">{t("note")}</p>
-      </DialogContent>
-    </Dialog>
+        </ResponsiveDialogFooter>
+        <p className="text-muted-foreground mt-3 text-center text-xs">
+          {t("note")}
+        </p>
+      </ResponsiveDialogContent>
+    </ResponsiveDialog>
   );
 }

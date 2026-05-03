@@ -1,8 +1,13 @@
 /**
- * Empty State — Phase 9 polish (Ive: "her boş durum dolu durum kadar düşünülmüş olmalı").
+ * Empty State — single primitive for "no data" surfaces.
  *
- * Tek bir empty primitive: ortalanmış ikon + başlık + alt metin + opsiyonel CTA.
- * Tüm boş ekranlar bu bileşeni kullanır → tutarlı mood ve tek bir tasarım kararı.
+ * Provides a consistent: glass-dashed card + brand-tinted circular icon +
+ * heading + description + optional CTA. Callers should pass the icon as an
+ * unsized lucide component (e.g. `<Filter />`) — EmptyState scales it via
+ * a wrapping `[&_svg]:size-5` rule, so all empty states share the same
+ * icon footprint. This intentionally differs from the app-wide `size-4`
+ * default since the icon sits inside a larger container (size-9/12) and
+ * needs a touch more visual weight.
  */
 
 import * as React from "react";
@@ -26,7 +31,7 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "border-border/70 flex flex-col items-center gap-3 rounded-md border border-dashed text-center",
+        "glass-card flex flex-col items-center gap-3 rounded-lg border border-dashed text-center",
         size === "sm" ? "px-4 py-6" : "px-6 py-10",
         className,
       )}
@@ -35,7 +40,7 @@ export function EmptyState({
         <span
           aria-hidden
           className={cn(
-            "bg-brand/8 text-brand flex items-center justify-center rounded-full",
+            "bg-brand/8 text-brand empty-pop flex items-center justify-center rounded-full motion-reduce:animate-none [&_svg]:size-5",
             size === "sm" ? "size-9" : "size-12",
           )}
         >

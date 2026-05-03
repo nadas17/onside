@@ -65,7 +65,7 @@ export function LocaleSwitcher() {
         <ul
           role="listbox"
           aria-label={t("switch")}
-          className="border-border bg-popover absolute right-0 z-30 mt-1 w-44 overflow-hidden rounded-md border shadow-lg"
+          className="glass-strong absolute right-0 z-40 mt-1 w-44 overflow-hidden rounded-lg border shadow-xl shadow-black/40"
         >
           {routing.locales.map((loc) => (
             <li key={loc}>

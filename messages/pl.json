@@ -6,8 +6,7 @@
     "browseEvents": "Mecze w pobliżu",
     "browseVenues": "Boiska",
     "createEvent": "Utwórz mecz",
-    "viewProfile": "Profil",
-    "phase3Notice": "Faza 3 — tworzenie wydarzeń i lista aktywne. RSVP i czat w kolejce."
+    "viewProfile": "Profil"
   },
   "Theme": {
     "toggle": "Przełącz tryb ciemny"
@@ -64,8 +63,16 @@
     "confirmDelete": "Usunąć tę wiadomość?",
     "messageDeleted": "[wiadomość usunięta]",
     "report": "Zgłoś",
-    "reportPrompt": "Powód: spam, harassment, inappropriate, other",
-    "reportInvalidReason": "Nieprawidłowy powód.",
+    "reporting": "Zgłaszanie…",
+    "reportTitle": "Zgłoś wiadomość",
+    "reportDescription": "Dlaczego zgłaszasz tę wiadomość? Zespół moderacji ją przejrzy.",
+    "reportReason": "Powód",
+    "reportReasons": {
+      "spam": "Spam lub reklama",
+      "harassment": "Nękanie / obraźliwe",
+      "inappropriate": "Nieodpowiednia treść",
+      "other": "Inny"
+    },
     "reportError": "Nie udało się zgłosić",
     "reported": "Wiadomość zgłoszona.",
     "alreadyReported": "Już zgłosiłeś tę wiadomość.",
@@ -268,6 +275,9 @@
     "submitError": "Nie udało się zapisać wyniku",
     "edit": "Edytuj wynik",
     "editTitle": "Edytuj wynik meczu",
+    "editWindowHours": "{count}h pozostało",
+    "editWindowMinutes": "{count}m pozostało",
+    "editWindowFull": "Wynik można edytować przez 24 godziny.",
     "edited": "Wynik zaktualizowany",
     "save": "Zapisz",
     "saving": "Zapisywanie…",
@@ -283,6 +293,8 @@
     "openHint": "Gracze, którzy zagrali, mogą głosować na najlepszą postawę ({total} głosów do tej pory).",
     "closedHint": "Okno głosowania zamknięte ({total} głosów). Organizator może rozstrzygnąć.",
     "voteFor": "Głosuj",
+    "voteForName": "Zagłosuj na {name}",
+    "yourVoteFor": "Twój głos: {name}",
     "voted": "Głos zapisany",
     "voteError": "Nie udało się zagłosować",
     "winnerLabel": "MVP",
@@ -356,6 +368,7 @@
     "time": "Godzina",
     "startAt": "Początek",
     "endAt": "Koniec",
+    "timezoneHint": "Godziny są zapisywane w strefie Europa/Warszawa (gdzie odbywają się mecze).",
     "format": "Format",
     "capacity": "Pojemność",
     "capacityHint": "{format} → {size} na drużynę, sugerowana pojemność {suggested}.",
@@ -378,7 +391,12 @@
     "emptyFeed": "Brak meczów spełniających te kryteria.",
     "emptyFeedHint": "Poluzuj filtry albo utwórz własny mecz.",
     "createFirst": "Utwórz pierwszy",
-    "noVenues": "Brak boisk. Uruchom seed z fazy 2.",
+    "openMap": "Pokaż na mapie ({count})",
+    "backToList": "Wróć do listy",
+    "pinsShown": "{count} meczów",
+    "noVenues": "Brak zarejestrowanych boisk.",
+    "noVenuesTitle": "Brak boisk",
+    "noVenuesHint": "Aby utworzyć mecz, w systemie musi być zarejestrowane przynajmniej jedno boisko. Skontaktuj się z administratorem.",
     "upcomingHere": "Nadchodzące mecze na tym boisku",
     "noUpcoming": "Brak zaplanowanych meczów.",
     "invalidDate": "Nieprawidłowa data/godzina",
@@ -400,6 +418,7 @@
   },
   "Venues": {
     "title": "Boiska",
+    "subtitle": "{count} boisk",
     "emptyForCity": "Brak zarejestrowanych boisk w tym mieście.",
     "surface": "Nawierzchnia",
     "surfaces": {
@@ -424,6 +443,7 @@
     "saveError": "Nie udało się zapisać",
     "username": "Nazwa użytkownika",
     "displayName": "Nazwa wyświetlana",
+    "usernamePermanent": "stała",
     "bio": "Bio",
     "bioPlaceholder": "Opowiedz coś o sobie…",
     "homeCity": "Miasto",
@@ -450,5 +470,50 @@
       "pro": "Profesjonalista"
     },
     "languageSetting": "Język"
+  },
+  "Nav": {
+    "home": "Strona",
+    "events": "Mecze",
+    "venues": "Boiska",
+    "profile": "Profil",
+    "create": "Nowy mecz"
+  },
+  "CommandPalette": {
+    "title": "Paleta poleceń",
+    "description": "Szybkie wyszukiwanie i nawigacja",
+    "triggerLabel": "Szukaj",
+    "placeholder": "Znajdź stronę, uruchom akcję…",
+    "noResults": "Brak wyników",
+    "pages": "Strony",
+    "actions": "Akcje",
+    "appearance": "Wygląd",
+    "language": "Język",
+    "legal": "Prawne",
+    "home": "Strona główna",
+    "events": "Wydarzenia",
+    "venues": "Boiska",
+    "profile": "Mój profil",
+    "newEvent": "Utwórz nowe wydarzenie",
+    "themeLight": "Jasny motyw",
+    "themeDark": "Ciemny motyw",
+    "themeSystem": "Motyw systemowy",
+    "privacy": "Polityka prywatności",
+    "terms": "Warunki korzystania",
+    "footerHint": "Otwórz z dowolnego miejsca przez Cmd+K",
+    "navigate": "nawiguj",
+    "select": "wybierz",
+    "close": "zamknij"
+  },
+  "Errors": {
+    "rate_limited": "Zbyt wiele żądań. Spróbuj ponownie za minutę.",
+    "invalid_nickname": "Nieprawidłowa nazwa użytkownika.",
+    "username_taken": "Ta nazwa jest już zajęta.",
+    "auth_failed": "Sesja nie znaleziona. Odśwież stronę.",
+    "db_error": "Błąd bazy danych. Spróbuj ponownie.",
+    "invalid_input": "Nieprawidłowe dane.",
+    "not_found": "Nie znaleziono.",
+    "forbidden": "Brak uprawnień do tej akcji.",
+    "balance_error": "Nie udało się zbilansować drużyn.",
+    "not_enough_players": "Za mało graczy."
   }
 }

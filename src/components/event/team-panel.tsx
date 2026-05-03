@@ -14,6 +14,7 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
+import { useErrorMessage } from "@/lib/i18n-errors";
 import { toast } from "sonner";
 import { Shuffle, Pencil, Unlock, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -49,6 +50,7 @@ export function TeamPanel({
   capacity: number;
 }) {
   const t = useTranslations("Teams");
+  const errorMsg = useErrorMessage();
   const tPos = useTranslations("Profile.positions");
 
   const [teams, setTeams] = React.useState<TeamView[]>(initialTeams);
@@ -62,9 +64,25 @@ export function TeamPanel({
     setTeams(initialTeams);
   }, [initialTeams]);
 
-  // Realtime: team_assignment INSERT/DELETE → re-fetch
+  // Realtime: team_assignment INSERT/DELETE → debounced refetch.
+  //
+  // A single save_teams transaction emits N events (one DELETE + one INSERT
+  // per player swap). For a 14-player team that's ~28 events firing within
+  // a few hundred ms. Without the 200ms debounce we'd hit getTeamsAction
+  // 28 times in a row; with it, we collapse the burst to a single fetch.
   React.useEffect(() => {
     const supabase = createClient();
+    let refetchTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const scheduleRefetch = () => {
+      if (refetchTimer) clearTimeout(refetchTimer);
+      refetchTimer = setTimeout(async () => {
+        refetchTimer = null;
+        const result = await getTeamsAction(eventId);
+        if (result.ok) setTeams(result.data);
+      }, 200);
+    };
+
     const channel = supabase
       .channel(`event:${eventId}:teams`)
       .on(
@@ -75,27 +93,19 @@ export function TeamPanel({
           table: "team_assignment",
           filter: `event_id=eq.${eventId}`,
         },
-        async () => {
-          const result = await getTeamsAction(eventId);
-          if (result.ok) {
-            setTeams(result.data);
-            // Edit mode'dayken başkası save ettiyse view'a dön
-            if (mode === "edit" && result.data.length > 0) {
-              // Aynı kullanıcı save ettiyse onSaved zaten çağırmıştır.
-              // Başkası değiştirdiyse de view'a dönmek mantıklı.
-            }
-          }
-        },
+        () => scheduleRefetch(),
       )
       .subscribe((status, err) => {
         if (status === "CHANNEL_ERROR" || err) {
           console.error("[teams] channel", status, err);
         }
       });
+
     return () => {
+      if (refetchTimer) clearTimeout(refetchTimer);
       supabase.removeChannel(channel);
     };
-  }, [eventId, mode]);
+  }, [eventId]);
 
   const canBalance =
     isOrganizer &&
@@ -110,7 +120,7 @@ export function TeamPanel({
     const result = await computeAndSaveTeamsAction(eventId, { seed: seedRef });
     setBusy(null);
     if (!result.ok) {
-      toast.error(t("balanceError"), { description: result.error });
+      toast.error(t("balanceError"), { description: errorMsg(result) });
       return;
     }
     toast.success(t("balanced"));
@@ -130,7 +140,7 @@ export function TeamPanel({
     const result = await unlockTeamsAction(eventId);
     setBusy(null);
     if (!result.ok) {
-      toast.error(t("unlockError"), { description: result.error });
+      toast.error(t("unlockError"), { description: errorMsg(result) });
       return;
     }
     toast.success(t("unlocked"));
@@ -148,7 +158,7 @@ export function TeamPanel({
     const result = await computeAndSaveTeamsAction(eventId, { seed: newSeed });
     setBusy(null);
     if (!result.ok) {
-      toast.error(t("balanceError"), { description: result.error });
+      toast.error(t("balanceError"), { description: errorMsg(result) });
       return;
     }
     toast.success(t("rebalanced"));
@@ -177,7 +187,7 @@ export function TeamPanel({
       return null;
     }
     return (
-      <section className="border-border flex flex-col gap-3 rounded-md border p-4">
+      <section className="glass-card flex flex-col gap-3 rounded-lg border p-4 shadow-md shadow-black/20">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 text-sm font-semibold">
             <Shuffle className="size-4" />
@@ -202,7 +212,7 @@ export function TeamPanel({
 
   if (mode === "edit") {
     return (
-      <section className="border-border flex flex-col gap-3 rounded-md border p-4">
+      <section className="glass-card flex flex-col gap-3 rounded-lg border p-4 shadow-md shadow-black/20">
         <div className="flex items-center gap-2 text-sm font-semibold">
           <Pencil className="size-4" />
           {t("editTitle")}
@@ -219,7 +229,7 @@ export function TeamPanel({
   }
 
   return (
-    <section className="border-border flex flex-col gap-3 rounded-md border p-4">
+    <section className="glass-card flex flex-col gap-3 rounded-lg border p-4 shadow-md shadow-black/20">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-sm font-semibold">
           <Shuffle className="size-4" />
@@ -288,7 +298,7 @@ function TeamCard({
   }
 
   return (
-    <div className="border-border rounded-md border p-3">
+    <div className="glass-card rounded-lg border p-3">
       <div className="mb-2 flex items-baseline justify-between">
         <span className="text-base font-semibold">{team.label}</span>
         <span className="text-muted-foreground text-xs">

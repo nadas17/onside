@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useErrorMessage } from "@/lib/i18n-errors";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +27,7 @@ const LOCALES = ["tr", "en", "pl"] as const;
 
 export function ProfileEditForm({ initial }: { initial: EditableProfile }) {
   const t = useTranslations("Profile");
+  const errorMsg = useErrorMessage();
   const router = useRouter();
   const [pending, startTransition] = React.useTransition();
 
@@ -52,7 +54,7 @@ export function ProfileEditForm({ initial }: { initial: EditableProfile }) {
         locale,
       });
       if (!result.ok) {
-        toast.error(t("saveError"), { description: result.error });
+        toast.error(t("saveError"), { description: errorMsg(result) });
         return;
       }
       toast.success(t("saved"));
@@ -61,10 +63,18 @@ export function ProfileEditForm({ initial }: { initial: EditableProfile }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-5 pb-24 sm:gap-6 sm:pb-0"
+    >
       <Section title={t("displayName")}>
         <Input value={initial.display_name} disabled readOnly />
-        <p className="text-muted-foreground text-xs">@{initial.username}</p>
+        <p className="text-muted-foreground text-xs">
+          @{initial.username}{" "}
+          <span className="text-muted-foreground/70">
+            · {t("usernamePermanent")}
+          </span>
+        </p>
       </Section>
 
       <Section title={t("bio")}>
@@ -74,7 +84,7 @@ export function ProfileEditForm({ initial }: { initial: EditableProfile }) {
           maxLength={280}
           rows={3}
           placeholder={t("bioPlaceholder")}
-          className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          className="glass-strong border-input ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
         />
         <p className="text-muted-foreground text-xs">{bio.length} / 280</p>
       </Section>
@@ -152,8 +162,23 @@ export function ProfileEditForm({ initial }: { initial: EditableProfile }) {
         </Section>
       </div>
 
-      <div className="flex justify-end">
+      {/* Desktop: inline save button */}
+      <div className="hidden justify-end sm:flex">
         <Button type="submit" disabled={pending}>
+          {pending ? t("saving") : t("save")}
+        </Button>
+      </div>
+
+      {/* Mobile: sticky save bar above the bottom nav */}
+      <div
+        className="glass-bar fixed right-0 left-0 z-20 flex gap-2 border-t px-4 py-3 sm:hidden"
+        style={{ bottom: "calc(4rem + env(safe-area-inset-bottom))" }}
+      >
+        <Button
+          type="submit"
+          disabled={pending}
+          className="h-11 flex-1 text-base"
+        >
           {pending ? t("saving") : t("save")}
         </Button>
       </div>
@@ -189,7 +214,7 @@ function Select({
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="border-input bg-background ring-offset-background focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+      className="glass-strong border-input ring-offset-background focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
     >
       {children}
     </select>

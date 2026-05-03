@@ -12,6 +12,7 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
+import { useErrorMessage } from "@/lib/i18n-errors";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Clock, X } from "lucide-react";
@@ -32,6 +33,7 @@ export function MyPendingCard({
   rejectedReason: string | null;
 }) {
   const t = useTranslations("Roster");
+  const errorMsg = useErrorMessage();
   const tPos = useTranslations("Profile.positions");
   const router = useRouter();
   const [busy, setBusy] = React.useState(false);
@@ -62,7 +64,7 @@ export function MyPendingCard({
     const result = await cancelRsvpAction(eventId);
     setBusy(false);
     if (!result.ok) {
-      toast.error(t("cancelError"), { description: result.error });
+      toast.error(t("cancelError"), { description: errorMsg(result) });
       return;
     }
     toast.success(t("rsvpCancelled"));

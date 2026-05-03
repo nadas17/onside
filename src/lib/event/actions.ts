@@ -218,14 +218,17 @@ export async function getEventsAction(
 
   if (f.format) q = q.eq("format", f.format);
 
-  const { data, error } = await q;
+  // `.returns<T>()` overrides the inferred row type — without it Supabase
+  // infers `venue` as an array (PostgREST always returns relationships as
+  // arrays even for FK 1:1) which doesn't match EventListItem's `venue` shape.
+  const { data, error } = await q.returns<EventListItem[]>();
   if (error) {
     return { ok: false, error: error.message, code: "db_error" };
   }
 
   // Server-side post-filter: city, bbox ve skill range (Supabase JS join filter
   // sınırları nedeniyle daha güvenli).
-  let rows = (data ?? []) as unknown as EventListItem[];
+  let rows: EventListItem[] = data ?? [];
 
   if (f.city) {
     rows = rows.filter((r) => r.venue?.city === f.city);
@@ -297,7 +300,8 @@ export async function getEventByIdAction(
        venue:venue_id ( id, name, address_line, city, lat, lng )`,
     )
     .eq("id", id)
-    .maybeSingle();
+    .maybeSingle()
+    .returns<EventDetail>();
 
   if (error) {
     return { ok: false, error: error.message, code: "db_error" };
@@ -306,7 +310,7 @@ export async function getEventByIdAction(
     return { ok: false, error: "Etkinlik bulunamadı.", code: "not_found" };
   }
 
-  return { ok: true, data: data as unknown as EventDetail };
+  return { ok: true, data };
 }
 
 export type MyEventItem = {
@@ -338,22 +342,6 @@ export async function getMyEventsAction(): Promise<
   } = await supabase.auth.getUser();
   if (!user) return { ok: true, data: [] };
 
-  const { data, error } = await supabase
-    .from("event_participant")
-    .select(
-      `id, status,
-       event:event_id (
-         id, title, start_at, format, capacity, status, organizer_id,
-         venue:venue_id ( id, name, city )
-       )`,
-    )
-    .eq("profile_id", user.id)
-    .eq("status", "confirmed")
-    .order("joined_at", { ascending: false })
-    .limit(20);
-
-  if (error) return { ok: false, error: error.message, code: "db_error" };
-
   type Row = {
     event: {
       id: string;
@@ -367,10 +355,27 @@ export async function getMyEventsAction(): Promise<
     } | null;
   };
 
+  const { data, error } = await supabase
+    .from("event_participant")
+    .select(
+      `id, status,
+       event:event_id (
+         id, title, start_at, format, capacity, status, organizer_id,
+         venue:venue_id ( id, name, city )
+       )`,
+    )
+    .eq("profile_id", user.id)
+    .eq("status", "confirmed")
+    .order("joined_at", { ascending: false })
+    .limit(20)
+    .returns<Row[]>();
+
+  if (error) return { ok: false, error: error.message, code: "db_error" };
+
   const nowIso = new Date().toISOString();
   const ACTIVE: EventStatus[] = ["open", "full", "locked", "in_progress"];
 
-  const items = (data as unknown as Row[])
+  const items = (data ?? [])
     .map((row) => row.event)
     .filter((e): e is NonNullable<Row["event"]> => Boolean(e))
     .filter((e) => e.venue && e.start_at >= nowIso && ACTIVE.includes(e.status))
@@ -405,8 +410,9 @@ export async function getEventsByVenueAction(
     .in("status", ["open", "full", "locked", "in_progress"])
     .gte("start_at", new Date().toISOString())
     .order("start_at", { ascending: true })
-    .limit(limit);
+    .limit(limit)
+    .returns<EventListItem[]>();
 
   if (error) return { ok: false, error: error.message, code: "db_error" };
-  return { ok: true, data: (data ?? []) as unknown as EventListItem[] };
+  return { ok: true, data: data ?? [] };
 }

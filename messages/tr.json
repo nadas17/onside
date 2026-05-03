@@ -6,8 +6,7 @@
     "browseEvents": "Yakındaki maçlar",
     "browseVenues": "Sahalar",
     "createEvent": "Maç oluştur",
-    "viewProfile": "Profil",
-    "phase3Notice": "Phase 3 — etkinlik oluşturma & feed aktif. RSVP & chat sırada."
+    "viewProfile": "Profil"
   },
   "Theme": {
     "toggle": "Karanlık modu değiştir"
@@ -64,8 +63,16 @@
     "confirmDelete": "Bu mesajı silmek istediğine emin misin?",
     "messageDeleted": "[mesaj silindi]",
     "report": "Bildir",
-    "reportPrompt": "Sebep yaz: spam, harassment, inappropriate, other",
-    "reportInvalidReason": "Geçersiz sebep.",
+    "reporting": "Bildiriliyor…",
+    "reportTitle": "Mesajı bildir",
+    "reportDescription": "Bu mesajı neden bildiriyorsun? Moderasyon ekibi inceleyecek.",
+    "reportReason": "Sebep",
+    "reportReasons": {
+      "spam": "Spam veya reklam",
+      "harassment": "Taciz / hakaret",
+      "inappropriate": "Uygunsuz içerik",
+      "other": "Diğer"
+    },
     "reportError": "Raporlanamadı",
     "reported": "Mesaj raporlandı.",
     "alreadyReported": "Bu mesajı zaten raporlamışsın.",
@@ -268,6 +275,9 @@
     "submitError": "Skor kaydedilemedi",
     "edit": "Skoru düzenle",
     "editTitle": "Maç skorunu düzenle",
+    "editWindowHours": "{count} saat kaldı",
+    "editWindowMinutes": "{count} dk kaldı",
+    "editWindowFull": "Skor 24 saat içinde düzenlenebilir.",
     "edited": "Skor güncellendi",
     "save": "Kaydet",
     "saving": "Kaydediliyor…",
@@ -283,6 +293,8 @@
     "openHint": "Maça katılan oyuncular en iyi performans için oy verebilir ({total} oy şu ana kadar).",
     "closedHint": "Oylama penceresi kapandı ({total} oy alındı). Organizatör sonuçlandırabilir.",
     "voteFor": "Oy ver",
+    "voteForName": "{name} için oy ver",
+    "yourVoteFor": "Senin oyun: {name}",
     "voted": "Oy kaydedildi",
     "voteError": "Oy verilemedi",
     "winnerLabel": "MVP",
@@ -356,6 +368,7 @@
     "time": "Saat",
     "startAt": "Başlangıç",
     "endAt": "Bitiş",
+    "timezoneHint": "Saatler Avrupa/Varşova zaman diliminde kaydedilir (maçların yapıldığı yer).",
     "format": "Format",
     "capacity": "Kapasite",
     "capacityHint": "{format} → her takım {size} kişi, önerilen kapasite {suggested}.",
@@ -378,7 +391,12 @@
     "emptyFeed": "Bu kriterlere uygun yaklaşan maç yok.",
     "emptyFeedHint": "Filtreleri gevşet veya kendi maçını yarat.",
     "createFirst": "İlkini sen aç",
-    "noVenues": "Henüz saha yok. Phase 2 seed'i çalıştır.",
+    "openMap": "Haritada göster ({count})",
+    "backToList": "Listeye dön",
+    "pinsShown": "{count} maç",
+    "noVenues": "Henüz saha kayıtlı değil.",
+    "noVenuesTitle": "Henüz saha yok",
+    "noVenuesHint": "Etkinlik oluşturmak için önce sistemde kayıtlı bir saha olması gerekir. Yöneticiyle iletişime geç.",
     "upcomingHere": "Bu sahada yaklaşan maçlar",
     "noUpcoming": "Yakında bu sahada planlanmış maç yok.",
     "invalidDate": "Geçersiz tarih/saat",
@@ -400,6 +418,7 @@
   },
   "Venues": {
     "title": "Sahalar",
+    "subtitle": "{count} saha",
     "emptyForCity": "Bu şehir için kayıtlı saha bulunamadı.",
     "surface": "Zemin",
     "surfaces": {
@@ -424,6 +443,7 @@
     "saveError": "Kaydedilemedi",
     "username": "Kullanıcı adı",
     "displayName": "Görünen ad",
+    "usernamePermanent": "kalıcı",
     "bio": "Bio",
     "bioPlaceholder": "Kendinden kısaca bahset…",
     "homeCity": "Şehir",
@@ -450,5 +470,50 @@
       "pro": "Profesyonel"
     },
     "languageSetting": "Dil"
+  },
+  "Nav": {
+    "home": "Ana sayfa",
+    "events": "Maçlar",
+    "venues": "Sahalar",
+    "profile": "Profil",
+    "create": "Maç oluştur"
+  },
+  "CommandPalette": {
+    "title": "Komut paleti",
+    "description": "Hızlı arama ve gezinme",
+    "triggerLabel": "Ara",
+    "placeholder": "Sayfa ara, eyleme geç…",
+    "noResults": "Sonuç bulunamadı",
+    "pages": "Sayfalar",
+    "actions": "Eylemler",
+    "appearance": "Görünüm",
+    "language": "Dil",
+    "legal": "Yasal",
+    "home": "Ana sayfa",
+    "events": "Etkinlikler",
+    "venues": "Sahalar",
+    "profile": "Profilim",
+    "newEvent": "Yeni etkinlik oluştur",
+    "themeLight": "Açık tema",
+    "themeDark": "Koyu tema",
+    "themeSystem": "Sistem teması",
+    "privacy": "Gizlilik politikası",
+    "terms": "Kullanım koşulları",
+    "footerHint": "Cmd+K ile her yerden aç",
+    "navigate": "gezin",
+    "select": "seç",
+    "close": "kapat"
+  },
+  "Errors": {
+    "rate_limited": "Çok hızlı işlem yapıyorsun. Bir dakika sonra tekrar dene.",
+    "invalid_nickname": "Geçersiz nickname.",
+    "username_taken": "Bu nickname zaten alınmış.",
+    "auth_failed": "Oturum bulunamadı. Sayfayı yenile.",
+    "db_error": "Veritabanı hatası. Lütfen tekrar dene.",
+    "invalid_input": "Girilen bilgi geçersiz.",
+    "not_found": "İçerik bulunamadı.",
+    "forbidden": "Bu işlem için yetkin yok.",
+    "balance_error": "Takım dengeleme başarısız.",
+    "not_enough_players": "Yeterli oyuncu yok."
   }
 }

@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ChevronLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { HeaderActions } from "@/components/header-actions";
+import { AppHeader } from "@/components/app-header";
+import { PageBackground } from "@/components/page-background";
 import { RatingChart } from "@/components/profile/rating-chart";
 import { RecentMatches } from "@/components/profile/recent-matches";
 import {
@@ -75,97 +74,93 @@ export default async function PublicProfilePage({
       : null;
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="border-border h-16 border-b">
-        <div className="mx-auto flex h-full max-w-3xl items-center justify-between px-6">
-          <Link
-            href={`/${locale}`}
-            className="flex items-center gap-1 text-sm font-medium hover:underline"
-          >
-            <ChevronLeft className="size-4" />
-            Onside
-          </Link>
-          <HeaderActions />
-        </div>
-      </header>
-
-      <main className="mx-auto w-full max-w-3xl px-6 py-12">
-        <div className="flex flex-col gap-8">
-          <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-            <div
-              aria-hidden
-              className="from-brand to-accent-cta flex size-24 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-3xl font-bold text-white"
-            >
-              {initial}
-            </div>
-            <div className="flex flex-1 flex-col items-center gap-1 sm:items-start">
-              <h1 className="text-2xl font-semibold">
-                {profile!.display_name}
-              </h1>
-              <p className="text-muted-foreground text-sm">
-                @{profile!.username}
-              </p>
-              {profile!.bio && <p className="pt-2 text-sm">{profile!.bio}</p>}
-              <div className="text-muted-foreground flex flex-wrap items-center gap-2 pt-2 text-xs">
-                {profile!.preferred_position && (
-                  <span className="bg-secondary text-secondary-foreground rounded px-2 py-0.5 font-mono uppercase">
-                    {profile!.preferred_position}
-                  </span>
+    <>
+      <PageBackground variant="profile" intensity="heavy" />
+      <div className="flex min-h-screen flex-col">
+        <AppHeader back={{ href: "/", label: "Onside" }} maxWidth="3xl" />
+        <main className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
+          <div className="flex flex-col gap-6 sm:gap-8">
+            <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:text-left">
+              <div
+                aria-hidden
+                className="from-brand to-accent-cta flex size-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-2xl font-bold text-white sm:size-24 sm:text-3xl"
+              >
+                {initial}
+              </div>
+              <div className="flex flex-1 flex-col gap-1">
+                <h1 className="text-xl font-semibold sm:text-2xl">
+                  {profile!.display_name}
+                </h1>
+                <p className="text-muted-foreground text-sm">
+                  @{profile!.username}
+                </p>
+                {profile!.bio && (
+                  <p className="pt-2 text-sm leading-relaxed">{profile!.bio}</p>
                 )}
-                <span>{t(`skillLevels.${profile!.skill_level}`)}</span>
-                <span>· {profile!.skill_rating}</span>
-                {profile!.home_city && <span>· {profile!.home_city}</span>}
+                <div className="text-muted-foreground flex flex-wrap items-center justify-center gap-2 pt-2 text-xs sm:justify-start">
+                  {profile!.preferred_position && (
+                    <span className="bg-secondary text-secondary-foreground rounded px-2 py-0.5 font-mono uppercase">
+                      {profile!.preferred_position}
+                    </span>
+                  )}
+                  <span>{t(`skillLevels.${profile!.skill_level}`)}</span>
+                  <span>· {profile!.skill_rating}</span>
+                  {profile!.home_city && <span>· {profile!.home_city}</span>}
+                </div>
               </div>
             </div>
+
+            <section className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-4">
+              <Stat
+                label={t("matchesPlayed")}
+                value={profile!.matches_played}
+              />
+              <Stat label={t("matchesWon")} value={profile!.matches_won} />
+              <Stat label={t("goalsScored")} value={profile!.goals_scored} />
+              <Stat label={t("mvpCount")} value={profile!.mvp_count} />
+            </section>
+
+            {winRate !== null && (
+              <div className="glass-card rounded-lg border px-4 py-2 text-sm">
+                <span className="text-muted-foreground">
+                  {tStats("winRate")}:{" "}
+                </span>
+                <span className="font-semibold">{winRate}%</span>
+                <span className="text-muted-foreground ml-3 text-xs">
+                  ({profile!.matches_won}/{profile!.matches_played})
+                </span>
+              </div>
+            )}
+
+            <RatingChart
+              history={history}
+              initialRating={profile!.skill_rating}
+            />
+
+            <RecentMatches matches={recent} />
+
+            <section className="glass-card grid gap-4 rounded-lg border p-4 shadow-md shadow-black/20 sm:grid-cols-2 sm:p-6">
+              <Field
+                label={t("preferredPosition")}
+                value={positionLabel(profile!.preferred_position)}
+              />
+              <Field
+                label={t("secondaryPosition")}
+                value={positionLabel(profile!.secondary_position)}
+              />
+            </section>
           </div>
-
-          <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <Stat label={t("matchesPlayed")} value={profile!.matches_played} />
-            <Stat label={t("matchesWon")} value={profile!.matches_won} />
-            <Stat label={t("goalsScored")} value={profile!.goals_scored} />
-            <Stat label={t("mvpCount")} value={profile!.mvp_count} />
-          </section>
-
-          {winRate !== null && (
-            <div className="border-border rounded-md border px-4 py-2 text-sm">
-              <span className="text-muted-foreground">
-                {tStats("winRate")}:{" "}
-              </span>
-              <span className="font-semibold">{winRate}%</span>
-              <span className="text-muted-foreground ml-3 text-xs">
-                ({profile!.matches_won}/{profile!.matches_played})
-              </span>
-            </div>
-          )}
-
-          <RatingChart
-            history={history}
-            initialRating={profile!.skill_rating}
-          />
-
-          <RecentMatches matches={recent} />
-
-          <section className="border-border grid gap-4 rounded-lg border p-6 sm:grid-cols-2">
-            <Field
-              label={t("preferredPosition")}
-              value={positionLabel(profile!.preferred_position)}
-            />
-            <Field
-              label={t("secondaryPosition")}
-              value={positionLabel(profile!.secondary_position)}
-            />
-          </section>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="border-border rounded-lg border p-4 text-center">
-      <div className="text-2xl font-bold">{value}</div>
-      <div className="text-muted-foreground text-xs tracking-wide uppercase">
+    <div className="glass-card rounded-lg border p-3 text-center sm:p-4">
+      <div className="text-xl font-bold tabular-nums sm:text-2xl">{value}</div>
+      <div className="text-muted-foreground text-[10px] tracking-wide uppercase sm:text-xs">
         {label}
       </div>
     </div>

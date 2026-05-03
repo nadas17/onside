@@ -134,6 +134,18 @@ export type MatchResultView = {
   } | null;
 };
 
+type MatchResultRow = {
+  event_id: string;
+  score_a: number;
+  score_b: number;
+  notes: string | null;
+  submitted_at: string;
+  edited_at: string | null;
+  mvp_profile_id: string | null;
+  mvp_finalized_at: string | null;
+  mvp: { id: string; username: string; display_name: string } | null;
+};
+
 export async function getMatchResultAction(
   eventId: string,
 ): Promise<ActionResult<MatchResultView | null>> {
@@ -146,40 +158,28 @@ export async function getMatchResultAction(
        mvp:mvp_profile_id ( id, username, display_name )`,
     )
     .eq("event_id", eventId)
-    .maybeSingle();
+    .maybeSingle()
+    .returns<MatchResultRow>();
 
   if (error) return { ok: false, error: error.message, code: "db_error" };
   if (!data) return { ok: true, data: null };
 
-  type Row = {
-    event_id: string;
-    score_a: number;
-    score_b: number;
-    notes: string | null;
-    submitted_at: string;
-    edited_at: string | null;
-    mvp_profile_id: string | null;
-    mvp_finalized_at: string | null;
-    mvp: { id: string; username: string; display_name: string } | null;
-  };
-  const row = data as unknown as Row;
-
   return {
     ok: true,
     data: {
-      eventId: row.event_id,
-      scoreA: row.score_a,
-      scoreB: row.score_b,
-      notes: row.notes,
-      submittedAt: row.submitted_at,
-      editedAt: row.edited_at,
-      mvpProfileId: row.mvp_profile_id,
-      mvpFinalizedAt: row.mvp_finalized_at,
-      mvp: row.mvp
+      eventId: data.event_id,
+      scoreA: data.score_a,
+      scoreB: data.score_b,
+      notes: data.notes,
+      submittedAt: data.submitted_at,
+      editedAt: data.edited_at,
+      mvpProfileId: data.mvp_profile_id,
+      mvpFinalizedAt: data.mvp_finalized_at,
+      mvp: data.mvp
         ? {
-            id: row.mvp.id,
-            username: row.mvp.username,
-            displayName: row.mvp.display_name,
+            id: data.mvp.id,
+            username: data.mvp.username,
+            displayName: data.mvp.display_name,
           }
         : null,
     },
@@ -232,6 +232,12 @@ export async function getMvpStateAction(
   const votingOpen =
     !match.mvp_finalized_at && Date.now() < windowEnds.getTime();
 
+  type StatRow = {
+    profile_id: string;
+    team_label: "A" | "B";
+    profile: { id: string; username: string; display_name: string } | null;
+  };
+
   // Aday liste: attended olanlar
   const { data: stats } = await supabase
     .from("player_match_stat")
@@ -240,14 +246,10 @@ export async function getMvpStateAction(
        profile:profile_id ( id, username, display_name )`,
     )
     .eq("event_id", eventId)
-    .eq("attended", true);
+    .eq("attended", true)
+    .returns<StatRow[]>();
 
-  type StatRow = {
-    profile_id: string;
-    team_label: "A" | "B";
-    profile: { id: string; username: string; display_name: string } | null;
-  };
-  const statRows = (stats ?? []) as unknown as StatRow[];
+  const statRows = stats ?? [];
 
   // Vote sayıları
   const { data: votes } = await supabase

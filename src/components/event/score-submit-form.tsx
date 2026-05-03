@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
+import { useErrorMessage } from "@/lib/i18n-errors";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -39,6 +40,7 @@ export function ScoreSubmitForm({
   onCancel: () => void;
 }) {
   const t = useTranslations("Result");
+  const errorMsg = useErrorMessage();
   const {
     register,
     handleSubmit,
@@ -59,7 +61,7 @@ export function ScoreSubmitForm({
         : editScoreAction(eventId, values.scoreA, values.scoreB, values.notes);
     const result = await action;
     if (!result.ok) {
-      toast.error(t("submitError"), { description: result.error });
+      toast.error(t("submitError"), { description: errorMsg(result) });
       return;
     }
     toast.success(mode === "submit" ? t("submitted") : t("edited"));

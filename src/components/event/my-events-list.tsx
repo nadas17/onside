@@ -53,7 +53,7 @@ export async function MyEventsList({
           const start = new Date(e.start_at);
           return (
             <li key={e.id}>
-              <article className="border-border hover:border-brand/40 hover:bg-accent/50 flex h-full flex-col justify-between rounded-md border p-4 transition">
+              <article className="glass-card hover:border-brand/30 flex h-full flex-col justify-between rounded-lg border p-4 shadow-md shadow-black/20 transition hover:shadow-lg hover:shadow-black/30">
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-wrap items-center gap-2">
                     <EventStatusBadge status={e.status} />

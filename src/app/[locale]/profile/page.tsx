@@ -4,7 +4,8 @@ import { setRequestLocale } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
-import { HeaderActions } from "@/components/header-actions";
+import { AppHeader } from "@/components/app-header";
+import { PageBackground } from "@/components/page-background";
 import { RatingChart } from "@/components/profile/rating-chart";
 import { RecentMatches } from "@/components/profile/recent-matches";
 import {
@@ -88,99 +89,96 @@ function ProfileView({
   recent: RecentMatch[];
 }) {
   const t = useTranslations("Profile");
-  const tHome = useTranslations("Home");
 
   const initial = profile.display_name.charAt(0).toUpperCase();
   const positionLabel = (p: Profile["preferred_position"]) =>
     p ? t(`positions.${p}`) : t("noPosition");
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="border-border border-b">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link
-            href={`/${locale}`}
-            className="text-lg font-bold tracking-tight"
-          >
-            Onside
-          </Link>
-          <HeaderActions />
-        </div>
-      </header>
+    <>
+      <PageBackground variant="profile" intensity="heavy" />
+      <div className="flex min-h-screen flex-col">
+        <AppHeader maxWidth="3xl" />
+        <main className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
+          <div className="flex flex-col gap-6 sm:gap-8">
+            <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:text-left">
+              <div
+                aria-hidden
+                className="from-brand to-accent-cta flex size-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-2xl font-bold text-white sm:size-24 sm:text-3xl"
+              >
+                {initial}
+              </div>
+              <div className="flex flex-1 flex-col gap-1">
+                <h1 className="text-xl font-semibold sm:text-2xl">
+                  {profile.display_name}
+                </h1>
+                <p className="text-muted-foreground text-sm">
+                  @{profile.username}
+                </p>
+                {profile.bio && (
+                  <p className="pt-2 text-sm leading-relaxed">{profile.bio}</p>
+                )}
+              </div>
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                className="sm:size-default"
+              >
+                <Link href={`/${locale}/profile/edit`}>{t("edit")}</Link>
+              </Button>
+            </div>
 
-      <main className="mx-auto w-full max-w-3xl px-6 py-12">
-        <div className="flex flex-col gap-8">
-          <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-            <div
-              aria-hidden
-              className="from-brand to-accent-cta flex size-24 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-3xl font-bold text-white"
-            >
-              {initial}
-            </div>
-            <div className="flex flex-1 flex-col items-center gap-1 sm:items-start">
-              <h1 className="text-2xl font-semibold">{profile.display_name}</h1>
-              <p className="text-muted-foreground text-sm">
-                @{profile.username}
-              </p>
-              {profile.bio && <p className="pt-2 text-sm">{profile.bio}</p>}
-            </div>
-            <Button asChild variant="outline">
-              <Link href={`/${locale}/profile/edit`}>{t("edit")}</Link>
-            </Button>
+            {/* 2x2 mobile, 4x1 desktop — KPI grid */}
+            <section className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-4">
+              <Stat label={t("matchesPlayed")} value={profile.matches_played} />
+              <Stat label={t("matchesWon")} value={profile.matches_won} />
+              <Stat label={t("goalsScored")} value={profile.goals_scored} />
+              <Stat label={t("mvpCount")} value={profile.mvp_count} />
+            </section>
+
+            <RatingChart
+              history={history}
+              initialRating={profile.skill_rating}
+            />
+
+            <RecentMatches matches={recent} />
+
+            <section className="glass-card grid gap-4 rounded-lg border p-4 shadow-md shadow-black/20 sm:grid-cols-2 sm:p-6">
+              <Field
+                label={t("preferredPosition")}
+                value={positionLabel(profile.preferred_position)}
+              />
+              <Field
+                label={t("secondaryPosition")}
+                value={positionLabel(profile.secondary_position)}
+              />
+              <Field
+                label={t("skillLevel")}
+                value={t(`skillLevels.${profile.skill_level}`)}
+              />
+              <Field
+                label={t("skillRating")}
+                value={String(profile.skill_rating)}
+              />
+              <Field label={t("homeCity")} value={profile.home_city ?? "—"} />
+              <Field
+                label={t("languageSetting")}
+                value={profile.locale.toUpperCase()}
+              />
+            </section>
           </div>
-
-          <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <Stat label={t("matchesPlayed")} value={profile.matches_played} />
-            <Stat label={t("matchesWon")} value={profile.matches_won} />
-            <Stat label={t("goalsScored")} value={profile.goals_scored} />
-            <Stat label={t("mvpCount")} value={profile.mvp_count} />
-          </section>
-
-          <RatingChart history={history} initialRating={profile.skill_rating} />
-
-          <RecentMatches matches={recent} />
-
-          <section className="border-border grid gap-4 rounded-lg border p-6 sm:grid-cols-2">
-            <Field
-              label={t("preferredPosition")}
-              value={positionLabel(profile.preferred_position)}
-            />
-            <Field
-              label={t("secondaryPosition")}
-              value={positionLabel(profile.secondary_position)}
-            />
-            <Field
-              label={t("skillLevel")}
-              value={t(`skillLevels.${profile.skill_level}`)}
-            />
-            <Field
-              label={t("skillRating")}
-              value={String(profile.skill_rating)}
-            />
-            <Field label={t("homeCity")} value={profile.home_city ?? "—"} />
-            <Field
-              label={t("languageSetting")}
-              value={profile.locale.toUpperCase()}
-            />
-          </section>
-
-          <Link
-            href={`/${locale}`}
-            className="text-muted-foreground self-start text-sm hover:underline"
-          >
-            ← {tHome("title")}
-          </Link>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="border-border rounded-lg border p-4 text-center">
-      <div className="text-2xl font-bold">{value}</div>
-      <div className="text-muted-foreground text-xs tracking-wide uppercase">
+    <div className="glass-card rounded-lg border p-3 text-center sm:p-4">
+      <div className="text-xl font-bold tabular-nums sm:text-2xl">{value}</div>
+      <div className="text-muted-foreground text-[10px] tracking-wide uppercase sm:text-xs">
         {label}
       </div>
     </div>

@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { HeaderActions } from "@/components/header-actions";
+import { AppHeader } from "@/components/app-header";
 
 /**
  * Kullanım Koşulları — placeholder (MVP §15.1).
@@ -23,20 +22,12 @@ export default async function TermsPage({
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="border-border h-16 border-b">
-        <div className="mx-auto flex h-full max-w-3xl items-center justify-between px-6">
-          <Link
-            href={`/${locale}`}
-            className="flex items-center gap-1 text-sm font-medium hover:underline"
-          >
-            <ChevronLeft className="size-4" />
-            Onside
-          </Link>
-          <HeaderActions />
-        </div>
-      </header>
-
-      <main className="mx-auto w-full max-w-3xl px-6 py-12">
+      <AppHeader
+        back={{ href: "/", label: "Onside" }}
+        title={t("title")}
+        maxWidth="3xl"
+      />
+      <main className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-12">
         <article className="prose prose-sm dark:prose-invert max-w-none">
           <h1 className="text-3xl font-semibold tracking-tight">
             {t("title")}

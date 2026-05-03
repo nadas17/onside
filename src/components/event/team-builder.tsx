@@ -13,6 +13,7 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
+import { useErrorMessage } from "@/lib/i18n-errors";
 import { toast } from "sonner";
 import {
   DndContext,
@@ -64,6 +65,7 @@ export function TeamBuilder({
   onSaved: () => void;
 }) {
   const t = useTranslations("Teams");
+  const errorMsg = useErrorMessage();
 
   const [items, setItems] = React.useState<DragItem[]>(() =>
     initialTeams.flatMap((team) =>
@@ -200,7 +202,7 @@ export function TeamBuilder({
     const result = await saveTeamsAction(eventId, teamsPayload, seed);
     setSaving(false);
     if (!result.ok) {
-      toast.error(t("saveError"), { description: result.error });
+      toast.error(t("saveError"), { description: errorMsg(result) });
       return;
     }
     toast.success(t("saved"));
@@ -255,7 +257,7 @@ export function TeamBuilder({
         </div>
         <DragOverlay>
           {activeItem ? (
-            <div className="border-border bg-background rounded-md border px-3 py-2 text-sm shadow-lg">
+            <div className="glass-strong rounded-lg border px-3 py-2 text-sm shadow-xl">
               {activeItem.displayName}
             </div>
           ) : null}
@@ -317,7 +319,7 @@ function DroppableArea({
       ref={setNodeRef}
       style={style}
       {...(!hasItems ? { ...attributes, ...listeners } : {})}
-      className="border-border rounded-md border p-3"
+      className="glass-card rounded-lg border p-3"
       data-droppable={id}
     >
       {children}
@@ -343,7 +345,7 @@ function SortableItem({ item }: { item: DragItem }) {
     <li
       ref={setNodeRef}
       style={style}
-      className="border-border bg-background flex items-center gap-2 rounded-md border px-2 py-1.5 text-sm"
+      className="glass-strong flex items-center gap-2 rounded-md border px-2 py-1.5 text-sm"
     >
       <button
         type="button"

@@ -37,18 +37,6 @@ export async function getNotificationsAction(
   } = await supabase.auth.getUser();
   if (!user) return { ok: true, data: [] };
 
-  const { data, error } = await supabase
-    .from("notification")
-    .select(
-      `id, kind, event_id, payload, read_at, created_at,
-       event:event_id ( title )`,
-    )
-    .eq("recipient_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(limit);
-
-  if (error) return { ok: false, error: error.message, code: "db_error" };
-
   type Row = {
     id: string;
     kind: NotificationKind;
@@ -58,7 +46,21 @@ export async function getNotificationsAction(
     created_at: string;
     event: { title: string } | null;
   };
-  const rows = (data ?? []) as unknown as Row[];
+
+  const { data, error } = await supabase
+    .from("notification")
+    .select(
+      `id, kind, event_id, payload, read_at, created_at,
+       event:event_id ( title )`,
+    )
+    .eq("recipient_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(limit)
+    .returns<Row[]>();
+
+  if (error) return { ok: false, error: error.message, code: "db_error" };
+
+  const rows = data ?? [];
 
   return {
     ok: true,

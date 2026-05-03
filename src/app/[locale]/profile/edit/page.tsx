@@ -1,7 +1,8 @@
-import Link from "next/link";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { AppHeader } from "@/components/app-header";
+import { PageBackground } from "@/components/page-background";
 import { ProfileEditForm } from "@/components/profile/profile-edit-form";
 
 type EditableProfile = {
@@ -42,20 +43,18 @@ export default async function ProfileEditPage({
   const t = await getTranslations("Profile");
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="border-border border-b">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-          <Link href={`/${locale}/profile`} className="text-sm font-medium">
-            ← @{profile!.username}
-          </Link>
-          <h1 className="text-base font-semibold">{t("edit")}</h1>
-          <div className="w-20" />
-        </div>
-      </header>
-
-      <main className="mx-auto w-full max-w-2xl px-6 py-8">
-        <ProfileEditForm initial={profile!} />
-      </main>
-    </div>
+    <>
+      <PageBackground variant="profile" intensity="heavy" />
+      <div className="flex min-h-screen flex-col">
+        <AppHeader
+          back={{ href: "/profile", label: `@${profile!.username}` }}
+          title={t("edit")}
+          maxWidth="3xl"
+        />
+        <main className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 sm:py-8">
+          <ProfileEditForm initial={profile!} />
+        </main>
+      </div>
+    </>
   );
 }

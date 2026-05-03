@@ -23,6 +23,49 @@ const useUpstash = Boolean(UPSTASH_URL && UPSTASH_TOKEN);
 type Bucket = { count: number; resetAt: number };
 const memoryBuckets = new Map<string, Bucket>();
 
+/**
+ * Upper bound on the in-memory bucket map. Without this, a sustained spray
+ * of unique IPs (or fallback `"unknown"` keys) would grow `memoryBuckets`
+ * unboundedly and leak memory. We sweep expired buckets first; if still
+ * over the cap, evict the oldest by `resetAt`.
+ */
+const MAX_BUCKETS = 10_000;
+const SWEEP_BATCH = 200;
+
+function evictExpired(now: number): number {
+  let removed = 0;
+  for (const [key, bucket] of memoryBuckets) {
+    if (bucket.resetAt < now) {
+      memoryBuckets.delete(key);
+      removed += 1;
+    }
+  }
+  return removed;
+}
+
+function evictOldest(targetSize: number): void {
+  // Map iteration is insertion-ordered; we want to remove buckets with the
+  // earliest `resetAt`. Sort once, drop the head, stop when below target.
+  const sorted = [...memoryBuckets.entries()].sort(
+    (a, b) => a[1].resetAt - b[1].resetAt,
+  );
+  const toRemove = memoryBuckets.size - targetSize;
+  for (let i = 0; i < toRemove && i < sorted.length; i++) {
+    memoryBuckets.delete(sorted[i]![0]);
+  }
+}
+
+function maybeEvict(now: number): void {
+  if (memoryBuckets.size < MAX_BUCKETS) return;
+  // Cheap path first: drop expired entries.
+  const removed = evictExpired(now);
+  if (memoryBuckets.size < MAX_BUCKETS) return;
+  if (removed === 0 || memoryBuckets.size >= MAX_BUCKETS) {
+    // Hard eviction — keep the freshest 90% of the cap.
+    evictOldest(MAX_BUCKETS - SWEEP_BATCH);
+  }
+}
+
 export type RateLimitResult =
   | { allowed: true; remaining: number; resetAt: number }
   | { allowed: false; remaining: 0; resetAt: number };
@@ -33,6 +76,7 @@ function rateLimitInMemory(
   windowMs: number,
 ): RateLimitResult {
   const now = Date.now();
+  maybeEvict(now);
   const bucket = memoryBuckets.get(key);
 
   if (!bucket || bucket.resetAt < now) {

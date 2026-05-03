@@ -81,21 +81,6 @@ export async function getRecentMatchesAction(
 ): Promise<ActionResult<RecentMatch[]>> {
   const supabase = await createClient();
 
-  // 1. Stats + event + venue
-  const { data: stats, error: statErr } = await supabase
-    .from("player_match_stat")
-    .select(
-      `event_id, team_label, goals, attended, elo_delta, created_at,
-       event:event_id ( id, title, start_at,
-         venue:venue_id ( name, city )
-       )`,
-    )
-    .eq("profile_id", profileId)
-    .order("created_at", { ascending: false })
-    .limit(limit);
-
-  if (statErr) return { ok: false, error: statErr.message, code: "db_error" };
-
   type StatRow = {
     event_id: string;
     team_label: "A" | "B";
@@ -110,7 +95,24 @@ export async function getRecentMatchesAction(
       venue: { name: string; city: string } | null;
     } | null;
   };
-  const statRows = (stats ?? []) as unknown as StatRow[];
+
+  // 1. Stats + event + venue
+  const { data: stats, error: statErr } = await supabase
+    .from("player_match_stat")
+    .select(
+      `event_id, team_label, goals, attended, elo_delta, created_at,
+       event:event_id ( id, title, start_at,
+         venue:venue_id ( name, city )
+       )`,
+    )
+    .eq("profile_id", profileId)
+    .order("created_at", { ascending: false })
+    .limit(limit)
+    .returns<StatRow[]>();
+
+  if (statErr) return { ok: false, error: statErr.message, code: "db_error" };
+
+  const statRows = stats ?? [];
   const eventIds = statRows.map((s) => s.event_id);
   if (eventIds.length === 0) return { ok: true, data: [] };
 

@@ -115,12 +115,15 @@ export function MapView({
     markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
 
-    for (const pin of pins) {
+    pins.forEach((pin, i) => {
       const el = document.createElement("button");
       el.type = "button";
       el.setAttribute("aria-label", pin.name);
       el.className =
-        "flex size-7 items-center justify-center rounded-full border-2 border-white shadow-md transition hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500";
+        "pin-pop-in flex size-7 items-center justify-center rounded-full border-2 border-white shadow-md transition hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 motion-reduce:!animate-none";
+      // Stagger entry up to 8 pins so a dense feed feels deliberate, not chaotic.
+      const delay = Math.min(i, 8) * 32;
+      el.style.animationDelay = `${delay}ms`;
       el.style.backgroundColor = pin.color ?? "#059669";
       el.style.cursor = "pointer";
       // Top-down futbol sahası ikonu (logo'nun marker boyutuna uyarlanmışı).
@@ -141,7 +144,7 @@ export function MapView({
         .setLngLat([pin.lng, pin.lat])
         .addTo(map);
       markersRef.current.push(marker);
-    }
+    });
   }, [pins]);
 
   // Kullanıcı konumu marker'ı

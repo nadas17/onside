@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { EventForm } from "@/components/event/event-form";
-import { HeaderActions } from "@/components/header-actions";
+import { AppHeader } from "@/components/app-header";
+import { PageBackground } from "@/components/page-background";
 
 type VenueOption = {
   id: string;
@@ -37,26 +37,18 @@ export default async function NewEventPage({
   const t = await getTranslations("Events");
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="border-border h-16 border-b">
-        <div className="mx-auto flex h-full max-w-3xl items-center justify-between px-6">
-          <Link href={`/${locale}`} className="text-sm font-medium">
-            ← Onside
-          </Link>
-          <h1 className="text-base font-semibold">{t("createTitle")}</h1>
-          <HeaderActions />
-        </div>
-      </header>
-
-      <main className="mx-auto w-full max-w-2xl px-6 py-8">
-        {(venues?.length ?? 0) === 0 ? (
-          <p className="border-border text-muted-foreground rounded-md border border-dashed px-4 py-3 text-sm">
-            {t("noVenues")}
-          </p>
-        ) : (
+    <>
+      <PageBackground variant="eventNew" intensity="heavy" />
+      <div className="flex min-h-screen flex-col">
+        <AppHeader
+          back={{ href: "/events", label: "Onside" }}
+          title={t("createTitle")}
+          maxWidth="3xl"
+        />
+        <main className="mx-auto w-full max-w-2xl px-6 py-6 sm:py-8">
           <EventForm venues={venues ?? []} locale={locale} />
-        )}
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }

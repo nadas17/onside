@@ -50,7 +50,7 @@ export function RatingChart({
   if (points.length < 2) {
     return (
       <EmptyState
-        icon={<LineChart className="size-5" />}
+        icon={<LineChart />}
         title={t("chartEmpty", { rating: initialRating })}
         description={t("chartEmptyHint")}
       />
@@ -99,7 +99,7 @@ export function RatingChart({
   });
 
   return (
-    <div className="border-border bg-card overflow-hidden rounded-lg border p-4">
+    <div className="glass-card overflow-hidden rounded-lg border p-4 shadow-md shadow-black/20">
       <div className="flex items-baseline justify-between pb-2">
         <span className="text-sm font-semibold">{t("ratingChart")}</span>
         <span className="text-muted-foreground text-xs">

@@ -6,8 +6,7 @@
     "browseEvents": "Browse nearby matches",
     "browseVenues": "Venues",
     "createEvent": "Create a match",
-    "viewProfile": "Profile",
-    "phase3Notice": "Phase 3 — event creation & feed live. RSVP & chat next."
+    "viewProfile": "Profile"
   },
   "Theme": {
     "toggle": "Toggle dark mode"
@@ -64,8 +63,16 @@
     "confirmDelete": "Delete this message?",
     "messageDeleted": "[message deleted]",
     "report": "Report",
-    "reportPrompt": "Reason: spam, harassment, inappropriate, other",
-    "reportInvalidReason": "Invalid reason.",
+    "reporting": "Reporting…",
+    "reportTitle": "Report message",
+    "reportDescription": "Why are you reporting this? The moderation team will review.",
+    "reportReason": "Reason",
+    "reportReasons": {
+      "spam": "Spam or advertising",
+      "harassment": "Harassment / abuse",
+      "inappropriate": "Inappropriate content",
+      "other": "Other"
+    },
     "reportError": "Could not report",
     "reported": "Message reported.",
     "alreadyReported": "You already reported this message.",
@@ -268,6 +275,9 @@
     "submitError": "Couldn't save score",
     "edit": "Edit score",
     "editTitle": "Edit match score",
+    "editWindowHours": "{count}h left",
+    "editWindowMinutes": "{count}m left",
+    "editWindowFull": "Score can be edited within 24 hours.",
     "edited": "Score updated",
     "save": "Save",
     "saving": "Saving…",
@@ -283,6 +293,8 @@
     "openHint": "Attended players can vote for best performance ({total} votes so far).",
     "closedHint": "Voting window closed ({total} votes). Organizer can finalize.",
     "voteFor": "Vote",
+    "voteForName": "Vote for {name}",
+    "yourVoteFor": "Your vote: {name}",
     "voted": "Vote saved",
     "voteError": "Couldn't vote",
     "winnerLabel": "MVP",
@@ -356,6 +368,7 @@
     "time": "Time",
     "startAt": "Start",
     "endAt": "End",
+    "timezoneHint": "Times are stored in Europe/Warsaw time zone (where matches happen).",
     "format": "Format",
     "capacity": "Capacity",
     "capacityHint": "{format} → {size} per team, suggested capacity {suggested}.",
@@ -378,7 +391,12 @@
     "emptyFeed": "No upcoming matches match these filters.",
     "emptyFeedHint": "Loosen the filters or create your own match.",
     "createFirst": "Create the first one",
-    "noVenues": "No venues yet. Run the Phase 2 seed.",
+    "openMap": "Show on map ({count})",
+    "backToList": "Back to list",
+    "pinsShown": "{count} matches",
+    "noVenues": "No venues registered yet.",
+    "noVenuesTitle": "No venues yet",
+    "noVenuesHint": "A venue must be registered before you can create a match. Contact the admin.",
     "upcomingHere": "Upcoming matches at this venue",
     "noUpcoming": "No upcoming matches scheduled here.",
     "invalidDate": "Invalid date/time",
@@ -400,6 +418,7 @@
   },
   "Venues": {
     "title": "Venues",
+    "subtitle": "{count} venues",
     "emptyForCity": "No venues registered for this city yet.",
     "surface": "Surface",
     "surfaces": {
@@ -424,6 +443,7 @@
     "saveError": "Could not save",
     "username": "Username",
     "displayName": "Display name",
+    "usernamePermanent": "permanent",
     "bio": "Bio",
     "bioPlaceholder": "Tell people a bit about yourself…",
     "homeCity": "City",
@@ -450,5 +470,50 @@
       "pro": "Pro"
     },
     "languageSetting": "Language"
+  },
+  "Nav": {
+    "home": "Home",
+    "events": "Matches",
+    "venues": "Venues",
+    "profile": "Profile",
+    "create": "New match"
+  },
+  "CommandPalette": {
+    "title": "Command palette",
+    "description": "Quick search and navigation",
+    "triggerLabel": "Search",
+    "placeholder": "Find a page, run an action…",
+    "noResults": "No results",
+    "pages": "Pages",
+    "actions": "Actions",
+    "appearance": "Appearance",
+    "language": "Language",
+    "legal": "Legal",
+    "home": "Home",
+    "events": "Events",
+    "venues": "Venues",
+    "profile": "My profile",
+    "newEvent": "Create new event",
+    "themeLight": "Light theme",
+    "themeDark": "Dark theme",
+    "themeSystem": "System theme",
+    "privacy": "Privacy policy",
+    "terms": "Terms of service",
+    "footerHint": "Open from anywhere with Cmd+K",
+    "navigate": "navigate",
+    "select": "select",
+    "close": "close"
+  },
+  "Errors": {
+    "rate_limited": "Too many requests. Please try again in a minute.",
+    "invalid_nickname": "Invalid nickname.",
+    "username_taken": "That nickname is already taken.",
+    "auth_failed": "Session not found. Please refresh the page.",
+    "db_error": "Database error. Please try again.",
+    "invalid_input": "Invalid input.",
+    "not_found": "Not found.",
+    "forbidden": "You don't have permission for this action.",
+    "balance_error": "Team balance failed.",
+    "not_enough_players": "Not enough players."
   }
 }

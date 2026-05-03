@@ -2,16 +2,10 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import {
-  Calendar,
-  Clock,
-  MapPin,
-  Users,
-  Trophy,
-  ChevronLeft,
-} from "lucide-react";
+import { Calendar, Clock, MapPin, Users, Trophy } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { HeaderActions } from "@/components/header-actions";
+import { AppHeader } from "@/components/app-header";
+import { PageBackground } from "@/components/page-background";
 import { EventStatusBadge } from "@/components/event/event-status-badge";
 import { CancelEventDialog } from "@/components/event/cancel-event-dialog";
 import { JoinButton } from "@/components/event/join-button";
@@ -166,201 +160,196 @@ export default async function EventDetailPage({
   });
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="border-border h-16 border-b">
-        <div className="mx-auto flex h-full max-w-5xl items-center justify-between px-6">
-          <Link
-            href={`/${locale}`}
-            className="flex items-center gap-1 text-sm font-medium hover:underline"
-          >
-            <ChevronLeft className="size-4" />
-            Onside
-          </Link>
-          <HeaderActions />
-        </div>
-      </header>
-
-      <main className="mx-auto w-full max-w-5xl px-6 py-8">
-        <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
-          <div className="flex flex-col gap-8">
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <EventStatusBadge status={event!.status} />
-                <span className="text-muted-foreground text-xs">
-                  {t("organizedBy")} @{event!.organizer.username}
-                </span>
+    <>
+      <PageBackground variant="eventDetail" intensity="heavy" />
+      <div className="flex min-h-screen flex-col">
+        <AppHeader
+          back={{ href: "/events", label: "Onside" }}
+          title={event!.title}
+          maxWidth="5xl"
+        />
+        <main className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
+          <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
+            <div className="flex flex-col gap-8">
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <EventStatusBadge status={event!.status} />
+                  <span className="text-muted-foreground text-xs">
+                    {t("organizedBy")} @{event!.organizer.username}
+                  </span>
+                </div>
+                <h1 className="text-3xl font-semibold tracking-tight">
+                  {event!.title}
+                </h1>
+                {event!.description && (
+                  <p className="text-muted-foreground text-sm">
+                    {event!.description}
+                  </p>
+                )}
               </div>
-              <h1 className="text-3xl font-semibold tracking-tight">
-                {event!.title}
-              </h1>
-              {event!.description && (
-                <p className="text-muted-foreground text-sm">
-                  {event!.description}
-                </p>
+
+              {event!.status === "cancelled" && event!.cancelled_reason && (
+                <div className="border-destructive/30 bg-destructive/5 rounded-md border px-4 py-3 text-sm">
+                  <strong>{t("cancelledNotice")}</strong>{" "}
+                  {event!.cancelled_reason}
+                </div>
+              )}
+
+              <section className="grid gap-3 sm:grid-cols-2">
+                <Info
+                  icon={<Calendar className="size-4" />}
+                  label={t("date")}
+                  value={dateFmt.format(startDate)}
+                />
+                <Info
+                  icon={<Clock className="size-4" />}
+                  label={t("time")}
+                  value={`${timeFmt.format(startDate)} – ${timeFmt.format(endDate)}`}
+                />
+                <Info
+                  icon={<MapPin className="size-4" />}
+                  label={t("venue")}
+                  value={
+                    <Link
+                      href={`/${locale}/venues/${event!.venue.id}`}
+                      className="hover:underline"
+                    >
+                      {event!.venue.name}, {event!.venue.city}
+                    </Link>
+                  }
+                />
+                <Info
+                  icon={<Users className="size-4" />}
+                  label={t("format")}
+                  value={`${event!.format} · ${t("capacityValue", { count: event!.capacity })}`}
+                />
+                <Info
+                  icon={<Trophy className="size-4" />}
+                  label={t("skillLevel")}
+                  value={`${tProfile(`skillLevels.${event!.min_skill_level}`)} – ${tProfile(`skillLevels.${event!.max_skill_level}`)}`}
+                />
+                <Info
+                  icon={<Users className="size-4" />}
+                  label={t("minPlayers")}
+                  value={t("minPlayersValue", {
+                    count: event!.min_players_to_confirm,
+                  })}
+                />
+              </section>
+
+              {event!.notes && (
+                <section>
+                  <h2 className="text-muted-foreground text-sm font-semibold">
+                    {t("notes")}
+                  </h2>
+                  <p className="mt-2 text-sm">{event!.notes}</p>
+                </section>
+              )}
+
+              <div className="glass-card flex flex-wrap items-center gap-3 rounded-lg border p-4 shadow-md shadow-black/20">
+                <span className="text-muted-foreground text-sm">
+                  {t("capacityValue", { count: event!.capacity })} ·{" "}
+                  {roster.length} / {event!.capacity}
+                </span>
+                <div className="ml-auto">
+                  <JoinButton
+                    eventId={event!.id}
+                    status={event!.status}
+                    isAuthed={!!user}
+                    isOrganizer={isOrganizer}
+                    myParticipant={myParticipant}
+                    preferredPosition={preferredPosition}
+                    startAt={event!.start_at}
+                    locale={locale}
+                  />
+                </div>
+              </div>
+
+              <EventRosterPanel
+                eventId={event!.id}
+                initialRoster={roster}
+                initialPending={pendingRequests}
+                capacity={event!.capacity}
+                isOrganizer={isOrganizer}
+                myPending={
+                  myParticipant?.status === "pending"
+                    ? {
+                        position: myParticipant.position,
+                        joinedAt: myParticipant.joinedAt,
+                        rejectedReason: myParticipant.rejectedReason,
+                      }
+                    : null
+                }
+              />
+
+              <TeamPanel
+                eventId={event!.id}
+                initialTeams={teams}
+                isOrganizer={isOrganizer}
+                status={event!.status}
+                confirmedCount={roster.length}
+                minPlayersToConfirm={event!.min_players_to_confirm}
+                capacity={event!.capacity}
+              />
+
+              <ResultPanel
+                eventId={event!.id}
+                isOrganizer={isOrganizer}
+                status={event!.status}
+                hasTeams={teams.length === 2}
+                initialResult={result}
+                initialMvpState={mvpState}
+                myUserId={user?.id ?? null}
+                startAt={event!.start_at}
+              />
+
+              <section>
+                <ChatRoom
+                  eventId={event!.id}
+                  initialMessages={messages}
+                  canPost={canPostChat}
+                  myUserId={user?.id ?? null}
+                  organizerId={event!.organizer_id}
+                  chatLocked={false}
+                  eventStatus={event!.status}
+                  locale={locale}
+                />
+              </section>
+
+              {canCancel && (
+                <div className="flex justify-end">
+                  <CancelEventDialog eventId={event!.id} />
+                </div>
               )}
             </div>
 
-            {event!.status === "cancelled" && event!.cancelled_reason && (
-              <div className="border-destructive/30 bg-destructive/5 rounded-md border px-4 py-3 text-sm">
-                <strong>{t("cancelledNotice")}</strong>{" "}
-                {event!.cancelled_reason}
-              </div>
-            )}
-
-            <section className="grid gap-3 sm:grid-cols-2">
-              <Info
-                icon={<Calendar className="size-4" />}
-                label={t("date")}
-                value={dateFmt.format(startDate)}
-              />
-              <Info
-                icon={<Clock className="size-4" />}
-                label={t("time")}
-                value={`${timeFmt.format(startDate)} – ${timeFmt.format(endDate)}`}
-              />
-              <Info
-                icon={<MapPin className="size-4" />}
-                label={t("venue")}
-                value={
-                  <Link
-                    href={`/${locale}/venues/${event!.venue.id}`}
-                    className="hover:underline"
-                  >
-                    {event!.venue.name}, {event!.venue.city}
-                  </Link>
-                }
-              />
-              <Info
-                icon={<Users className="size-4" />}
-                label={t("format")}
-                value={`${event!.format} · ${t("capacityValue", { count: event!.capacity })}`}
-              />
-              <Info
-                icon={<Trophy className="size-4" />}
-                label={t("skillLevel")}
-                value={`${tProfile(`skillLevels.${event!.min_skill_level}`)} – ${tProfile(`skillLevels.${event!.max_skill_level}`)}`}
-              />
-              <Info
-                icon={<Users className="size-4" />}
-                label={t("minPlayers")}
-                value={t("minPlayersValue", {
-                  count: event!.min_players_to_confirm,
-                })}
-              />
-            </section>
-
-            {event!.notes && (
-              <section>
-                <h2 className="text-muted-foreground text-sm font-semibold">
-                  {t("notes")}
-                </h2>
-                <p className="mt-2 text-sm">{event!.notes}</p>
-              </section>
-            )}
-
-            <div className="border-border flex flex-wrap items-center gap-3 rounded-md border p-4">
-              <span className="text-muted-foreground text-sm">
-                {t("capacityValue", { count: event!.capacity })} ·{" "}
-                {roster.length} / {event!.capacity}
-              </span>
-              <div className="ml-auto">
-                <JoinButton
-                  eventId={event!.id}
-                  status={event!.status}
-                  isAuthed={!!user}
-                  isOrganizer={isOrganizer}
-                  myParticipant={myParticipant}
-                  preferredPosition={preferredPosition}
-                  startAt={event!.start_at}
-                  locale={locale}
+            <aside className="flex flex-col gap-3">
+              <div className="glass-card h-64 overflow-hidden rounded-lg border shadow-md shadow-black/20">
+                <MapView
+                  center={{ lat: event!.venue.lat, lng: event!.venue.lng }}
+                  zoom={15}
+                  pins={[
+                    {
+                      id: event!.venue.id,
+                      name: event!.venue.name,
+                      lat: event!.venue.lat,
+                      lng: event!.venue.lng,
+                    },
+                  ]}
+                  className="h-full w-full"
                 />
               </div>
-            </div>
-
-            <EventRosterPanel
-              eventId={event!.id}
-              initialRoster={roster}
-              initialPending={pendingRequests}
-              capacity={event!.capacity}
-              isOrganizer={isOrganizer}
-              myPending={
-                myParticipant?.status === "pending"
-                  ? {
-                      position: myParticipant.position,
-                      joinedAt: myParticipant.joinedAt,
-                      rejectedReason: myParticipant.rejectedReason,
-                    }
-                  : null
-              }
-            />
-
-            <TeamPanel
-              eventId={event!.id}
-              initialTeams={teams}
-              isOrganizer={isOrganizer}
-              status={event!.status}
-              confirmedCount={roster.length}
-              minPlayersToConfirm={event!.min_players_to_confirm}
-              capacity={event!.capacity}
-            />
-
-            <ResultPanel
-              eventId={event!.id}
-              isOrganizer={isOrganizer}
-              status={event!.status}
-              hasTeams={teams.length === 2}
-              initialResult={result}
-              initialMvpState={mvpState}
-              myUserId={user?.id ?? null}
-              startAt={event!.start_at}
-            />
-
-            <section>
-              <ChatRoom
-                eventId={event!.id}
-                initialMessages={messages}
-                canPost={canPostChat}
-                myUserId={user?.id ?? null}
-                organizerId={event!.organizer_id}
-                chatLocked={false}
-                eventStatus={event!.status}
-                locale={locale}
-              />
-            </section>
-
-            {canCancel && (
-              <div className="flex justify-end">
-                <CancelEventDialog eventId={event!.id} />
+              <div className="glass-card rounded-lg border p-4 text-sm">
+                <div className="font-medium">{event!.venue.name}</div>
+                <div className="text-muted-foreground text-xs">
+                  {event!.venue.address_line}, {event!.venue.city}
+                </div>
               </div>
-            )}
+            </aside>
           </div>
-
-          <aside className="flex flex-col gap-3">
-            <div className="border-border h-64 overflow-hidden rounded-lg border">
-              <MapView
-                center={{ lat: event!.venue.lat, lng: event!.venue.lng }}
-                zoom={15}
-                pins={[
-                  {
-                    id: event!.venue.id,
-                    name: event!.venue.name,
-                    lat: event!.venue.lat,
-                    lng: event!.venue.lng,
-                  },
-                ]}
-                className="h-full w-full"
-              />
-            </div>
-            <div className="border-border rounded-md border p-4 text-sm">
-              <div className="font-medium">{event!.venue.name}</div>
-              <div className="text-muted-foreground text-xs">
-                {event!.venue.address_line}, {event!.venue.city}
-              </div>
-            </div>
-          </aside>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }
 
@@ -374,7 +363,7 @@ function Info({
   value: React.ReactNode;
 }) {
   return (
-    <div className="border-border rounded-md border p-3">
+    <div className="glass-card rounded-lg border p-3">
       <div className="text-muted-foreground flex items-center gap-2 text-xs tracking-wide uppercase">
         {icon}
         {label}

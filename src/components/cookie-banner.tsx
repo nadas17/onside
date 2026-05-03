@@ -47,7 +47,10 @@ export function CookieBanner() {
     <div
       role="region"
       aria-label={t("title")}
-      className="border-border bg-card fixed inset-x-3 bottom-3 z-50 mx-auto flex max-w-2xl items-start gap-3 rounded-lg border p-4 shadow-lg"
+      className="glass-strong fixed inset-x-3 z-50 mx-auto flex max-w-2xl items-start gap-3 rounded-lg border p-4 shadow-xl shadow-black/40"
+      style={{
+        bottom: "calc(5rem + env(safe-area-inset-bottom))",
+      }}
     >
       <Cookie className="text-brand mt-0.5 size-4 shrink-0" aria-hidden />
       <div className="text-muted-foreground flex-1 text-xs">

@@ -143,7 +143,7 @@ export function NotificationBell({
         <div
           role="dialog"
           aria-label={t("title")}
-          className="border-border bg-popover absolute top-full right-0 z-50 mt-2 flex w-80 max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-md border shadow-lg"
+          className="glass-strong absolute top-full right-0 z-50 mt-2 flex w-80 max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-lg border shadow-xl shadow-black/40"
         >
           <div className="border-border flex items-center justify-between gap-2 border-b px-3 py-2">
             <span className="text-sm font-semibold">{t("title")}</span>
