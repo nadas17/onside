@@ -60,3 +60,6 @@ next-env.d.ts
 
 # Subagent worktrees (superpowers:using-git-worktrees)
 .worktrees/
+
+# DB backup dumps (nightly workflow writes to ./backups/)
+/backups/
