@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import * as Sentry from "@sentry/nextjs";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -21,6 +22,7 @@ export default function LocaleError({
       message: error.message,
       digest: error.digest,
     });
+    Sentry.captureException(error);
   }, [error]);
 
   useEffect(() => {
