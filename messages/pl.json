@@ -515,5 +515,11 @@
     "forbidden": "Brak uprawnień do tej akcji.",
     "balance_error": "Nie udało się zbilansować drużyn.",
     "not_enough_players": "Za mało graczy."
+  },
+  "Error": {
+    "title": "Coś poszło nie tak",
+    "description": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie.",
+    "retry": "Spróbuj ponownie",
+    "home": "Wróć do strony głównej"
   }
 }

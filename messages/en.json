@@ -515,5 +515,11 @@
     "forbidden": "You don't have permission for this action.",
     "balance_error": "Team balance failed.",
     "not_enough_players": "Not enough players."
+  },
+  "Error": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try again.",
+    "retry": "Try again",
+    "home": "Go to home"
   }
 }
