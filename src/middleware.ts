@@ -14,9 +14,11 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Skip API routes, Next internals, and *any* file with an extension
-    // (the trailing `\\..*` clause). Without this, `/bg/foo.jpg` gets a
-    // locale prefix and Next/Image fails to fetch the source (400).
-    "/((?!api|_next|_vercel|.*\\..*).*)",
+    // Skip API routes, /auth (locale-agnostic OAuth callback), Next internals,
+    // and *any* file with an extension (the trailing `\\..*` clause). Without
+    // this, `/bg/foo.jpg` gets a locale prefix and Next/Image fails to fetch
+    // the source (400). Without `auth`, Supabase's redirect to /auth/callback
+    // gets rewritten to /pl/auth/callback (no such route → 404).
+    "/((?!api|auth|_next|_vercel|.*\\..*).*)",
   ],
 };
