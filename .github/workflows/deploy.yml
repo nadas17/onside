@@ -28,7 +28,16 @@ jobs:
       - name: Pull Vercel project info
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy (Vercel cloud build)
-        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+        id: deploy
+        run: |
+          url=$(vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Deployed: $url"
+      - name: Promote deployment to production alias
+        # vercel.json's git.deploymentEnabled.main:false leaves the alias
+        # un-promoted from CLI deploys, so do it explicitly here.
+        run: |
+          vercel alias set "${{ steps.deploy.outputs.url }}" onside-three.vercel.app --token=${{ secrets.VERCEL_TOKEN }}
       - name: Smoke test (/api/health)
         # Hits the stable production alias (always points to the latest --prod
         # deploy and is publicly accessible). Deployment-specific URLs are
