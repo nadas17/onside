@@ -6,7 +6,6 @@ import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { AppHeader } from "@/components/app-header";
 import { PageBackground } from "@/components/page-background";
-import { JoinModal } from "@/components/auth/join-modal";
 import { MyEventsList } from "@/components/event/my-events-list";
 import { getMyEventsAction, type MyEventItem } from "@/lib/event/actions";
 
@@ -61,7 +60,6 @@ function HomeView({
   return (
     <>
       <PageBackground variant="home" intensity="balanced" />
-      <JoinModal open={!profile} />
       <div className="flex min-h-screen flex-col">
         <AppHeader maxWidth="6xl" />
         <main className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6 sm:py-16">

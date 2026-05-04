@@ -32,7 +32,17 @@ type Availability =
 const NICKNAME_REGEX = /^[a-z0-9_]{3,20}$/;
 const NICKNAME_DRAFT_KEY = "onside:nickname-draft";
 
-export function JoinModal({ open }: { open: boolean }) {
+export function JoinModal({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  /**
+   * Called when the user dismisses the modal (X button or scrim click).
+   * Optional for legacy callers; AuthGateProvider always passes one.
+   */
+  onClose?: () => void;
+}) {
   const t = useTranslations("Auth");
   const router = useRouter();
   const m = useMotionPreset();
@@ -147,8 +157,14 @@ export function JoinModal({ open }: { open: boolean }) {
   const submitDisabled = pending || availability.status !== "available";
 
   return (
-    <ResponsiveDialog open={open} dismissible={false}>
-      <ResponsiveDialogContent hideCloseButton blockDismiss>
+    <ResponsiveDialog
+      open={open}
+      dismissible
+      onOpenChange={(next) => {
+        if (!next) onClose?.();
+      }}
+    >
+      <ResponsiveDialogContent>
         <ResponsiveDialogHeader>
           <ResponsiveDialogTitle>{t("welcome")}</ResponsiveDialogTitle>
           <ResponsiveDialogDescription>

@@ -23,6 +23,7 @@
   "Auth": {
     "welcome": "Welcome!",
     "nicknamePrompt": "One tap to start with Google — your history follows you across devices. Or continue anonymously.",
+    "signIn": "Sign in",
     "googleContinue": "Continue with Google",
     "googleStarting": "Redirecting…",
     "googleError": "Could not sign in with Google.",
