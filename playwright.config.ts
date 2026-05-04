@@ -6,8 +6,7 @@ import { defineConfig, devices } from "@playwright/test";
  * Local: `pnpm test:e2e` boots dev server + runs all tests in tests/e2e/
  * Staging: `BASE_URL=https://onside-staging.vercel.app pnpm test:e2e --grep smoke`
  *
- * CI'de henüz çalışmıyor (Supabase env gerektirir, secret expose riskli) — staging
- * Supabase + Vercel preview kurulumu sonrası enable edilecek.
+ * CI: build sonrası `pnpm start` ile dummy env kullanır (Task 10 ekledi).
  */
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -36,7 +35,7 @@ export default defineConfig({
   webServer: process.env.BASE_URL
     ? undefined
     : {
-        command: "pnpm dev",
+        command: process.env.CI ? "pnpm start" : "pnpm dev",
         url: "http://localhost:3000",
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,

@@ -1,0 +1,15 @@
+node_modules
+.next
+.env
+.env.local
+.env.*.local
+.git
+.github
+docs
+tests
+playwright-report
+test-results
+*.md
+!README.md
+.vercel
+.husky

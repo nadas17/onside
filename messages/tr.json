@@ -515,5 +515,16 @@
     "forbidden": "Bu işlem için yetkin yok.",
     "balance_error": "Takım dengeleme başarısız.",
     "not_enough_players": "Yeterli oyuncu yok."
+  },
+  "Error": {
+    "title": "Bir şeyler ters gitti",
+    "description": "Beklenmeyen bir hata oluştu. Tekrar deneyebilirsin.",
+    "retry": "Tekrar dene",
+    "home": "Ana sayfaya dön"
+  },
+  "NotFound": {
+    "title": "Sayfa bulunamadı",
+    "description": "Aradığın sayfa mevcut değil.",
+    "home": "Ana sayfaya dön"
   }
 }

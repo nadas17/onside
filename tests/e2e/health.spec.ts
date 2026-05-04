@@ -1,0 +1,20 @@
+import { test, expect } from "@playwright/test";
+
+test.describe("/api/health", () => {
+  test.skip(
+    process.env.CI === "true" && !process.env.SUPABASE_DB_REACHABLE,
+    "Skipped in CI: dummy DATABASE_URL doesn't reach Supabase. Re-enable when staging DB env is wired.",
+  );
+
+  test("returns 200 with status payload and db field", async ({ request }) => {
+    const res = await request.get("/api/health");
+    expect(res.status()).toBe(200);
+    const body = await res.json();
+    expect(body).toMatchObject({
+      status: "ok",
+      timestamp: expect.any(String),
+      uptime: expect.any(Number),
+    });
+    expect(body.db).toMatch(/^(ok|error|skipped)$/);
+  });
+});

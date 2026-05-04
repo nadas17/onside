@@ -17,6 +17,10 @@ const NICKNAME = `e2e_${Date.now().toString(36).slice(-6)}`;
 
 test.describe("smoke", () => {
   test("onboarding: nickname → home → events → venues", async ({ page }) => {
+    test.skip(
+      process.env.CI === "true" && !process.env.SUPABASE_DB_REACHABLE,
+      "Skipped in CI: anonymous auth requires real Supabase. Re-enable when staging env wired.",
+    );
     await page.goto("/");
     await expect(page).toHaveURL(/\/tr$/);
 
