@@ -22,7 +22,12 @@
   },
   "Auth": {
     "welcome": "Welcome!",
-    "nicknamePrompt": "Pick a nickname to start. You can add an email later to secure your account.",
+    "nicknamePrompt": "One tap to start with Google — your history follows you across devices. Or continue anonymously.",
+    "googleContinue": "Continue with Google",
+    "googleStarting": "Redirecting…",
+    "googleError": "Could not sign in with Google.",
+    "or": "or",
+    "anonHeading": "Quick anonymous",
     "nickname": "Nickname",
     "nicknamePlaceholder": "dogukan",
     "nicknameFormat": "3-20 characters; only lowercase letters, digits, and underscore (_)",
@@ -30,9 +35,9 @@
     "available": "Available ✓",
     "taken": "This nickname is taken.",
     "trySuggestion": "Try one of these:",
-    "start": "Start",
+    "start": "Start anonymously",
     "starting": "Starting…",
-    "anonNotice": "Your account is stored anonymously on this device. Clearing browser data will lose it."
+    "anonNotice": "Anonymous accounts live only on this device — if you clear browser data or switch devices, your history is gone. Link with Google to keep it safe."
   },
   "Cities": {
     "Warsaw": "Warsaw",
@@ -436,6 +441,11 @@
   },
   "Profile": {
     "title": "Profile",
+    "linkGoogleTitle": "Keep your account",
+    "linkGoogleDescription": "Link your anonymous account with Google — your Elo, match history, and stats stay accessible from any device.",
+    "linkGoogleButton": "Link with Google",
+    "linkGoogleStarting": "Redirecting…",
+    "linkGoogleError": "Could not link with Google.",
     "edit": "Edit",
     "save": "Save",
     "saving": "Saving…",

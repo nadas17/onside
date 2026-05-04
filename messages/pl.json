@@ -22,7 +22,12 @@
   },
   "Auth": {
     "welcome": "Witaj!",
-    "nicknamePrompt": "Wybierz pseudonim, aby zacząć. Później możesz dodać e-mail, aby zabezpieczyć konto.",
+    "nicknamePrompt": "Zacznij jednym kliknięciem przez Google — twoja historia będzie z tobą na każdym urządzeniu. Albo kontynuuj anonimowo.",
+    "googleContinue": "Kontynuuj przez Google",
+    "googleStarting": "Przekierowywanie…",
+    "googleError": "Nie udało się zalogować przez Google.",
+    "or": "lub",
+    "anonHeading": "Szybko anonimowo",
     "nickname": "Pseudonim",
     "nicknamePlaceholder": "dogukan",
     "nicknameFormat": "3-20 znaków; tylko małe litery, cyfry i podkreślenie (_)",
@@ -30,9 +35,9 @@
     "available": "Dostępne ✓",
     "taken": "Ten pseudonim jest zajęty.",
     "trySuggestion": "Spróbuj jednego z tych:",
-    "start": "Zaczynaj",
+    "start": "Zacznij anonimowo",
     "starting": "Uruchamianie…",
-    "anonNotice": "Twoje konto jest przechowywane anonimowo na tym urządzeniu. Wyczyszczenie danych przeglądarki je usunie."
+    "anonNotice": "Konto anonimowe jest tylko na tym urządzeniu — wyczyszczenie danych przeglądarki lub zmiana urządzenia oznacza utratę historii. Połącz z Google, aby ją zachować."
   },
   "Cities": {
     "Warsaw": "Warszawa",
@@ -436,6 +441,11 @@
   },
   "Profile": {
     "title": "Profil",
+    "linkGoogleTitle": "Zachowaj konto",
+    "linkGoogleDescription": "Połącz anonimowe konto z Google — twoje Elo, historia meczów i statystyki będą dostępne na każdym urządzeniu.",
+    "linkGoogleButton": "Połącz z Google",
+    "linkGoogleStarting": "Przekierowywanie…",
+    "linkGoogleError": "Nie udało się połączyć z Google.",
     "edit": "Edytuj",
     "save": "Zapisz",
     "saving": "Zapisywanie…",

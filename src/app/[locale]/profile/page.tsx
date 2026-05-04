@@ -8,6 +8,7 @@ import { AppHeader } from "@/components/app-header";
 import { PageBackground } from "@/components/page-background";
 import { RatingChart } from "@/components/profile/rating-chart";
 import { RecentMatches } from "@/components/profile/recent-matches";
+import { LinkGoogleCTA } from "@/components/profile/link-google-cta";
 import {
   getRecentMatchesAction,
   getSkillHistoryAction,
@@ -67,12 +68,18 @@ export default async function ProfilePage({
   const history = historyResult.ok ? historyResult.data : [];
   const recent = recentResult.ok ? recentResult.data : [];
 
+  // Anon-flagged users see the "Link with Google" upsell. The flag is set by
+  // Supabase when the only identity is anonymous; once linkIdentity completes,
+  // it flips to false on the next session refresh.
+  const isAnonymous = user!.is_anonymous === true;
+
   return (
     <ProfileView
       profile={profile!}
       locale={locale}
       history={history}
       recent={recent}
+      isAnonymous={isAnonymous}
     />
   );
 }
@@ -82,11 +89,13 @@ function ProfileView({
   locale,
   history,
   recent,
+  isAnonymous,
 }: {
   profile: Profile;
   locale: string;
   history: SkillPoint[];
   recent: RecentMatch[];
+  isAnonymous: boolean;
 }) {
   const t = useTranslations("Profile");
 
@@ -128,6 +137,8 @@ function ProfileView({
                 <Link href={`/${locale}/profile/edit`}>{t("edit")}</Link>
               </Button>
             </div>
+
+            {isAnonymous && <LinkGoogleCTA />}
 
             {/* 2x2 mobile, 4x1 desktop — KPI grid */}
             <section className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-4">
