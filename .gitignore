@@ -63,3 +63,5 @@ next-env.d.ts
 
 # DB backup dumps (nightly workflow writes to ./backups/)
 /backups/
+
+.vercel
