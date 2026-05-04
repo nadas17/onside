@@ -21,10 +21,17 @@ test.describe("smoke", () => {
       process.env.CI === "true" && !process.env.SUPABASE_DB_REACHABLE,
       "Skipped in CI: anonymous auth requires real Supabase. Re-enable when staging env wired.",
     );
-    await page.goto("/");
+    // Test asserts Türkçe UI strings (e.g. "yakındaki maçlar" link),
+    // so navigate to /tr explicitly — independent of the project's
+    // current default locale.
+    await page.goto("/tr");
     await expect(page).toHaveURL(/\/tr$/);
 
-    // JoinModal açılmış olmalı
+    // The JoinModal is no longer auto-opened on first visit (anonymous
+    // browsing was made the default). Open it from the header.
+    await page
+      .getByRole("button", { name: /giriş yap|sign in|zaloguj/i })
+      .click();
     await expect(page.getByRole("dialog")).toBeVisible();
 
     // Nickname doldur + başla
