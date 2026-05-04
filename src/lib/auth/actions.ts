@@ -1,10 +1,12 @@
 "use server";
 
 /**
- * Auth & profile server actions — Phase 1 (ADR-0002).
+ * Auth & profile server actions — Phase 1 (ADR-0002 + Google upgrade).
  *
- * Anonymous Auth + nickname-only sign-up.
+ * Anonymous Auth + nickname-only sign-up, plus Google OAuth for cross-device.
  *   - signInAnonymously: tarayıcı session'ı ilk ziyarette kurulur.
+ *   - signInWithGoogle: yeni kullanıcı Google ile (cross-device).
+ *   - linkGoogleAccount: mevcut anon kullanıcı Google'a bağlar (UUID korunur).
  *   - createProfile: nickname'i public.profile satırına yazar, RLS uygulanır.
  *   - updateProfile: kendi profilini partial update.
  */
@@ -19,6 +21,73 @@ import {
   type ProfileUpdate,
 } from "@/lib/validation/profile";
 import type { ActionResult } from "@/lib/types";
+
+function resolveOrigin(headerList: Headers): string {
+  return (
+    headerList.get("origin") ??
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    "http://localhost:3000"
+  );
+}
+
+/**
+ * Returns the Google consent URL — the client must navigate to it via
+ * `window.location.href` (Next.js redirect() can't reliably hand off to
+ * an external origin from a server action).
+ */
+export async function signInWithGoogleAction(): Promise<
+  ActionResult<{ url: string }>
+> {
+  const headerList = await headers();
+  const origin = resolveOrigin(headerList);
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${origin}/auth/callback`,
+    },
+  });
+
+  if (error || !data.url) {
+    return {
+      ok: false,
+      error: error?.message ?? "Google OAuth URL alınamadı.",
+      code: "auth_failed",
+    };
+  }
+  return { ok: true, data: { url: data.url } };
+}
+
+/**
+ * Same flow as signInWithGoogleAction but for an existing anon user.
+ * Supabase's linkIdentity preserves the UUID, so all match history /
+ * Elo / profile data carries over once the user comes back through
+ * /auth/callback.
+ */
+export async function linkGoogleAccountAction(): Promise<
+  ActionResult<{ url: string }>
+> {
+  const headerList = await headers();
+  const origin = resolveOrigin(headerList);
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.linkIdentity({
+    provider: "google",
+    options: {
+      redirectTo: `${origin}/auth/callback`,
+    },
+  });
+
+  if (error || !data?.url) {
+    return {
+      ok: false,
+      error: error?.message ?? "Google link URL alınamadı.",
+      code: "auth_failed",
+    };
+  }
+  return { ok: true, data: { url: data.url } };
+}
 
 type CreateProfileSuccess = {
   id: string;

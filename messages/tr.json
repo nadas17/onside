@@ -22,7 +22,12 @@
   },
   "Auth": {
     "welcome": "Hoş geldin!",
-    "nicknamePrompt": "Başlamak için bir nickname seç. İlerde istersen email ekleyip hesabını koruyabilirsin.",
+    "nicknamePrompt": "Google ile tek tıkla başla — geçmişin her cihazda korunur. Veya hızlıca anonim devam et.",
+    "googleContinue": "Google ile devam et",
+    "googleStarting": "Yönlendiriliyor…",
+    "googleError": "Google ile giriş yapılamadı.",
+    "or": "veya",
+    "anonHeading": "Hızlı anonim",
     "nickname": "Nickname",
     "nicknamePlaceholder": "dogukan",
     "nicknameFormat": "3-20 karakter; sadece küçük harf, rakam ve alt çizgi (_)",
@@ -30,9 +35,9 @@
     "available": "Müsait ✓",
     "taken": "Bu nickname alınmış.",
     "trySuggestion": "Bunlardan birini dene:",
-    "start": "Başla",
+    "start": "Anonim başla",
     "starting": "Başlatılıyor…",
-    "anonNotice": "Hesabın bu cihazda anonim olarak saklanır. Tarayıcı verilerini silersen kaybolur."
+    "anonNotice": "Anonim hesap sadece bu cihazda kalır — tarayıcı verisini silersen veya cihaz değiştirirsen geçmişine erişemezsin. Verilerini güvende tutmak için Google ile bağlan."
   },
   "Cities": {
     "Warsaw": "Varşova",
@@ -436,6 +441,11 @@
   },
   "Profile": {
     "title": "Profil",
+    "linkGoogleTitle": "Hesabını koru",
+    "linkGoogleDescription": "Anonim hesabını Google'a bağla — Elo, maç geçmişin ve istatistiklerin başka cihazda da erişilebilir olur.",
+    "linkGoogleButton": "Google ile bağla",
+    "linkGoogleStarting": "Yönlendiriliyor…",
+    "linkGoogleError": "Google'a bağlanamadı.",
     "edit": "Düzenle",
     "save": "Kaydet",
     "saving": "Kaydediliyor…",
