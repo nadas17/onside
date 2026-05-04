@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Clock, Check } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { Button } from "@/components/ui/button";
+import { useAuthGate } from "@/components/auth/auth-gate-provider";
 import {
   PositionPickerDialog,
   type Position,
@@ -105,11 +106,7 @@ export function JoinButton({
   if (isOrganizer) return null;
 
   if (!isAuthed) {
-    return (
-      <Button asChild size="lg">
-        <a href={`/${locale}`}>{t("signInToJoin")}</a>
-      </Button>
-    );
+    return <SignInToJoinButton label={t("signInToJoin")} />;
   }
   if (status === "cancelled") {
     return (
@@ -228,6 +225,21 @@ export function JoinButton({
         pending={pending}
       />
     </>
+  );
+}
+
+/**
+ * Anonymous-visitor variant of the join CTA. Instead of redirecting to home
+ * (which used to surface the auto-opened JoinModal), this surfaces the
+ * onboarding modal in-place via AuthGateProvider — the user keeps the
+ * event detail context after signing in.
+ */
+function SignInToJoinButton({ label }: { label: string }) {
+  const { requireAuth } = useAuthGate();
+  return (
+    <Button size="lg" onClick={requireAuth}>
+      {label}
+    </Button>
   );
 }
 

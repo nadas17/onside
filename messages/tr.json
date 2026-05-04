@@ -23,6 +23,7 @@
   "Auth": {
     "welcome": "Hoş geldin!",
     "nicknamePrompt": "Google ile tek tıkla başla — geçmişin her cihazda korunur. Veya hızlıca anonim devam et.",
+    "signIn": "Giriş yap",
     "googleContinue": "Google ile devam et",
     "googleStarting": "Yönlendiriliyor…",
     "googleError": "Google ile giriş yapılamadı.",

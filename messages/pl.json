@@ -23,6 +23,7 @@
   "Auth": {
     "welcome": "Witaj!",
     "nicknamePrompt": "Zacznij jednym kliknięciem przez Google — twoja historia będzie z tobą na każdym urządzeniu. Albo kontynuuj anonimowo.",
+    "signIn": "Zaloguj",
     "googleContinue": "Kontynuuj przez Google",
     "googleStarting": "Przekierowywanie…",
     "googleError": "Nie udało się zalogować przez Google.",

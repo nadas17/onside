@@ -13,8 +13,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { HeaderActions } from "@/components/header-actions";
+import { SignInCTA } from "@/components/auth/sign-in-cta";
 import { cn } from "@/lib/utils";
 import type { Route } from "next";
 
@@ -62,6 +64,8 @@ export async function AppHeader({
       displayName = data.display_name;
     }
   }
+
+  const tAuth = await getTranslations("Auth");
 
   return (
     <header className={cn("glass-bar sticky top-0 z-30 border-b", className)}>
@@ -111,7 +115,7 @@ export async function AppHeader({
         </div>
 
         <div className="flex items-center gap-1">
-          {username && (
+          {username ? (
             <Link
               href={"/profile" as Route}
               aria-label={`@${username}`}
@@ -130,6 +134,8 @@ export async function AppHeader({
                 @{username}
               </span>
             </Link>
+          ) : (
+            <SignInCTA label={tAuth("signIn")} />
           )}
           <HeaderActions />
         </div>
