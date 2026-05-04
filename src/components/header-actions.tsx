@@ -19,19 +19,29 @@ export async function HeaderActions() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Anonymous (signInAnonymously) sessions can't receive notifications —
+  // nothing in the app emits to them and the realtime subscribe just spams
+  // the console with CHANNEL_ERROR. Hide the bell until the account is
+  // linked (e.g. via Google). The same `user.is_anonymous` flag drives
+  // the "Link with Google" CTA on the profile page.
+  const isLinkedUser = !!user && user.is_anonymous !== true;
+
   let initialItems: Awaited<ReturnType<typeof getNotificationsAction>> = {
     ok: true,
     data: [],
   };
-  if (user) {
+  if (isLinkedUser) {
     initialItems = await getNotificationsAction(30);
   }
 
   return (
     <div className="flex items-center gap-1">
       <CommandPalette isAuthed={!!user} />
-      {user && initialItems.ok && (
-        <NotificationBell initialItems={initialItems.data} myUserId={user.id} />
+      {isLinkedUser && initialItems.ok && (
+        <NotificationBell
+          initialItems={initialItems.data}
+          myUserId={user!.id}
+        />
       )}
       <LocaleSwitcher />
     </div>
