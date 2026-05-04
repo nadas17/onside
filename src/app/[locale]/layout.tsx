@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   description:
     "Yakındaki pickup futbol maçını bul, katıl, dengeli takımlarda oyna.",
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   ),
   icons: {
     icon: "/onside-logo.svg",
