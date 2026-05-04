@@ -6,11 +6,9 @@ import { useTranslations } from "next-intl";
 import { useErrorMessage } from "@/lib/i18n-errors";
 import { toast } from "sonner";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
-import { Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { EmptyState } from "@/components/ui/empty-state";
 import {
   FORMAT_TEAM_SIZE,
   FORMATS,
@@ -29,10 +27,9 @@ type VenueOption = {
 };
 
 /**
- * Defensive guard — render an EmptyState when no venues are available, so
- * the EventForm body (which assumes a non-empty list) is never instantiated.
- * The parent page should also pre-filter this case, but a venue could be
- * soft-deleted between page render + submit, so we double-check here.
+ * EventForm renders even when the curated `venues` list is empty —
+ * organisers can always fall back to the manual venue mode, where they
+ * type the location name (and optionally a Maps URL) by hand.
  */
 export function EventForm({
   venues,
@@ -41,19 +38,7 @@ export function EventForm({
   venues: VenueOption[];
   locale: string;
 }) {
-  if (venues.length === 0) return <EventFormEmpty />;
   return <EventFormInner venues={venues} locale={locale} />;
-}
-
-function EventFormEmpty() {
-  const t = useTranslations("Events");
-  return (
-    <EmptyState
-      icon={<Building2 />}
-      title={t("noVenuesTitle")}
-      description={t("noVenuesHint")}
-    />
-  );
 }
 
 function EventFormInner({
@@ -82,7 +67,14 @@ function EventFormInner({
     return formatLocalDateTime(warsawNow);
   }, []);
 
+  // Venue selection — either pick from the curated list or enter a one-off
+  // location with a free-text name and optional Google Maps URL.
+  const [venueMode, setVenueMode] = React.useState<"list" | "manual">(
+    venues.length > 0 ? "list" : "manual",
+  );
   const [venueId, setVenueId] = React.useState(venues[0]?.id ?? "");
+  const [customVenueName, setCustomVenueName] = React.useState("");
+  const [customVenueUrl, setCustomVenueUrl] = React.useState("");
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [format, setFormat] = React.useState<(typeof FORMATS)[number]>("7v7");
@@ -129,7 +121,9 @@ function EventFormInner({
 
     startTransition(async () => {
       const result = await createEventAction({
-        venueId,
+        venueId: venueMode === "list" ? venueId : "",
+        customVenueName: venueMode === "manual" ? customVenueName : "",
+        customVenueUrl: venueMode === "manual" ? customVenueUrl : "",
         title,
         description,
         format,
@@ -167,13 +161,73 @@ function EventFormInner({
       </Field>
 
       <Field label={t("venue")}>
-        <Select value={venueId} onChange={(v) => setVenueId(v)} required>
-          {venues.map((v) => (
-            <option key={v.id} value={v.id}>
-              {v.name} — {v.city}
-            </option>
-          ))}
-        </Select>
+        <div
+          role="tablist"
+          aria-label={t("venue")}
+          className="border-input bg-background mb-2 inline-flex rounded-md border p-0.5 text-xs"
+        >
+          <button
+            type="button"
+            role="tab"
+            aria-selected={venueMode === "list"}
+            onClick={() => setVenueMode("list")}
+            disabled={venues.length === 0}
+            className={
+              "rounded px-3 py-1 transition-colors " +
+              (venueMode === "list"
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground")
+            }
+          >
+            {t("venueModeList")}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={venueMode === "manual"}
+            onClick={() => setVenueMode("manual")}
+            className={
+              "rounded px-3 py-1 transition-colors " +
+              (venueMode === "manual"
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground")
+            }
+          >
+            {t("venueModeManual")}
+          </button>
+        </div>
+
+        {venueMode === "list" ? (
+          <Select value={venueId} onChange={(v) => setVenueId(v)} required>
+            {venues.map((v) => (
+              <option key={v.id} value={v.id}>
+                {v.name} — {v.city}
+              </option>
+            ))}
+          </Select>
+        ) : (
+          <div className="grid gap-2">
+            <Input
+              type="text"
+              value={customVenueName}
+              onChange={(e) => setCustomVenueName(e.target.value)}
+              placeholder={t("customVenueNamePlaceholder")}
+              maxLength={200}
+              required
+            />
+            <Input
+              type="url"
+              value={customVenueUrl}
+              onChange={(e) => setCustomVenueUrl(e.target.value)}
+              placeholder={t("customVenueUrlPlaceholder")}
+              maxLength={500}
+              inputMode="url"
+            />
+            <p className="text-muted-foreground text-xs">
+              {t("customVenueHint")}
+            </p>
+          </div>
+        )}
       </Field>
 
       <div className="grid gap-4 sm:grid-cols-2">

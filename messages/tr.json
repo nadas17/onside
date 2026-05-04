@@ -40,12 +40,11 @@
     "anonNotice": "Anonim hesap sadece bu cihazda kalır — tarayıcı verisini silersen veya cihaz değiştirirsen geçmişine erişemezsin. Verilerini güvende tutmak için Google ile bağlan."
   },
   "Cities": {
-    "Warsaw": "Varşova",
     "Gdańsk": "Gdańsk"
   },
   "Geolocation": {
     "title": "Konumunu kullanalım mı?",
-    "description": "Sana en yakın sahaları ve maçları göstermek için tarayıcının konum servisini kullanmamızı isteriz. Reddedersen Varşova merkez olarak alınır.",
+    "description": "Sana en yakın sahaları ve maçları göstermek için tarayıcının konum servisini kullanmamızı isteriz. Reddedersen Gdańsk merkez olarak alınır.",
     "allow": "Konumumu kullan",
     "deny": "Şimdi değil",
     "note": "Konumun cihazından çıkmaz; biz sadece harita merkezini ayarlarız."
@@ -146,7 +145,7 @@
     "skipToContent": "Ana içeriğe atla"
   },
   "Footer": {
-    "tagline": "Onside — Gdańsk + Warszawa pickup futbol",
+    "tagline": "Onside — Gdańsk pickup futbol",
     "privacy": "Gizlilik",
     "terms": "Koşullar"
   },
@@ -369,6 +368,12 @@
     "notes": "Notlar",
     "notesPlaceholder": "Top sahada var, forma getirin…",
     "venue": "Saha",
+    "venueModeList": "Listeden seç",
+    "venueModeManual": "Manuel gir",
+    "customVenueNamePlaceholder": "Saha adı (örn. Mahalle parkı)",
+    "customVenueUrlPlaceholder": "Google Maps linki (opsiyonel)",
+    "customVenueHint": "Bu maç için tek seferlik konum. Maps linki gizlilik için sahanın URL'sini paylaşmanı sağlar.",
+    "openInMaps": "Maps'te aç",
     "date": "Tarih",
     "time": "Saat",
     "startAt": "Başlangıç",
@@ -457,7 +462,7 @@
     "bio": "Bio",
     "bioPlaceholder": "Kendinden kısaca bahset…",
     "homeCity": "Şehir",
-    "homeCityPlaceholder": "Warsaw / Gdańsk",
+    "homeCityPlaceholder": "Gdańsk",
     "preferredPosition": "Tercih ettiğin pozisyon",
     "secondaryPosition": "İkincil pozisyon",
     "skillLevel": "Seviye",

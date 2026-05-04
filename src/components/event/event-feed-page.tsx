@@ -71,7 +71,9 @@ export function EventFeedPage({
 
   const filtered = React.useMemo(() => {
     return events.filter((e) => {
-      if (e.venue?.city !== city) return false;
+      // Custom-venue events have no curated city; show them regardless so
+      // organisers using one-off locations still surface in the feed.
+      if (e.venue && e.venue.city !== city) return false;
       if (formatFilter && e.format !== formatFilter) return false;
       if (skillFilter) {
         const order = SKILL_LEVELS as readonly string[];

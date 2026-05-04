@@ -57,7 +57,9 @@ type EventRow = {
     city: string;
     lat: number;
     lng: number;
-  };
+  } | null;
+  custom_venue_name: string | null;
+  custom_venue_url: string | null;
 };
 
 export default async function EventDetailPage({
@@ -74,7 +76,7 @@ export default async function EventDetailPage({
     .select(
       `id, title, description, format, capacity, min_players_to_confirm,
        min_skill_level, max_skill_level, start_at, end_at, status, organizer_id,
-       notes, cancelled_reason,
+       notes, cancelled_reason, custom_venue_name, custom_venue_url,
        organizer:organizer_id ( id, username, display_name ),
        venue:venue_id ( id, name, address_line, city, lat, lng )`,
     )
@@ -210,12 +212,25 @@ export default async function EventDetailPage({
                   icon={<MapPin className="size-4" />}
                   label={t("venue")}
                   value={
-                    <Link
-                      href={`/${locale}/venues/${event!.venue.id}`}
-                      className="hover:underline"
-                    >
-                      {event!.venue.name}, {event!.venue.city}
-                    </Link>
+                    event!.venue ? (
+                      <Link
+                        href={`/${locale}/venues/${event!.venue.id}`}
+                        className="hover:underline"
+                      >
+                        {event!.venue.name}, {event!.venue.city}
+                      </Link>
+                    ) : event!.custom_venue_url ? (
+                      <a
+                        href={event!.custom_venue_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline"
+                      >
+                        {event!.custom_venue_name}
+                      </a>
+                    ) : (
+                      <span>{event!.custom_venue_name}</span>
+                    )
                   }
                 />
                 <Info
@@ -324,27 +339,48 @@ export default async function EventDetailPage({
             </div>
 
             <aside className="flex flex-col gap-3">
-              <div className="glass-card h-64 overflow-hidden rounded-lg border shadow-md shadow-black/20">
-                <MapView
-                  center={{ lat: event!.venue.lat, lng: event!.venue.lng }}
-                  zoom={15}
-                  pins={[
-                    {
-                      id: event!.venue.id,
-                      name: event!.venue.name,
-                      lat: event!.venue.lat,
-                      lng: event!.venue.lng,
-                    },
-                  ]}
-                  className="h-full w-full"
-                />
-              </div>
-              <div className="glass-card rounded-lg border p-4 text-sm">
-                <div className="font-medium">{event!.venue.name}</div>
-                <div className="text-muted-foreground text-xs">
-                  {event!.venue.address_line}, {event!.venue.city}
+              {event!.venue ? (
+                <>
+                  <div className="glass-card h-64 overflow-hidden rounded-lg border shadow-md shadow-black/20">
+                    <MapView
+                      center={{
+                        lat: event!.venue.lat,
+                        lng: event!.venue.lng,
+                      }}
+                      zoom={15}
+                      pins={[
+                        {
+                          id: event!.venue.id,
+                          name: event!.venue.name,
+                          lat: event!.venue.lat,
+                          lng: event!.venue.lng,
+                        },
+                      ]}
+                      className="h-full w-full"
+                    />
+                  </div>
+                  <div className="glass-card rounded-lg border p-4 text-sm">
+                    <div className="font-medium">{event!.venue.name}</div>
+                    <div className="text-muted-foreground text-xs">
+                      {event!.venue.address_line}, {event!.venue.city}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="glass-card rounded-lg border p-4 text-sm">
+                  <div className="font-medium">{event!.custom_venue_name}</div>
+                  {event!.custom_venue_url && (
+                    <a
+                      href={event!.custom_venue_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-brand mt-1 inline-block text-xs hover:underline"
+                    >
+                      {t("openInMaps")}
+                    </a>
+                  )}
                 </div>
-              </div>
+              )}
             </aside>
           </div>
         </main>

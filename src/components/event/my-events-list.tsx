@@ -75,10 +75,14 @@ export async function MyEventsList({
                       <Calendar className="size-3" />
                       {dateFmt.format(start)} · {timeFmt.format(start)}
                     </li>
-                    <li className="flex items-center gap-1.5">
-                      <MapPin className="size-3" />
-                      {e.venue.name}, {e.venue.city}
-                    </li>
+                    {(e.venue || e.custom_venue_name) && (
+                      <li className="flex items-center gap-1.5">
+                        <MapPin className="size-3" />
+                        {e.venue
+                          ? `${e.venue.name}, ${e.venue.city}`
+                          : e.custom_venue_name}
+                      </li>
+                    )}
                     <li className="flex items-center gap-1.5">
                       <Users className="size-3" />
                       {e.capacity}
