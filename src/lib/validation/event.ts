@@ -33,9 +33,37 @@ const isoDateTime = z
     message: "Geçersiz tarih/saat",
   });
 
+// http(s):// only — disallow javascript:, data:, etc. so we can safely
+// render the link in event detail without escaping.
+const HTTP_URL_REGEX = /^https?:\/\/[^\s]{1,499}$/i;
+
 export const createEventSchema = z
   .object({
-    venueId: z.string().uuid("Saha seçimi gerekli"),
+    // Either a curated venueId is picked OR a custom name is provided.
+    // Validated together in superRefine below.
+    venueId: z
+      .string()
+      .uuid()
+      .optional()
+      .or(z.literal(""))
+      .transform((v) => (v ? v : undefined)),
+    customVenueName: z
+      .string()
+      .trim()
+      .max(200)
+      .optional()
+      .or(z.literal(""))
+      .transform((v) => (v ? v : undefined)),
+    customVenueUrl: z
+      .string()
+      .trim()
+      .max(500)
+      .optional()
+      .or(z.literal(""))
+      .transform((v) => (v ? v : undefined))
+      .refine((v) => v === undefined || HTTP_URL_REGEX.test(v), {
+        message: "URL http:// veya https:// ile başlamalı",
+      }),
     title: z.string().trim().min(3).max(80),
     description: z.string().trim().max(500).optional().or(z.literal("")),
     format: z.enum(FORMATS),
@@ -48,6 +76,24 @@ export const createEventSchema = z
     notes: z.string().trim().max(500).optional().or(z.literal("")),
   })
   .superRefine((data, ctx) => {
+    const hasVenueId = data.venueId !== undefined;
+    const hasCustomName = data.customVenueName !== undefined;
+    if (hasVenueId === hasCustomName) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["customVenueName"],
+        message: hasVenueId
+          ? "Listeden saha seçtiyseniz manuel ad girmeyin"
+          : "Saha seçin veya manuel olarak ad girin",
+      });
+    }
+    if (!hasCustomName && data.customVenueUrl !== undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["customVenueUrl"],
+        message: "Maps linki sadece manuel ad ile birlikte verilebilir",
+      });
+    }
     const start = new Date(data.startAt);
     const end = new Date(data.endAt);
     const now = new Date();

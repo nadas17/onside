@@ -40,12 +40,11 @@
     "anonNotice": "Anonymous accounts live only on this device — if you clear browser data or switch devices, your history is gone. Link with Google to keep it safe."
   },
   "Cities": {
-    "Warsaw": "Warsaw",
     "Gdańsk": "Gdańsk"
   },
   "Geolocation": {
     "title": "Use your location?",
-    "description": "We'll use it to show the closest venues and matches. If you decline, we'll fall back to Warsaw center.",
+    "description": "We'll use it to show the closest venues and matches. If you decline, we'll fall back to Gdańsk center.",
     "allow": "Use my location",
     "deny": "Not now",
     "note": "Your location stays on your device; we only re-center the map."
@@ -146,7 +145,7 @@
     "skipToContent": "Skip to main content"
   },
   "Footer": {
-    "tagline": "Onside — Gdańsk + Warsaw pickup football",
+    "tagline": "Onside — Gdańsk pickup football",
     "privacy": "Privacy",
     "terms": "Terms"
   },
@@ -369,6 +368,12 @@
     "notes": "Notes",
     "notesPlaceholder": "Bring boots and a kit…",
     "venue": "Venue",
+    "venueModeList": "Pick from list",
+    "venueModeManual": "Enter manually",
+    "customVenueNamePlaceholder": "Venue name (e.g. Neighborhood park)",
+    "customVenueUrlPlaceholder": "Google Maps link (optional)",
+    "customVenueHint": "One-off location for this match. Adding a Maps link helps players find it without sharing precise addresses.",
+    "openInMaps": "Open in Maps",
     "date": "Date",
     "time": "Time",
     "startAt": "Start",
@@ -457,7 +462,7 @@
     "bio": "Bio",
     "bioPlaceholder": "Tell people a bit about yourself…",
     "homeCity": "City",
-    "homeCityPlaceholder": "Warsaw / Gdańsk",
+    "homeCityPlaceholder": "Gdańsk",
     "preferredPosition": "Preferred position",
     "secondaryPosition": "Secondary position",
     "skillLevel": "Level",

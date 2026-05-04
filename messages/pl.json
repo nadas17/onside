@@ -40,12 +40,11 @@
     "anonNotice": "Konto anonimowe jest tylko na tym urządzeniu — wyczyszczenie danych przeglądarki lub zmiana urządzenia oznacza utratę historii. Połącz z Google, aby ją zachować."
   },
   "Cities": {
-    "Warsaw": "Warszawa",
     "Gdańsk": "Gdańsk"
   },
   "Geolocation": {
     "title": "Czy możemy użyć Twojej lokalizacji?",
-    "description": "Pokażemy najbliższe boiska i mecze. Jeśli odmówisz, ustawimy mapę na centrum Warszawy.",
+    "description": "Pokażemy najbliższe boiska i mecze. Jeśli odmówisz, ustawimy mapę na centrum Gdańska.",
     "allow": "Użyj mojej lokalizacji",
     "deny": "Nie teraz",
     "note": "Lokalizacja nie opuszcza Twojego urządzenia; jedynie centrowymy mapę."
@@ -146,7 +145,7 @@
     "skipToContent": "Przejdź do treści głównej"
   },
   "Footer": {
-    "tagline": "Onside — Gdańsk + Warszawa pickup football",
+    "tagline": "Onside — Gdańsk pickup football",
     "privacy": "Prywatność",
     "terms": "Regulamin"
   },
@@ -369,6 +368,12 @@
     "notes": "Notatki",
     "notesPlaceholder": "Korki obowiązkowe, weź strój…",
     "venue": "Boisko",
+    "venueModeList": "Wybierz z listy",
+    "venueModeManual": "Wpisz ręcznie",
+    "customVenueNamePlaceholder": "Nazwa miejsca (np. Park sąsiedzki)",
+    "customVenueUrlPlaceholder": "Link Google Maps (opcjonalnie)",
+    "customVenueHint": "Jednorazowa lokalizacja dla tego meczu. Link do Map pomaga graczom znaleźć miejsce bez podawania dokładnego adresu.",
+    "openInMaps": "Otwórz w Mapach",
     "date": "Data",
     "time": "Godzina",
     "startAt": "Początek",
@@ -457,7 +462,7 @@
     "bio": "Bio",
     "bioPlaceholder": "Opowiedz coś o sobie…",
     "homeCity": "Miasto",
-    "homeCityPlaceholder": "Warsaw / Gdańsk",
+    "homeCityPlaceholder": "Gdańsk",
     "preferredPosition": "Preferowana pozycja",
     "secondaryPosition": "Pozycja drugorzędna",
     "skillLevel": "Poziom",

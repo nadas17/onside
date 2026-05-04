@@ -63,7 +63,9 @@ export async function createEventAction(
 
   const insert = {
     organizer_id: user.id,
-    venue_id: data.venueId,
+    venue_id: data.venueId ?? null,
+    custom_venue_name: data.customVenueName ?? null,
+    custom_venue_url: data.customVenueUrl ?? null,
     title: data.title,
     description: nullIfEmpty(data.description ?? null),
     format: data.format,
@@ -174,13 +176,18 @@ export type EventListItem = {
   min_skill_level: "beginner" | "intermediate" | "advanced" | "pro";
   max_skill_level: "beginner" | "intermediate" | "advanced" | "pro";
   status: EventStatus;
+  // Either a curated venue is linked, or the event uses a custom one-off
+  // location (manual mode in event-form). Both are nullable to express the
+  // XOR enforced by the event_venue_xor CHECK constraint.
   venue: {
     id: string;
     name: string;
     city: string;
     lat: number;
     lng: number;
-  };
+  } | null;
+  custom_venue_name: string | null;
+  custom_venue_url: string | null;
 };
 
 export async function getEventsAction(
@@ -201,6 +208,7 @@ export async function getEventsAction(
     .from("event")
     .select(
       `id, title, start_at, end_at, format, capacity, min_skill_level, max_skill_level, status,
+       custom_venue_name, custom_venue_url,
        venue:venue_id ( id, name, city, lat, lng )`,
     )
     .eq("is_hidden", false)
@@ -283,7 +291,9 @@ export type EventDetail = {
     city: string;
     lat: number;
     lng: number;
-  };
+  } | null;
+  custom_venue_name: string | null;
+  custom_venue_url: string | null;
 };
 
 export async function getEventByIdAction(
@@ -295,7 +305,7 @@ export async function getEventByIdAction(
     .select(
       `id, title, description, format, capacity, min_players_to_confirm,
        min_skill_level, max_skill_level, start_at, end_at, status, notes,
-       cancelled_reason,
+       cancelled_reason, custom_venue_name, custom_venue_url,
        organizer:organizer_id ( id, username, display_name ),
        venue:venue_id ( id, name, address_line, city, lat, lng )`,
     )
@@ -325,7 +335,8 @@ export type MyEventItem = {
     id: string;
     name: string;
     city: string;
-  };
+  } | null;
+  custom_venue_name: string | null;
 };
 
 /**
@@ -352,6 +363,7 @@ export async function getMyEventsAction(): Promise<
       status: EventStatus;
       organizer_id: string;
       venue: { id: string; name: string; city: string } | null;
+      custom_venue_name: string | null;
     } | null;
   };
 
@@ -361,6 +373,7 @@ export async function getMyEventsAction(): Promise<
       `id, status,
        event:event_id (
          id, title, start_at, format, capacity, status, organizer_id,
+         custom_venue_name,
          venue:venue_id ( id, name, city )
        )`,
     )
@@ -387,7 +400,8 @@ export async function getMyEventsAction(): Promise<
       capacity: e.capacity,
       status: e.status,
       is_organizer: e.organizer_id === user.id,
-      venue: e.venue!,
+      venue: e.venue,
+      custom_venue_name: e.custom_venue_name,
     }))
     .sort((a, b) => a.start_at.localeCompare(b.start_at));
 

@@ -149,9 +149,13 @@ export const event = pgTable(
     organizerId: uuid("organizer_id")
       .notNull()
       .references(() => profile.id, { onDelete: "restrict" }),
-    venueId: uuid("venue_id")
-      .notNull()
-      .references(() => venue.id, { onDelete: "restrict" }),
+    // Either a curated venue is linked, or a one-off custom venue is named —
+    // never both, never neither (enforced by event_venue_xor CHECK).
+    venueId: uuid("venue_id").references(() => venue.id, {
+      onDelete: "restrict",
+    }),
+    customVenueName: text("custom_venue_name"),
+    customVenueUrl: text("custom_venue_url"),
     title: text("title").notNull(),
     description: text("description"),
     sport: sportEnum("sport").notNull().default("football"),
@@ -187,6 +191,18 @@ export const event = pgTable(
       sql`${t.minPlayersToConfirm} <= ${t.capacity}`,
     ),
     check("event_skill_range", sql`${t.minSkillLevel} <= ${t.maxSkillLevel}`),
+    check(
+      "event_venue_xor",
+      sql`(${t.venueId} IS NOT NULL)::int + (${t.customVenueName} IS NOT NULL)::int = 1`,
+    ),
+    check(
+      "event_custom_venue_name_len",
+      sql`${t.customVenueName} IS NULL OR char_length(${t.customVenueName}) <= 200`,
+    ),
+    check(
+      "event_custom_venue_url_len",
+      sql`${t.customVenueUrl} IS NULL OR char_length(${t.customVenueUrl}) <= 500`,
+    ),
     index("event_status_start_idx").on(t.status, t.startAt),
     index("event_start_idx").on(t.startAt),
     index("event_venue_idx").on(t.venueId),

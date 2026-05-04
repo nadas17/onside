@@ -43,14 +43,19 @@ export function EventCard({ event }: { event: EventListItem }) {
               <Calendar className="size-3 shrink-0" />
               {dateFmt.format(start)} · {timeFmt.format(start)}
             </span>
-            {event.venue && (
+            {event.venue ? (
               <span className="flex items-center gap-1 truncate">
                 <MapPin className="size-3 shrink-0" />
                 <span className="truncate">
                   {event.venue.name}, {event.venue.city}
                 </span>
               </span>
-            )}
+            ) : event.custom_venue_name ? (
+              <span className="flex items-center gap-1 truncate">
+                <MapPin className="size-3 shrink-0" />
+                <span className="truncate">{event.custom_venue_name}</span>
+              </span>
+            ) : null}
             <span className="flex items-center gap-1">
               <Users className="size-3 shrink-0" />
               {t("capacityValue", { count: event.capacity })}

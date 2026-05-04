@@ -2,21 +2,21 @@
  * Geo helpers — Phase 2.
  *
  * - Haversine distance (kilometers) — server-side filtreleme veya client-side sorting için.
- * - Warsaw / Gdańsk şehir merkezleri ve default zoom seviyeleri.
+ * - Gdańsk şehir merkezi ve default zoom seviyesi.
+ *   (Warsaw 0018 migration ile projeden çıkarıldı.)
  */
 
 export type LatLng = { lat: number; lng: number };
 
 export const CITY_CENTERS = {
-  Warsaw: { lat: 52.2297, lng: 21.0122, zoom: 11 },
   Gdańsk: { lat: 54.352, lng: 18.6466, zoom: 11 },
 } as const;
 
 export type CityName = keyof typeof CITY_CENTERS;
 
-export const SUPPORTED_CITIES: CityName[] = ["Warsaw", "Gdańsk"];
+export const SUPPORTED_CITIES: CityName[] = ["Gdańsk"];
 
-export const DEFAULT_CITY: CityName = "Warsaw";
+export const DEFAULT_CITY: CityName = "Gdańsk";
 
 /**
  * Haversine — iki nokta arası kilometre cinsinden büyük çember mesafesi.
@@ -40,7 +40,7 @@ function toRad(deg: number): number {
 
 /**
  * Verilen noktaya en yakın desteklenen şehri bul (mesafe-bazlı).
- * Geolocation reddedilirse veya verisiz ise default Warsaw.
+ * Geolocation reddedilirse veya verisiz ise default Gdańsk.
  */
 export function nearestCity(point: LatLng): CityName {
   let best: CityName = DEFAULT_CITY;
