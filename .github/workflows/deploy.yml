@@ -28,11 +28,11 @@ jobs:
       - name: Pull Vercel project info
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy (Vercel cloud build)
-        id: deploy
-        run: |
-          url=$(vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }})
-          echo "url=$url" >> "$GITHUB_OUTPUT"
+        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
       - name: Smoke test (/api/health)
+        # Hits the stable production alias (always points to the latest --prod
+        # deploy and is publicly accessible). Deployment-specific URLs are
+        # gated by Vercel Deployment Protection (401 for unauthenticated probes).
         run: |
-          curl -fsS "${{ steps.deploy.outputs.url }}/api/health" | tee /tmp/health.json
+          curl -fsS https://onside-three.vercel.app/api/health | tee /tmp/health.json
           grep -q '"status":"ok"' /tmp/health.json
