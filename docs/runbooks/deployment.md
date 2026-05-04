@@ -27,6 +27,20 @@ Settings → Environments → New environment → name: `production`
 
 Bu manuel approval gate'i; deploy job approval beklemeden başlamaz.
 
+### 3. Supabase Auth ayarları
+
+Authentication → Providers (veya Settings → Auth) altında:
+
+- **Google provider** enable + Client ID / Secret girilmiş olmalı (yoksa
+  "Continue with Google" butonu Supabase'den hata döner).
+- **Manual linking** toggle açık olmalı. Aksi halde anon kullanıcının
+  profile sayfasındaki "Connect with Google" CTA'sı `supabase.auth.linkIdentity`
+  çağrısında "Session not found" / `manual_linking_disabled` döner.
+- **Site URL** = production domain (`https://onside-boisko.vercel.app`),
+  **Additional Redirect URLs** = aynı + preview deploy pattern (örn.
+  `https://onside-*.vercel.app/**`). OAuth callback URL'leri buraya da
+  eklenmezse Google login redirect_uri_mismatch verir.
+
 ## Rollback
 
 - Vercel dashboard → Deployments → istenen deploy → "Promote to Production"
