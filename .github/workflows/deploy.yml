@@ -37,11 +37,11 @@ jobs:
         # vercel.json's git.deploymentEnabled.main:false leaves the alias
         # un-promoted from CLI deploys, so do it explicitly here.
         run: |
-          vercel alias set "${{ steps.deploy.outputs.url }}" onside-three.vercel.app --token=${{ secrets.VERCEL_TOKEN }}
+          vercel alias set "${{ steps.deploy.outputs.url }}" onside-boisko.vercel.app --token=${{ secrets.VERCEL_TOKEN }}
       - name: Smoke test (/api/health)
         # Hits the stable production alias (always points to the latest --prod
         # deploy and is publicly accessible). Deployment-specific URLs are
         # gated by Vercel Deployment Protection (401 for unauthenticated probes).
         run: |
-          curl -fsS https://onside-three.vercel.app/api/health | tee /tmp/health.json
+          curl -fsS https://onside-boisko.vercel.app/api/health | tee /tmp/health.json
           grep -q '"status":"ok"' /tmp/health.json
