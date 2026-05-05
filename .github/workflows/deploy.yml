@@ -13,7 +13,7 @@ jobs:
   deploy:
     name: Vercel production deploy
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     environment: production
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
