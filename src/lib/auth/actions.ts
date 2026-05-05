@@ -126,7 +126,34 @@ export async function createProfileAction(
 
   const supabase = await createClient();
 
-  // 3. Server-side uniqueness check (race condition'a karşı insert sonrası tekrar kontrol var)
+  // 3. Idempotent: if the current session already owns a profile, just return
+  // it. The JoinModal can re-open in edge cases (stale UI, refresh races) and
+  // a second create attempt would otherwise hit a primary-key violation on
+  // profile.id — which shares Postgres error code 23505 with the unique
+  // username constraint, getting mis-reported as "username taken" downstream.
+  let userId: string | undefined;
+  {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      userId = user.id;
+      const { data: existingProfile } = await supabase
+        .from("profile")
+        .select("id, username")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (existingProfile) {
+        return {
+          ok: true,
+          data: { id: existingProfile.id, username: existingProfile.username },
+        };
+      }
+    }
+  }
+
+  // 4. Server-side username uniqueness check (race condition'a karşı insert
+  //    sonrası tekrar kontrol var).
   {
     const { data: existing } = await supabase
       .from("profile")
@@ -144,29 +171,21 @@ export async function createProfileAction(
     }
   }
 
-  // 4. Anonymous sign-in (mevcut session yoksa)
-  let userId: string | undefined;
-  {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (user) {
-      userId = user.id;
-    } else {
-      const { data: authData, error: authError } =
-        await supabase.auth.signInAnonymously();
-      if (authError || !authData.user) {
-        return {
-          ok: false,
-          error: authError?.message ?? "Anonim oturum açılamadı.",
-          code: "auth_failed",
-        };
-      }
-      userId = authData.user.id;
+  // 5. Anonymous sign-in (only if step 3 didn't already give us a userId)
+  if (!userId) {
+    const { data: authData, error: authError } =
+      await supabase.auth.signInAnonymously();
+    if (authError || !authData.user) {
+      return {
+        ok: false,
+        error: authError?.message ?? "Anonim oturum açılamadı.",
+        code: "auth_failed",
+      };
     }
+    userId = authData.user.id;
   }
 
-  // 5. Profile insert (RLS apply: auth.uid() = id check)
+  // 6. Profile insert (RLS apply: auth.uid() = id check)
   const { error: insertError } = await supabase.from("profile").insert({
     id: userId,
     username,
@@ -174,6 +193,10 @@ export async function createProfileAction(
   });
   if (insertError) {
     if (insertError.code === "23505") {
+      // 23505 covers both PK (id already has a profile) and UNIQUE (username
+      // already taken) violations. Step 3 caught the PK case for the current
+      // session, so anything reaching here on a fresh insert is a genuine
+      // username collision (likely a race against a concurrent signup).
       const suggestions = await suggestUsernames(supabase, username);
       return {
         ok: false,
