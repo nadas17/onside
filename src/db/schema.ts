@@ -123,7 +123,6 @@ export const event = pgTable(
     status: eventStatusEnum("status").notNull().default("open"),
     isRecurring: boolean("is_recurring").notNull().default(false),
     parentEventId: uuid("parent_event_id"),
-    isHidden: boolean("is_hidden").notNull().default(false),
     cancelledReason: text("cancelled_reason"),
     cancelledAt: timestamp("cancelled_at", { withTimezone: true }),
     notes: text("notes"),

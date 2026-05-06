@@ -199,7 +199,6 @@ export async function getEventsAction(
        custom_venue_name, custom_venue_url,
        venue:venue_id ( id, name, city, lat, lng )`,
     )
-    .eq("is_hidden", false)
     .order("start_at", { ascending: true })
     .limit(f.limit);
 
@@ -312,7 +311,6 @@ export async function getEventsByVenueAction(
        venue:venue_id ( id, name, city, lat, lng )`,
     )
     .eq("venue_id", venueId)
-    .eq("is_hidden", false)
     .in("status", ["open", "full", "locked", "in_progress"])
     .gte("start_at", new Date().toISOString())
     .order("start_at", { ascending: true })
