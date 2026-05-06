@@ -343,7 +343,8 @@
       "intermediate": "Intermediate",
       "advanced": "Advanced",
       "pro": "Pro"
-    }
+    },
+    "noticeNotReservation": "This form does not book the pitch. It only creates a meet-up card so participants can organise — the organiser still has to reserve the venue separately."
   },
   "Venues": {
     "title": "Venues",
@@ -383,32 +384,6 @@
     "venues": "Venues",
     "profile": "Profile",
     "create": "New match"
-  },
-  "CommandPalette": {
-    "title": "Command palette",
-    "description": "Quick search and navigation",
-    "triggerLabel": "Search",
-    "placeholder": "Find a page, run an action…",
-    "noResults": "No results",
-    "pages": "Pages",
-    "actions": "Actions",
-    "appearance": "Appearance",
-    "language": "Language",
-    "legal": "Legal",
-    "home": "Home",
-    "events": "Events",
-    "venues": "Venues",
-    "profile": "My profile",
-    "newEvent": "Create new event",
-    "themeLight": "Light theme",
-    "themeDark": "Dark theme",
-    "themeSystem": "System theme",
-    "privacy": "Privacy policy",
-    "terms": "Terms of service",
-    "footerHint": "Open from anywhere with Cmd+K",
-    "navigate": "navigate",
-    "select": "select",
-    "close": "close"
   },
   "Errors": {
     "rate_limited": "Too many requests. Please try again in a minute.",

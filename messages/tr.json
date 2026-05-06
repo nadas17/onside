@@ -343,7 +343,8 @@
       "intermediate": "Orta",
       "advanced": "İleri",
       "pro": "Profesyonel"
-    }
+    },
+    "noticeNotReservation": "Bu form sahaya randevu/rezervasyon oluşturmaz. Sadece katılımcıların organize olması için bir buluşma kartı yaratır — rezervasyonu organizatörün ayrıca yapması gerekir."
   },
   "Venues": {
     "title": "Sahalar",
@@ -383,32 +384,6 @@
     "venues": "Sahalar",
     "profile": "Profil",
     "create": "Maç oluştur"
-  },
-  "CommandPalette": {
-    "title": "Komut paleti",
-    "description": "Hızlı arama ve gezinme",
-    "triggerLabel": "Ara",
-    "placeholder": "Sayfa ara, eyleme geç…",
-    "noResults": "Sonuç bulunamadı",
-    "pages": "Sayfalar",
-    "actions": "Eylemler",
-    "appearance": "Görünüm",
-    "language": "Dil",
-    "legal": "Yasal",
-    "home": "Ana sayfa",
-    "events": "Etkinlikler",
-    "venues": "Sahalar",
-    "profile": "Profilim",
-    "newEvent": "Yeni etkinlik oluştur",
-    "themeLight": "Açık tema",
-    "themeDark": "Koyu tema",
-    "themeSystem": "Sistem teması",
-    "privacy": "Gizlilik politikası",
-    "terms": "Kullanım koşulları",
-    "footerHint": "Cmd+K ile her yerden aç",
-    "navigate": "gezin",
-    "select": "seç",
-    "close": "kapat"
   },
   "Errors": {
     "rate_limited": "Çok hızlı işlem yapıyorsun. Bir dakika sonra tekrar dene.",

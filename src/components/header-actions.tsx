@@ -1,17 +1,15 @@
 /**
- * Header Actions — locale switcher + command palette bundle.
+ * Header Actions — locale switcher only.
  *
- * Auth has been removed from the project; the command palette no longer
- * shows auth-only items, so this is a pure server-rendered shell.
+ * Auth removed; the global command palette / search button removed by
+ * request — too few destinations to justify a Cmd+K surface.
  */
 
 import { LocaleSwitcher } from "@/components/locale-switcher";
-import { CommandPalette } from "@/components/command-palette";
 
 export function HeaderActions() {
   return (
     <div className="flex items-center gap-1">
-      <CommandPalette />
       <LocaleSwitcher />
     </div>
   );

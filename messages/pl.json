@@ -343,7 +343,8 @@
       "intermediate": "Średni",
       "advanced": "Zaawansowany",
       "pro": "Profesjonalny"
-    }
+    },
+    "noticeNotReservation": "Ten formularz nie rezerwuje boiska. Tworzy tylko kartę spotkania, aby uczestnicy mogli się umówić — organizator musi zarezerwować boisko osobno."
   },
   "Venues": {
     "title": "Boiska",
@@ -383,32 +384,6 @@
     "venues": "Boiska",
     "profile": "Profil",
     "create": "Nowy mecz"
-  },
-  "CommandPalette": {
-    "title": "Paleta poleceń",
-    "description": "Szybkie wyszukiwanie i nawigacja",
-    "triggerLabel": "Szukaj",
-    "placeholder": "Znajdź stronę, uruchom akcję…",
-    "noResults": "Brak wyników",
-    "pages": "Strony",
-    "actions": "Akcje",
-    "appearance": "Wygląd",
-    "language": "Język",
-    "legal": "Prawne",
-    "home": "Strona główna",
-    "events": "Wydarzenia",
-    "venues": "Boiska",
-    "profile": "Mój profil",
-    "newEvent": "Utwórz nowe wydarzenie",
-    "themeLight": "Jasny motyw",
-    "themeDark": "Ciemny motyw",
-    "themeSystem": "Motyw systemowy",
-    "privacy": "Polityka prywatności",
-    "terms": "Warunki korzystania",
-    "footerHint": "Otwórz z dowolnego miejsca przez Cmd+K",
-    "navigate": "nawiguj",
-    "select": "wybierz",
-    "close": "zamknij"
   },
   "Errors": {
     "rate_limited": "Zbyt wiele żądań. Spróbuj ponownie za minutę.",

@@ -589,7 +589,7 @@ function SummaryCard({
   t: ReturnType<typeof useTranslations<"Events">>;
 }) {
   return (
-    <div className="border-brand/30 bg-brand/5 flex flex-col gap-2 rounded-lg border p-4 text-sm">
+    <div className="border-brand/40 bg-card/95 supports-[backdrop-filter]:bg-card/80 flex flex-col gap-2 rounded-lg border p-4 text-sm shadow-sm supports-[backdrop-filter]:backdrop-blur-md">
       <div className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
         {t("summaryTitle")}
       </div>
