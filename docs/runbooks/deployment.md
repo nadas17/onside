@@ -2,9 +2,14 @@
 
 ## Otomatik akış (main → production)
 
-1. PR merge'lendi → `Deploy` workflow tetiklenir
-2. `production` environment manuel approval bekler (Required reviewers)
-3. Approve → `vercel deploy --prod` → smoke test (`/api/health`)
+1. `main`'e push → `Deploy` workflow tetiklenir
+2. `vercel deploy --prod` → alias promote (`onside-boisko.vercel.app`) → smoke (`/api/health`)
+
+> Required reviewer kapısı kaldırıldı (2026-05-06) — küçük fix'lerin
+> deploy'u beklemesin diye. Smoke test + alias kontrolü hâlâ var.
+> Riskli bir release öncesinde geçici olarak yeniden eklenebilir:
+> `gh api -X PUT repos/nadas17/onside/environments/Production --input -`
+> body: `{"reviewers":[{"type":"User","reviewer_id":147252135}]}`
 
 ## Manuel tetik (workflow_dispatch)
 
