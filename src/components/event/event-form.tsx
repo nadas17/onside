@@ -11,14 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  ResponsiveDialog,
-  ResponsiveDialogContent,
-  ResponsiveDialogDescription,
-  ResponsiveDialogFooter,
-  ResponsiveDialogHeader,
-  ResponsiveDialogTitle,
-} from "@/components/ui/responsive-dialog";
-import {
   FORMAT_TEAM_SIZE,
   FORMATS,
   SKILL_LEVELS,
@@ -176,31 +168,19 @@ function EventFormInner({
     if (step > 1) setStep((step - 1) as Step);
   };
 
-  const [confirmOpen, setConfirmOpen] = React.useState(false);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    // Only the explicit "Create" button on step 3 should reach this point.
-    // Anything else that bubbles up to the form (Enter on a text input,
-    // an accidental double-click on the "Next" → "Create" button as it
-    // swaps in place) is treated as "advance" so the user never skips
-    // the summary review on step 3.
+    // Only the explicit "Create" button on step 3 should commit the event.
+    // Anything else that bubbles up to the form (notably the implicit
+    // form-submit-on-Enter from text inputs on step 1 or 2) is treated as
+    // "advance to the next step" so we never create a match without the
+    // user reviewing the summary first.
     if (step !== TOTAL_STEPS) {
       goNext();
       return;
     }
-
-    // On the final step, surface a confirmation dialog instead of creating
-    // straight away. Two-stage commit defends against rapid taps and gives
-    // the user a clear "Are you sure?" moment.
-    setConfirmOpen(true);
-  };
-
-  const submitNow = () => {
-    setConfirmOpen(false);
-    setError(null);
 
     // Inputs are typed as "YYYY-MM-DDTHH:mm" without a timezone. Interpret
     // them as Europe/Warsaw local time (where matches happen), regardless of
@@ -257,360 +237,301 @@ function EventFormInner({
       : customVenueName || "—";
 
   return (
-    <>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-        <StepIndicator
-          current={step}
-          total={TOTAL_STEPS}
-          label={stepLabel(step)}
-        />
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+      <StepIndicator
+        current={step}
+        total={TOTAL_STEPS}
+        label={stepLabel(step)}
+      />
 
-        {step === 1 && (
-          <fieldset className="flex flex-col gap-6">
-            <Field label={tNick("label")}>
+      {step === 1 && (
+        <fieldset className="flex flex-col gap-6">
+          <Field label={tNick("label")}>
+            <Input
+              value={organizerNickname}
+              onChange={(e) => setOrganizerNickname(e.target.value)}
+              placeholder={tNick("placeholder")}
+              maxLength={24}
+              required
+              minLength={3}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
+            />
+            <p className="text-muted-foreground text-xs">{tNick("rules")}</p>
+          </Field>
+
+          <Field label={t("title")}>
+            <Input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder={t("titlePlaceholder")}
+              maxLength={80}
+              required
+              minLength={3}
+              autoFocus
+            />
+          </Field>
+
+          <Field label={t("format")}>
+            <Select
+              value={format}
+              onChange={(v) => setFormat(v as (typeof FORMATS)[number])}
+            >
+              {FORMATS.map((f) => (
+                <option key={f} value={f}>
+                  {f}
+                </option>
+              ))}
+            </Select>
+          </Field>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label={t("capacity")}>
               <Input
-                value={organizerNickname}
-                onChange={(e) => setOrganizerNickname(e.target.value)}
-                placeholder={tNick("placeholder")}
-                maxLength={24}
+                type="number"
+                min={4}
+                max={30}
+                value={capacity}
+                onChange={(e) => {
+                  userTouchedCapacity.current = true;
+                  setCapacity(Number(e.target.value));
+                }}
                 required
-                minLength={3}
-                autoComplete="off"
-                autoCorrect="off"
-                autoCapitalize="off"
-                spellCheck={false}
               />
-              <p className="text-muted-foreground text-xs">{tNick("rules")}</p>
+              <p className="text-muted-foreground text-xs">
+                {t("capacityHint", {
+                  format,
+                  size: FORMAT_TEAM_SIZE[format],
+                  suggested: FORMAT_TEAM_SIZE[format] * 2,
+                })}
+              </p>
             </Field>
-
-            <Field label={t("title")}>
+            <Field label={t("minPlayers")}>
               <Input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder={t("titlePlaceholder")}
-                maxLength={80}
+                type="number"
+                min={2}
+                max={30}
+                value={minPlayers}
+                onChange={(e) => {
+                  userTouchedMinPlayers.current = true;
+                  setMinPlayers(Number(e.target.value));
+                }}
                 required
-                minLength={3}
-                autoFocus
+              />
+              <p className="text-muted-foreground text-xs">
+                {t("minPlayersHint")}
+              </p>
+            </Field>
+          </div>
+        </fieldset>
+      )}
+
+      {step === 2 && (
+        <fieldset className="flex flex-col gap-6">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label={t("startAt")}>
+              <Input
+                type="datetime-local"
+                value={startAt}
+                onChange={(e) => setStartAt(e.target.value)}
+                required
               />
             </Field>
+            <Field label={t("endAt")}>
+              <Input
+                type="datetime-local"
+                value={endAt}
+                onChange={(e) => setEndAt(e.target.value)}
+                required
+              />
+            </Field>
+          </div>
+          <p className="text-muted-foreground -mt-2 text-xs">
+            {t("timezoneHint")}
+          </p>
 
-            <Field label={t("format")}>
-              <Select
-                value={format}
-                onChange={(v) => setFormat(v as (typeof FORMATS)[number])}
+          <Field label={t("venue")}>
+            <div
+              role="tablist"
+              aria-label={t("venue")}
+              className="border-input bg-background mb-2 inline-flex rounded-md border p-0.5 text-xs"
+            >
+              <button
+                type="button"
+                role="tab"
+                aria-selected={venueMode === "list"}
+                onClick={() => setVenueMode("list")}
+                disabled={venues.length === 0}
+                className={
+                  "rounded px-3 py-1 transition-colors " +
+                  (venueMode === "list"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground")
+                }
               >
-                {FORMATS.map((f) => (
-                  <option key={f} value={f}>
-                    {f}
+                {t("venueModeList")}
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={venueMode === "manual"}
+                onClick={() => setVenueMode("manual")}
+                className={
+                  "rounded px-3 py-1 transition-colors " +
+                  (venueMode === "manual"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground")
+                }
+              >
+                {t("venueModeManual")}
+              </button>
+            </div>
+
+            {venueMode === "list" ? (
+              <Select value={venueId} onChange={(v) => setVenueId(v)} required>
+                {venues.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.name} — {v.city}
+                  </option>
+                ))}
+              </Select>
+            ) : (
+              <div className="grid gap-2">
+                <Input
+                  type="text"
+                  value={customVenueName}
+                  onChange={(e) => setCustomVenueName(e.target.value)}
+                  placeholder={t("customVenueNamePlaceholder")}
+                  maxLength={200}
+                  required
+                />
+                <Input
+                  type="url"
+                  value={customVenueUrl}
+                  onChange={(e) => setCustomVenueUrl(e.target.value)}
+                  placeholder={t("customVenueUrlPlaceholder")}
+                  maxLength={500}
+                  inputMode="url"
+                />
+                <p className="text-muted-foreground text-xs">
+                  {t("customVenueHint")}
+                </p>
+              </div>
+            )}
+          </Field>
+        </fieldset>
+      )}
+
+      {step === 3 && (
+        <fieldset className="flex flex-col gap-6">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label={t("minSkill")}>
+              <Select
+                value={minSkill}
+                onChange={(v) =>
+                  setMinSkill(v as (typeof SKILL_LEVELS)[number])
+                }
+              >
+                {SKILL_LEVELS.map((l) => (
+                  <option key={l} value={l}>
+                    {t(`skillLevels.${l}`)}
                   </option>
                 ))}
               </Select>
             </Field>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field label={t("capacity")}>
-                <Input
-                  type="number"
-                  min={4}
-                  max={30}
-                  value={capacity}
-                  onChange={(e) => {
-                    userTouchedCapacity.current = true;
-                    setCapacity(Number(e.target.value));
-                  }}
-                  required
-                />
-                <p className="text-muted-foreground text-xs">
-                  {t("capacityHint", {
-                    format,
-                    size: FORMAT_TEAM_SIZE[format],
-                    suggested: FORMAT_TEAM_SIZE[format] * 2,
-                  })}
-                </p>
-              </Field>
-              <Field label={t("minPlayers")}>
-                <Input
-                  type="number"
-                  min={2}
-                  max={30}
-                  value={minPlayers}
-                  onChange={(e) => {
-                    userTouchedMinPlayers.current = true;
-                    setMinPlayers(Number(e.target.value));
-                  }}
-                  required
-                />
-                <p className="text-muted-foreground text-xs">
-                  {t("minPlayersHint")}
-                </p>
-              </Field>
-            </div>
-          </fieldset>
-        )}
-
-        {step === 2 && (
-          <fieldset className="flex flex-col gap-6">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field label={t("startAt")}>
-                <Input
-                  type="datetime-local"
-                  value={startAt}
-                  onChange={(e) => setStartAt(e.target.value)}
-                  required
-                />
-              </Field>
-              <Field label={t("endAt")}>
-                <Input
-                  type="datetime-local"
-                  value={endAt}
-                  onChange={(e) => setEndAt(e.target.value)}
-                  required
-                />
-              </Field>
-            </div>
-            <p className="text-muted-foreground -mt-2 text-xs">
-              {t("timezoneHint")}
-            </p>
-
-            <Field label={t("venue")}>
-              <div
-                role="tablist"
-                aria-label={t("venue")}
-                className="border-input bg-background mb-2 inline-flex rounded-md border p-0.5 text-xs"
+            <Field label={t("maxSkill")}>
+              <Select
+                value={maxSkill}
+                onChange={(v) =>
+                  setMaxSkill(v as (typeof SKILL_LEVELS)[number])
+                }
               >
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={venueMode === "list"}
-                  onClick={() => setVenueMode("list")}
-                  disabled={venues.length === 0}
-                  className={
-                    "rounded px-3 py-1 transition-colors " +
-                    (venueMode === "list"
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground")
-                  }
-                >
-                  {t("venueModeList")}
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={venueMode === "manual"}
-                  onClick={() => setVenueMode("manual")}
-                  className={
-                    "rounded px-3 py-1 transition-colors " +
-                    (venueMode === "manual"
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground")
-                  }
-                >
-                  {t("venueModeManual")}
-                </button>
-              </div>
-
-              {venueMode === "list" ? (
-                <Select
-                  value={venueId}
-                  onChange={(v) => setVenueId(v)}
-                  required
-                >
-                  {venues.map((v) => (
-                    <option key={v.id} value={v.id}>
-                      {v.name} — {v.city}
-                    </option>
-                  ))}
-                </Select>
-              ) : (
-                <div className="grid gap-2">
-                  <Input
-                    type="text"
-                    value={customVenueName}
-                    onChange={(e) => setCustomVenueName(e.target.value)}
-                    placeholder={t("customVenueNamePlaceholder")}
-                    maxLength={200}
-                    required
-                  />
-                  <Input
-                    type="url"
-                    value={customVenueUrl}
-                    onChange={(e) => setCustomVenueUrl(e.target.value)}
-                    placeholder={t("customVenueUrlPlaceholder")}
-                    maxLength={500}
-                    inputMode="url"
-                  />
-                  <p className="text-muted-foreground text-xs">
-                    {t("customVenueHint")}
-                  </p>
-                </div>
-              )}
+                {SKILL_LEVELS.map((l) => (
+                  <option key={l} value={l}>
+                    {t(`skillLevels.${l}`)}
+                  </option>
+                ))}
+              </Select>
             </Field>
-          </fieldset>
-        )}
+          </div>
 
-        {step === 3 && (
-          <fieldset className="flex flex-col gap-6">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field label={t("minSkill")}>
-                <Select
-                  value={minSkill}
-                  onChange={(v) =>
-                    setMinSkill(v as (typeof SKILL_LEVELS)[number])
-                  }
-                >
-                  {SKILL_LEVELS.map((l) => (
-                    <option key={l} value={l}>
-                      {t(`skillLevels.${l}`)}
-                    </option>
-                  ))}
-                </Select>
-              </Field>
-              <Field label={t("maxSkill")}>
-                <Select
-                  value={maxSkill}
-                  onChange={(v) =>
-                    setMaxSkill(v as (typeof SKILL_LEVELS)[number])
-                  }
-                >
-                  {SKILL_LEVELS.map((l) => (
-                    <option key={l} value={l}>
-                      {t(`skillLevels.${l}`)}
-                    </option>
-                  ))}
-                </Select>
-              </Field>
-            </div>
-
-            <Field label={t("description")}>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                maxLength={500}
-                rows={3}
-                placeholder={t("descriptionPlaceholder")}
-                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-              />
-            </Field>
-
-            <Field label={t("notes")}>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                maxLength={500}
-                rows={2}
-                placeholder={t("notesPlaceholder")}
-                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-              />
-            </Field>
-
-            <SummaryCard
-              title={title || "—"}
-              format={format}
-              capacity={capacity}
-              minPlayers={minPlayers}
-              startAt={startAt}
-              endAt={endAt}
-              venue={venueDisplay}
-              customVenueUrl={
-                venueMode === "manual" ? customVenueUrl || null : null
-              }
-              minSkill={t(`skillLevels.${minSkill}`)}
-              maxSkill={t(`skillLevels.${maxSkill}`)}
-              t={t}
+          <Field label={t("description")}>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              maxLength={500}
+              rows={3}
+              placeholder={t("descriptionPlaceholder")}
+              className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
             />
-          </fieldset>
-        )}
+          </Field>
 
-        {error && (
-          <p
-            className="bg-destructive/10 text-destructive rounded-md px-3 py-2 text-sm"
-            role="alert"
-          >
-            {error}
-          </p>
-        )}
+          <Field label={t("notes")}>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              maxLength={500}
+              rows={2}
+              placeholder={t("notesPlaceholder")}
+              className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+            />
+          </Field>
 
-        {/* Sticky-ish bottom CTA bar — works on mobile (the form sits inside a
+          <SummaryCard
+            title={title || "—"}
+            format={format}
+            capacity={capacity}
+            minPlayers={minPlayers}
+            startAt={startAt}
+            endAt={endAt}
+            venue={venueDisplay}
+            customVenueUrl={
+              venueMode === "manual" ? customVenueUrl || null : null
+            }
+            minSkill={t(`skillLevels.${minSkill}`)}
+            maxSkill={t(`skillLevels.${maxSkill}`)}
+            t={t}
+          />
+        </fieldset>
+      )}
+
+      {error && (
+        <p
+          className="bg-destructive/10 text-destructive rounded-md px-3 py-2 text-sm"
+          role="alert"
+        >
+          {error}
+        </p>
+      )}
+
+      {/* Sticky-ish bottom CTA bar — works on mobile (the form sits inside a
           regular page, so a true `sticky` would obscure the last input on
           small screens). Keeping it inline keeps the layout predictable. */}
-        <div className="flex items-center justify-between gap-2">
-          {step === 1 ? (
-            <Button type="button" variant="ghost" onClick={() => router.back()}>
-              {t("cancel")}
-            </Button>
-          ) : (
-            <Button type="button" variant="ghost" onClick={goPrev}>
-              <ChevronLeft className="mr-1 size-4" />
-              {t("back")}
-            </Button>
-          )}
+      <div className="flex items-center justify-between gap-2">
+        {step === 1 ? (
+          <Button type="button" variant="ghost" onClick={() => router.back()}>
+            {t("cancel")}
+          </Button>
+        ) : (
+          <Button type="button" variant="ghost" onClick={goPrev}>
+            <ChevronLeft className="mr-1 size-4" />
+            {t("back")}
+          </Button>
+        )}
 
-          {step < TOTAL_STEPS ? (
-            <Button type="button" onClick={goNext}>
-              {t("next")}
-            </Button>
-          ) : (
-            <Button type="submit" disabled={pending}>
-              {pending ? t("creating") : t("create")}
-            </Button>
-          )}
-        </div>
-      </form>
-      <ResponsiveDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <ResponsiveDialogContent>
-          <ResponsiveDialogHeader>
-            <ResponsiveDialogTitle>
-              {t("confirmCreateTitle")}
-            </ResponsiveDialogTitle>
-            <ResponsiveDialogDescription>
-              {t("confirmCreateDesc")}
-            </ResponsiveDialogDescription>
-          </ResponsiveDialogHeader>
-          <div className="border-brand/30 bg-brand/5 mt-2 flex flex-col gap-1 rounded-lg border p-3 text-sm">
-            <div className="flex items-baseline justify-between gap-2">
-              <span className="text-muted-foreground text-xs">
-                {t("title")}
-              </span>
-              <span className="font-medium">{title || "—"}</span>
-            </div>
-            <div className="flex items-baseline justify-between gap-2">
-              <span className="text-muted-foreground text-xs">
-                {t("format")}
-              </span>
-              <span className="font-medium">
-                {format} · {capacity}
-              </span>
-            </div>
-            <div className="flex items-baseline justify-between gap-2">
-              <span className="text-muted-foreground text-xs">
-                {t("venue")}
-              </span>
-              <span className="font-medium">{venueDisplay}</span>
-            </div>
-          </div>
-          <ResponsiveDialogFooter className="mt-4">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => setConfirmOpen(false)}
-              disabled={pending}
-              className="h-12 sm:h-10"
-            >
-              {t("cancel")}
-            </Button>
-            <Button
-              type="button"
-              onClick={submitNow}
-              disabled={pending}
-              className="h-12 sm:h-10"
-            >
-              {pending ? t("creating") : t("confirmCreateAction")}
-            </Button>
-          </ResponsiveDialogFooter>
-        </ResponsiveDialogContent>
-      </ResponsiveDialog>
-    </>
+        {step < TOTAL_STEPS ? (
+          <Button type="button" onClick={goNext}>
+            {t("next")}
+          </Button>
+        ) : (
+          <Button type="submit" disabled={pending}>
+            {pending ? t("creating") : t("create")}
+          </Button>
+        )}
+      </div>
+    </form>
   );
 }
 
