@@ -88,8 +88,19 @@ export async function createEventAction(
     };
   }
 
+  // Auto-join the organizer to the roster as MID. The organizer almost
+  // always intends to play, and forcing them to click "Join" right after
+  // creating the match feels redundant. They can still cancel from the
+  // join button if they only meant to organise without playing.
+  const eventId = row.id as string;
+  await supabase.rpc("join_event", {
+    p_event_id: eventId,
+    p_nickname: data.organizerNickname,
+    p_position: "MID",
+  });
+
   revalidatePath("/", "layout");
-  return { ok: true, data: { id: row.id as string } };
+  return { ok: true, data: { id: eventId } };
 }
 
 export async function cancelEventAction(
