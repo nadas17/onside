@@ -85,12 +85,12 @@ export function ScoreSubmitForm({
   };
 
   const onSubmit = async (values: FormOutput) => {
-    if (mode === "submit" && !nickname) {
+    if (!nickname) {
       pendingValuesRef.current = values;
       setNicknameDialogOpen(true);
       return;
     }
-    await persistScore(values, nickname ?? "unknown");
+    await persistScore(values, nickname);
   };
 
   return (

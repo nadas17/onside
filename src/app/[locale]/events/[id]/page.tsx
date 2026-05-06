@@ -10,6 +10,7 @@ import { EventStatusBadge } from "@/components/event/event-status-badge";
 import { CancelEventDialog } from "@/components/event/cancel-event-dialog";
 import { JoinButton } from "@/components/event/join-button";
 import { EventRosterPanel } from "@/components/event/event-roster-panel";
+import { EventNicknameGate } from "@/components/event/event-nickname-gate";
 import { ChatRoom } from "@/components/event/chat-room";
 import { TeamPanel } from "@/components/event/team-panel";
 import { ResultPanel } from "@/components/event/result-panel";
@@ -110,6 +111,7 @@ export default async function EventDetailPage({
   return (
     <>
       <PageBackground variant="eventDetail" intensity="heavy" />
+      <EventNicknameGate />
       <div className="flex min-h-screen flex-col">
         <AppHeader
           back={{ href: "/events", label: "Onside" }}
