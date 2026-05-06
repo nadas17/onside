@@ -9,7 +9,6 @@ import {
   MapPin,
   Plus,
   Search,
-  User,
   FileText,
   Globe,
   Check,
@@ -128,14 +127,6 @@ export function CommandPalette({ isAuthed }: CommandPaletteProps) {
     ];
 
     if (isAuthed) {
-      list.push({
-        id: "profile",
-        label: t("profile"),
-        group: "pages",
-        icon: <User className="size-4" />,
-        keywords: ["account", "hesap", "konto"],
-        onSelect: () => navigate("/profile"),
-      });
       list.push({
         id: "new-event",
         label: t("newEvent"),

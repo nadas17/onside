@@ -1,13 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { Calendar, Home, MapPin, User } from "lucide-react";
+import { Calendar, Home, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 /**
- * Mobile bottom navigation — 4 primary destinations always within thumb reach.
+ * Mobile bottom navigation — 3 primary destinations always within thumb reach.
  *
  * Hidden on `lg+` (≥1024px) where the regular header navigation is sufficient.
  * Sticky to viewport bottom, respects iOS home-indicator safe area.
@@ -16,24 +16,25 @@ import { cn } from "@/lib/utils";
  */
 
 type Tab = {
-  href: "/" | "/events" | "/venues" | "/profile";
-  labelKey: "home" | "events" | "venues" | "profile";
+  href: "/" | "/events" | "/venues";
+  labelKey: "home" | "events" | "venues";
   Icon: typeof Home;
-  requiresAuth?: boolean;
 };
 
 const TABS: Tab[] = [
   { href: "/", labelKey: "home", Icon: Home },
   { href: "/events", labelKey: "events", Icon: Calendar },
   { href: "/venues", labelKey: "venues", Icon: MapPin },
-  { href: "/profile", labelKey: "profile", Icon: User, requiresAuth: true },
 ];
 
 export function MobileBottomNav({ isAuthed }: { isAuthed: boolean }) {
+  // isAuthed is no longer consulted (the gated /profile tab is gone). Prop
+  // remains so layout.tsx doesn't break this commit; commit 4 drops it.
+  void isAuthed;
   const pathname = usePathname();
   const t = useTranslations("Nav");
 
-  const tabs = TABS.filter((tab) => !tab.requiresAuth || isAuthed);
+  const tabs = TABS;
 
   return (
     <nav

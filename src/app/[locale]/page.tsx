@@ -6,13 +6,6 @@ import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { AppHeader } from "@/components/app-header";
 import { PageBackground } from "@/components/page-background";
-import { MyEventsList } from "@/components/event/my-events-list";
-import { getMyEventsAction, type MyEventItem } from "@/lib/event/actions";
-
-type ProfileSummary = {
-  username: string;
-  display_name: string;
-};
 
 export default async function HomePage({
   params,
@@ -27,34 +20,10 @@ export default async function HomePage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  let profile: ProfileSummary | null = null;
-  if (user) {
-    const { data } = await supabase
-      .from("profile")
-      .select("username, display_name")
-      .eq("id", user.id)
-      .maybeSingle<ProfileSummary>();
-    profile = data;
-  }
-
-  let myEvents: MyEventItem[] = [];
-  if (profile) {
-    const result = await getMyEventsAction();
-    myEvents = result.ok ? result.data : [];
-  }
-
-  return <HomeView profile={profile} locale={locale} myEvents={myEvents} />;
+  return <HomeView locale={locale} isAuthed={!!user} />;
 }
 
-function HomeView({
-  profile,
-  locale,
-  myEvents,
-}: {
-  profile: ProfileSummary | null;
-  locale: string;
-  myEvents: MyEventItem[];
-}) {
+function HomeView({ locale, isAuthed }: { locale: string; isAuthed: boolean }) {
   const t = useTranslations("Home");
 
   return (
@@ -74,9 +43,7 @@ function HomeView({
               priority
             />
             <h1 className="text-2xl font-bold tracking-tight text-balance sm:text-4xl md:text-5xl">
-              {profile
-                ? t("greeting", { name: profile.display_name })
-                : t("title")}
+              {t("title")}
             </h1>
             <p className="text-muted-foreground text-base leading-relaxed text-balance sm:text-lg">
               {t("tagline")}
@@ -85,7 +52,7 @@ function HomeView({
               <Button asChild size="lg" className="w-full sm:w-auto">
                 <Link href={`/${locale}/events`}>{t("browseEvents")}</Link>
               </Button>
-              {profile && (
+              {isAuthed && (
                 <Button
                   asChild
                   size="lg"
@@ -106,10 +73,6 @@ function HomeView({
             </div>
           </div>
         </main>
-
-        {profile && myEvents.length > 0 && (
-          <MyEventsList events={myEvents} locale={locale} />
-        )}
       </div>
     </>
   );

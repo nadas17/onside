@@ -3,9 +3,7 @@
 import * as React from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { RosterEntry } from "@/lib/event/rsvp-actions";
-import { PendingRequests } from "@/components/event/pending-requests";
 import { RosterList } from "@/components/event/roster-list";
-import { MyPendingCard } from "@/components/event/my-pending-card";
 
 type ProfileSummary = {
   id: string;
@@ -163,31 +161,19 @@ export function EventRosterPanel({
     };
   }, [eventId]);
 
+  // pending + myPending props are still accepted (DB shape unchanged this commit)
+  // but the UI surfaces are gone — approval flow removes in commit 2.
+  void pending;
+  void myPending;
+
   return (
-    <>
-      {!isOrganizer && myPending && (
-        <MyPendingCard
-          eventId={eventId}
-          position={myPending.position}
-          joinedAt={myPending.joinedAt}
-          rejectedReason={myPending.rejectedReason}
-        />
-      )}
-      {isOrganizer && pending.length > 0 && (
-        <PendingRequests
-          pending={pending}
-          capacity={capacity}
-          confirmedCount={roster.length}
-        />
-      )}
-      <section>
-        <RosterList
-          eventId={eventId}
-          roster={roster}
-          capacity={capacity}
-          isOrganizer={isOrganizer}
-        />
-      </section>
-    </>
+    <section>
+      <RosterList
+        eventId={eventId}
+        roster={roster}
+        capacity={capacity}
+        isOrganizer={isOrganizer}
+      />
+    </section>
   );
 }
