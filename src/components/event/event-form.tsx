@@ -172,6 +172,16 @@ function EventFormInner({
     e.preventDefault();
     setError(null);
 
+    // Only the explicit "Create" button on step 3 should commit the event.
+    // Anything else that bubbles up to the form (notably the implicit
+    // form-submit-on-Enter from text inputs on step 1 or 2) is treated as
+    // "advance to the next step" so we never create a match without the
+    // user reviewing the summary first.
+    if (step !== TOTAL_STEPS) {
+      goNext();
+      return;
+    }
+
     // Inputs are typed as "YYYY-MM-DDTHH:mm" without a timezone. Interpret
     // them as Europe/Warsaw local time (where matches happen), regardless of
     // the user's browser timezone — so an Istanbul user typing "19:00" stores
