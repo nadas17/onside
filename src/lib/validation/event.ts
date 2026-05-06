@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { nicknameSchema } from "@/lib/validation/nickname";
 
 export const FORMATS = ["5v5", "6v6", "7v7", "8v8", "11v11"] as const;
 export const SKILL_LEVELS = [
@@ -39,6 +40,7 @@ const HTTP_URL_REGEX = /^https?:\/\/[^\s]{1,499}$/i;
 
 export const createEventSchema = z
   .object({
+    organizerNickname: nicknameSchema,
     // Either a curated venueId is picked OR a custom name is provided.
     // Validated together in superRefine below.
     venueId: z

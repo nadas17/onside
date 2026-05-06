@@ -20,6 +20,17 @@
   "Brand": {
     "wordmarkAlt": "Onside"
   },
+  "Nickname": {
+    "title": "Pick a nickname",
+    "description": "Used on this device. 3–24 characters; letters, digits, underscore, space, hyphen.",
+    "label": "Nickname",
+    "placeholder": "e.g. Alex",
+    "rules": "3–24 characters; letters, digits, _ and hyphen.",
+    "cancel": "Cancel",
+    "save": "Save",
+    "change": "Change name",
+    "current": "You: {name}"
+  },
   "Auth": {
     "welcome": "Welcome!",
     "nicknamePrompt": "One tap to start with Google — your history follows you across devices. Or continue anonymously.",
@@ -97,6 +108,9 @@
     "emptyOrganizerHint": "First requests will land here.",
     "emptyJoinerHint": "Be the first — pick your position and send a request.",
     "requestToJoin": "Request to join",
+    "join": "Join match",
+    "joined": "You're in the roster!",
+    "alreadyJoined": "You're already in the roster with this nickname.",
     "joining": "Sending…",
     "requested": "Request sent! Awaiting organizer approval.",
     "alreadyRequested": "Your request is already pending.",
@@ -104,6 +118,7 @@
     "requestPending": "Pending as {position}",
     "withdrawRequest": "Withdraw request",
     "confirmedAs": "Approved as {position}",
+    "confirmedAsNickname": "In the roster as {nickname}",
     "cancelRsvp": "Cancel RSVP",
     "cancelling": "Cancelling…",
     "rsvpCancelled": "RSVP cancelled.",
@@ -273,8 +288,11 @@
   },
   "Result": {
     "title": "Match result",
-    "description": "Match over? Submit the score; Elo updates automatically and MVP voting opens (7 days).",
+    "description": "Match over? Enter the final score so the result is recorded.",
     "submit": "Submit score",
+    "submitCTA": "Enter score",
+    "submitHint": "Once the match wraps, drop the final score here.",
+    "submittedBy": "Submitted by {nickname}",
     "submitTitle": "Submit match score",
     "submitted": "Score saved",
     "submitError": "Couldn't save score",

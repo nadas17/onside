@@ -20,6 +20,17 @@
   "Brand": {
     "wordmarkAlt": "Onside"
   },
+  "Nickname": {
+    "title": "Wybierz pseudonim",
+    "description": "Używany na tym urządzeniu. 3–24 znaki; litery, cyfry, podkreślenie, spacja, myślnik.",
+    "label": "Pseudonim",
+    "placeholder": "np. Alex",
+    "rules": "3–24 znaki; litery, cyfry, _ i myślnik.",
+    "cancel": "Anuluj",
+    "save": "Zapisz",
+    "change": "Zmień pseudonim",
+    "current": "Ty: {name}"
+  },
   "Auth": {
     "welcome": "Witaj!",
     "nicknamePrompt": "Zacznij jednym kliknięciem przez Google — twoja historia będzie z tobą na każdym urządzeniu. Albo kontynuuj anonimowo.",
@@ -97,6 +108,9 @@
     "emptyOrganizerHint": "Pierwsze zgłoszenia pojawią się tutaj.",
     "emptyJoinerHint": "Bądź pierwszy — wybierz pozycję i wyślij prośbę.",
     "requestToJoin": "Wyślij prośbę o dołączenie",
+    "join": "Dołącz do meczu",
+    "joined": "Jesteś w składzie!",
+    "alreadyJoined": "Jesteś już w składzie pod tym pseudonimem.",
     "joining": "Wysyłanie…",
     "requested": "Prośba wysłana! Czekaj na zatwierdzenie organizatora.",
     "alreadyRequested": "Twoja prośba już oczekuje.",
@@ -104,6 +118,7 @@
     "requestPending": "Oczekuje jako {position}",
     "withdrawRequest": "Wycofaj prośbę",
     "confirmedAs": "Zatwierdzony jako {position}",
+    "confirmedAsNickname": "W składzie jako {nickname}",
     "cancelRsvp": "Anuluj zapis",
     "cancelling": "Anulowanie…",
     "rsvpCancelled": "Zapis anulowany.",
@@ -273,8 +288,11 @@
   },
   "Result": {
     "title": "Wynik meczu",
-    "description": "Mecz skończony? Wprowadź wynik; punkty Elo i głosowanie MVP zaktualizują się automatycznie (7 dni).",
+    "description": "Mecz skończony? Wpisz wynik, żeby został zapisany.",
     "submit": "Wprowadź wynik",
+    "submitCTA": "Wpisz wynik",
+    "submitHint": "Po meczu wpisz tu wynik końcowy.",
+    "submittedBy": "Dodane przez {nickname}",
     "submitTitle": "Wprowadź wynik meczu",
     "submitted": "Wynik zapisany",
     "submitError": "Nie udało się zapisać wyniku",

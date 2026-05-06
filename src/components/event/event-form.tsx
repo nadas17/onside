@@ -15,7 +15,9 @@ import {
   FORMATS,
   SKILL_LEVELS,
 } from "@/lib/validation/event";
+import { isValidNickname } from "@/lib/validation/nickname";
 import { createEventAction } from "@/lib/event/actions";
+import { useNickname } from "@/components/nickname-provider";
 
 /** All matches happen in Europe/Warsaw — store + display times in that TZ. */
 const VENUE_TZ = "Europe/Warsaw";
@@ -60,9 +62,20 @@ function EventFormInner({
   locale: string;
 }) {
   const t = useTranslations("Events");
+  const tNick = useTranslations("Nickname");
   const errorMsg = useErrorMessage();
   const router = useRouter();
+  const { nickname: storedNickname, setNickname } = useNickname();
   const [pending, startTransition] = React.useTransition();
+  const [organizerNickname, setOrganizerNickname] = React.useState(
+    storedNickname ?? "",
+  );
+
+  React.useEffect(() => {
+    if (storedNickname && !organizerNickname) {
+      setOrganizerNickname(storedNickname);
+    }
+  }, [storedNickname, organizerNickname]);
 
   // Defaults expressed in Warsaw time (regardless of user's browser timezone),
   // since matches always happen there. `toZonedTime` projects the current
@@ -117,6 +130,7 @@ function EventFormInner({
   // means "ok, move on".
   const validateStep = (current: Step): string | null => {
     if (current === 1) {
+      if (!isValidNickname(organizerNickname)) return tNick("rules");
       if (title.trim().length < 3) return t("errTitleShort");
       if (capacity < 4 || capacity > 30) return t("errCapacityRange");
       if (minPlayers < 2 || minPlayers > capacity)
@@ -174,7 +188,10 @@ function EventFormInner({
     }
 
     startTransition(async () => {
+      const trimmedNickname = organizerNickname.trim();
+      setNickname(trimmedNickname);
       const result = await createEventAction({
+        organizerNickname: trimmedNickname,
         venueId: venueMode === "list" ? venueId : "",
         customVenueName: venueMode === "manual" ? customVenueName : "",
         customVenueUrl: venueMode === "manual" ? customVenueUrl : "",
@@ -219,6 +236,22 @@ function EventFormInner({
 
       {step === 1 && (
         <fieldset className="flex flex-col gap-6">
+          <Field label={tNick("label")}>
+            <Input
+              value={organizerNickname}
+              onChange={(e) => setOrganizerNickname(e.target.value)}
+              placeholder={tNick("placeholder")}
+              maxLength={24}
+              required
+              minLength={3}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
+            />
+            <p className="text-muted-foreground text-xs">{tNick("rules")}</p>
+          </Field>
+
           <Field label={t("title")}>
             <Input
               value={title}

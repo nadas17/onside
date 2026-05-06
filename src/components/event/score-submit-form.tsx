@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { submitScoreAction, editScoreAction } from "@/lib/event/result-actions";
+import { useNickname } from "@/components/nickname-provider";
+import { NicknameDialog } from "@/components/nickname-dialog";
 
 const schema = z.object({
   scoreA: z.coerce.number().int().min(0).max(30),
@@ -40,7 +42,11 @@ export function ScoreSubmitForm({
   onCancel: () => void;
 }) {
   const t = useTranslations("Result");
+  const tNick = useTranslations("Nickname");
   const errorMsg = useErrorMessage();
+  const { nickname, setNickname } = useNickname();
+  const [nicknameDialogOpen, setNicknameDialogOpen] = React.useState(false);
+  const pendingValuesRef = React.useRef<FormOutput | null>(null);
   const {
     register,
     handleSubmit,
@@ -54,18 +60,37 @@ export function ScoreSubmitForm({
     },
   });
 
-  const onSubmit = async (values: FormOutput) => {
-    const action =
+  const persistScore = async (values: FormOutput, submitter: string) => {
+    const result =
       mode === "submit"
-        ? submitScoreAction(eventId, values.scoreA, values.scoreB, values.notes)
-        : editScoreAction(eventId, values.scoreA, values.scoreB, values.notes);
-    const result = await action;
+        ? await submitScoreAction(
+            eventId,
+            values.scoreA,
+            values.scoreB,
+            submitter,
+            values.notes,
+          )
+        : await editScoreAction(
+            eventId,
+            values.scoreA,
+            values.scoreB,
+            values.notes,
+          );
     if (!result.ok) {
       toast.error(t("submitError"), { description: errorMsg(result) });
       return;
     }
     toast.success(mode === "submit" ? t("submitted") : t("edited"));
     onSaved();
+  };
+
+  const onSubmit = async (values: FormOutput) => {
+    if (mode === "submit" && !nickname) {
+      pendingValuesRef.current = values;
+      setNicknameDialogOpen(true);
+      return;
+    }
+    await persistScore(values, nickname ?? "unknown");
   };
 
   return (
@@ -141,6 +166,30 @@ export function ScoreSubmitForm({
               : t("save")}
         </Button>
       </div>
+
+      <NicknameDialog
+        open={nicknameDialogOpen}
+        defaultValue={nickname ?? ""}
+        onOpenChange={setNicknameDialogOpen}
+        onSubmit={(next) => {
+          setNickname(next);
+          setNicknameDialogOpen(false);
+          if (pendingValuesRef.current) {
+            const values = pendingValuesRef.current;
+            pendingValuesRef.current = null;
+            persistScore(values, next).catch(() => {
+              /* error already toasted */
+            });
+          }
+        }}
+      />
+      <NicknameHelpText label={tNick("description")} />
     </form>
   );
+}
+
+function NicknameHelpText({ label }: { label: string }) {
+  // Hidden helper to keep the i18n key referenced; we don't render it visibly.
+  void label;
+  return null;
 }

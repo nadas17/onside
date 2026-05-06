@@ -2,14 +2,10 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
-import { useErrorMessage } from "@/lib/i18n-errors";
-import { toast } from "sonner";
-import { UserMinus, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useMotionPreset } from "@/lib/motion";
-import { kickParticipantAction } from "@/lib/event/rsvp-actions";
 import type { RosterEntry } from "@/lib/event/rsvp-actions";
 
 const POSITION_GROUPS = ["GK", "DEF", "MID", "FWD"] as const;
@@ -18,17 +14,15 @@ export function RosterList({
   eventId,
   roster,
   capacity,
-  isOrganizer,
 }: {
   eventId: string;
   roster: RosterEntry[];
   capacity: number;
-  isOrganizer: boolean;
 }) {
+  // eventId is informational for now; kick/moderation removed.
+  void eventId;
   const t = useTranslations("Roster");
-  const errorMsg = useErrorMessage();
   const tPos = useTranslations("Profile.positions");
-  const [kicking, setKicking] = React.useState<string | null>(null);
   const m = useMotionPreset();
 
   const grouped = React.useMemo(() => {
@@ -39,19 +33,6 @@ export function RosterList({
     }
     return map;
   }, [roster]);
-
-  const handleKick = async (profileId: string, displayName: string) => {
-    if (!confirm(t("confirmKick", { name: displayName }))) return;
-    setKicking(profileId);
-    const result = await kickParticipantAction(eventId, profileId);
-    setKicking(null);
-    if (!result.ok) {
-      toast.error(t("kickError"), { description: errorMsg(result) });
-      return;
-    }
-    toast.success(t("kicked"));
-    // Realtime UPDATE channel parent state'i güncelleyecek; router.refresh gereksiz.
-  };
 
   const filled = roster.length;
 
@@ -70,9 +51,7 @@ export function RosterList({
         <EmptyState
           icon={<Users />}
           title={t("noParticipants")}
-          description={
-            isOrganizer ? t("emptyOrganizerHint") : t("emptyJoinerHint")
-          }
+          description={t("emptyJoinerHint")}
           size="sm"
         />
       ) : (
@@ -103,33 +82,10 @@ export function RosterList({
                         className="flex items-center justify-between gap-2 text-sm"
                       >
                         <div className="flex min-w-0 items-center gap-2">
-                          <Avatar name={r.profile.display_name} />
+                          <Avatar name={r.nickname} />
                           <span className="truncate font-medium">
-                            {r.profile.display_name}
+                            {r.nickname}
                           </span>
-                          <span className="text-muted-foreground hidden truncate text-xs sm:inline">
-                            @{r.profile.username}
-                          </span>
-                        </div>
-                        <div className="flex shrink-0 items-center gap-2">
-                          <span className="text-muted-foreground text-xs tabular-nums">
-                            {r.profile.skill_rating}
-                          </span>
-                          {isOrganizer && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() =>
-                                handleKick(r.profile.id, r.profile.display_name)
-                              }
-                              disabled={kicking === r.profile.id}
-                              title={t("kick")}
-                              aria-label={t("kick")}
-                              className="tap-target"
-                            >
-                              <UserMinus className="text-destructive size-3.5" />
-                            </Button>
-                          )}
                         </div>
                       </motion.li>
                     ))}

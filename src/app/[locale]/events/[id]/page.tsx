@@ -13,17 +13,10 @@ import { EventRosterPanel } from "@/components/event/event-roster-panel";
 import { ChatRoom } from "@/components/event/chat-room";
 import { TeamPanel } from "@/components/event/team-panel";
 import { ResultPanel } from "@/components/event/result-panel";
-import {
-  getEventRosterAction,
-  getMyRsvpAction,
-  getPendingRequestsAction,
-} from "@/lib/event/rsvp-actions";
+import { getEventRosterAction } from "@/lib/event/rsvp-actions";
 import { getMessagesAction } from "@/lib/event/chat-actions";
 import { getTeamsAction } from "@/lib/event/team-actions";
-import {
-  getMatchResultAction,
-  getMvpStateAction,
-} from "@/lib/event/result-actions";
+import { getMatchResultAction } from "@/lib/event/result-actions";
 import { canTransition, type EventStatus } from "@/lib/event/state";
 
 const MapView = dynamic(() =>
@@ -42,14 +35,10 @@ type EventRow = {
   start_at: string;
   end_at: string;
   status: EventStatus;
-  organizer_id: string;
+  organizer_nickname: string;
   notes: string | null;
   cancelled_reason: string | null;
-  organizer: {
-    id: string;
-    username: string;
-    display_name: string;
-  };
+  chat_locked: boolean;
   venue: {
     id: string;
     name: string;
@@ -75,9 +64,8 @@ export default async function EventDetailPage({
     .from("event")
     .select(
       `id, title, description, format, capacity, min_players_to_confirm,
-       min_skill_level, max_skill_level, start_at, end_at, status, organizer_id,
-       notes, cancelled_reason, custom_venue_name, custom_venue_url,
-       organizer:organizer_id ( id, username, display_name ),
+       min_skill_level, max_skill_level, start_at, end_at, status, organizer_nickname,
+       notes, cancelled_reason, chat_locked, custom_venue_name, custom_venue_url,
        venue:venue_id ( id, name, address_line, city, lat, lng )`,
     )
     .eq("id", id)
@@ -85,63 +73,19 @@ export default async function EventDetailPage({
 
   if (!event) notFound();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const isOrganizer = user?.id === event!.organizer_id;
-  const canCancel = isOrganizer && canTransition(event!.status, "cancelled");
+  const canCancel = canTransition(event!.status, "cancelled");
 
-  // Phase 4-7: roster + pending + RSVP + messages + teams + result + MVP
-  const [
-    rosterResult,
-    pendingResult,
-    myRsvpResult,
-    messagesResult,
-    teamsResult,
-    matchResult,
-    mvpStateResult,
-  ] = await Promise.all([
-    getEventRosterAction(event!.id),
-    isOrganizer
-      ? getPendingRequestsAction(event!.id)
-      : Promise.resolve({ ok: true as const, data: [] }),
-    getMyRsvpAction(event!.id),
-    getMessagesAction(event!.id, 100),
-    getTeamsAction(event!.id),
-    getMatchResultAction(event!.id),
-    getMvpStateAction(event!.id),
-  ]);
+  const [rosterResult, messagesResult, teamsResult, matchResult] =
+    await Promise.all([
+      getEventRosterAction(event!.id),
+      getMessagesAction(event!.id, 100),
+      getTeamsAction(event!.id),
+      getMatchResultAction(event!.id),
+    ]);
   const roster = rosterResult.ok ? rosterResult.data : [];
-  const pendingRequests = pendingResult.ok ? pendingResult.data : [];
-  const myParticipant = myRsvpResult.ok ? myRsvpResult.data : null;
   const messages = messagesResult.ok ? messagesResult.data : [];
   const teams = teamsResult.ok ? teamsResult.data : [];
   const result = matchResult.ok ? matchResult.data : null;
-  const mvpState = mvpStateResult.ok
-    ? mvpStateResult.data
-    : {
-        candidates: [],
-        myVoteId: null,
-        totalVotes: 0,
-        votingOpen: false,
-        windowEndsAt: null,
-      };
-
-  // Chat yazma izni: organizer veya confirmed katılımcı
-  const canPostChat =
-    !!user && (isOrganizer || myParticipant?.status === "confirmed");
-
-  let preferredPosition: "GK" | "DEF" | "MID" | "FWD" | null = null;
-  if (user) {
-    const { data: prof } = await supabase
-      .from("profile")
-      .select("preferred_position")
-      .eq("id", user.id)
-      .maybeSingle<{
-        preferred_position: "GK" | "DEF" | "MID" | "FWD" | null;
-      }>();
-    preferredPosition = prof?.preferred_position ?? null;
-  }
 
   const t = await getTranslations("Events");
   const tProfile = await getTranslations("Profile");
@@ -161,6 +105,8 @@ export default async function EventDetailPage({
     timeZone: "Europe/Warsaw",
   });
 
+  const rosterNicknames = roster.map((r) => r.nickname);
+
   return (
     <>
       <PageBackground variant="eventDetail" intensity="heavy" />
@@ -177,7 +123,7 @@ export default async function EventDetailPage({
                 <div className="flex flex-wrap items-center gap-2">
                   <EventStatusBadge status={event!.status} />
                   <span className="text-muted-foreground text-xs">
-                    {t("organizedBy")} @{event!.organizer.username}
+                    {t("organizedBy")} {event!.organizer_nickname}
                   </span>
                 </div>
                 <h1 className="text-3xl font-semibold tracking-tight">
@@ -270,11 +216,8 @@ export default async function EventDetailPage({
                   <JoinButton
                     eventId={event!.id}
                     status={event!.status}
-                    isAuthed={!!user}
-                    isOrganizer={isOrganizer}
-                    myParticipant={myParticipant}
-                    preferredPosition={preferredPosition}
                     startAt={event!.start_at}
+                    rosterNicknames={rosterNicknames}
                     locale={locale}
                   />
                 </div>
@@ -283,24 +226,12 @@ export default async function EventDetailPage({
               <EventRosterPanel
                 eventId={event!.id}
                 initialRoster={roster}
-                initialPending={pendingRequests}
                 capacity={event!.capacity}
-                isOrganizer={isOrganizer}
-                myPending={
-                  myParticipant?.status === "pending"
-                    ? {
-                        position: myParticipant.position,
-                        joinedAt: myParticipant.joinedAt,
-                        rejectedReason: myParticipant.rejectedReason,
-                      }
-                    : null
-                }
               />
 
               <TeamPanel
                 eventId={event!.id}
                 initialTeams={teams}
-                isOrganizer={isOrganizer}
                 status={event!.status}
                 confirmedCount={roster.length}
                 minPlayersToConfirm={event!.min_players_to_confirm}
@@ -309,23 +240,16 @@ export default async function EventDetailPage({
 
               <ResultPanel
                 eventId={event!.id}
-                isOrganizer={isOrganizer}
                 status={event!.status}
                 hasTeams={teams.length === 2}
                 initialResult={result}
-                initialMvpState={mvpState}
-                myUserId={user?.id ?? null}
-                startAt={event!.start_at}
               />
 
               <section>
                 <ChatRoom
                   eventId={event!.id}
                   initialMessages={messages}
-                  canPost={canPostChat}
-                  myUserId={user?.id ?? null}
-                  organizerId={event!.organizer_id}
-                  chatLocked={false}
+                  chatLocked={event!.chat_locked}
                   eventStatus={event!.status}
                   locale={locale}
                 />

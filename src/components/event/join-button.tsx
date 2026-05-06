@@ -5,94 +5,68 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useErrorMessage } from "@/lib/i18n-errors";
 import { toast } from "sonner";
-import { Clock, Check } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { Check } from "lucide-react";
+import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { useAuthGate } from "@/components/auth/auth-gate-provider";
 import {
   PositionPickerDialog,
   type Position,
 } from "@/components/event/position-picker";
+import { NicknameDialog } from "@/components/nickname-dialog";
+import { useNickname } from "@/components/nickname-provider";
 import { useMotionPreset } from "@/lib/motion";
 import { cancelRsvpAction, joinEventAction } from "@/lib/event/rsvp-actions";
 import type { EventStatus } from "@/lib/event/state";
-import type { MyRsvp } from "@/lib/event/rsvp-actions";
-
-type OptimisticAction =
-  | { type: "request"; position: Position }
-  | { type: "cancel" };
 
 export function JoinButton({
   eventId,
   status,
-  isAuthed,
-  isOrganizer,
-  myParticipant,
-  preferredPosition,
   startAt,
+  rosterNicknames,
   locale,
 }: {
   eventId: string;
   status: EventStatus;
-  isAuthed: boolean;
-  isOrganizer: boolean;
-  myParticipant: MyRsvp | null;
-  preferredPosition: Position | null;
   startAt: string;
+  /** Confirmed nicknames in this event's roster — used to derive "am I in?" */
+  rosterNicknames: string[];
   locale: string;
 }) {
   const t = useTranslations("Roster");
   const errorMsg = useErrorMessage();
   const router = useRouter();
   const m = useMotionPreset();
-  const [open, setOpen] = React.useState(false);
+  const { nickname, setNickname, hydrated } = useNickname();
+  const [nicknameDialogOpen, setNicknameDialogOpen] = React.useState(false);
+  const [positionDialogOpen, setPositionDialogOpen] = React.useState(false);
   const [pending, startTransition] = React.useTransition();
 
-  // Optimistic state — anında "pending" / "cleared" göster, server cevabı bekleme
-  const [optimisticParticipant, applyOptimistic] = React.useOptimistic<
-    MyRsvp | null,
-    OptimisticAction
-  >(myParticipant, (current, action) => {
-    if (action.type === "request") {
-      return {
-        participantId: current?.participantId ?? "optimistic",
-        status: "pending",
-        position: action.position,
-        joinedAt: new Date().toISOString(),
-        rejectedReason: null,
-      };
-    }
-    if (action.type === "cancel") {
-      return null;
-    }
-    return current;
-  });
-
   const isPast = new Date(startAt).getTime() <= Date.now();
-  const isPending = optimisticParticipant?.status === "pending";
-  const isConfirmed = optimisticParticipant?.status === "confirmed";
+  const isInRoster =
+    nickname !== null &&
+    rosterNicknames.some((n) => n.toLowerCase() === nickname.toLowerCase());
 
   const handleJoin = (position: Position) => {
+    if (!nickname) return;
     startTransition(async () => {
-      applyOptimistic({ type: "request", position });
-      setOpen(false);
-      const result = await joinEventAction(eventId, position);
+      setPositionDialogOpen(false);
+      const result = await joinEventAction(eventId, nickname, position);
       if (!result.ok) {
         toast.error(t("joinError"), { description: errorMsg(result) });
         router.refresh();
         return;
       }
       toast.success(
-        result.data.alreadyRequested ? t("alreadyRequested") : t("requested"),
+        result.data.alreadyJoined ? t("alreadyJoined") : t("joined"),
       );
       router.refresh();
     });
   };
 
   const handleCancel = () => {
+    if (!nickname) return;
     startTransition(async () => {
-      applyOptimistic({ type: "cancel" });
-      const result = await cancelRsvpAction(eventId);
+      const result = await cancelRsvpAction(eventId, nickname);
       if (!result.ok) {
         toast.error(t("cancelError"), { description: errorMsg(result) });
         router.refresh();
@@ -103,11 +77,22 @@ export function JoinButton({
     });
   };
 
-  if (isOrganizer) return null;
+  const startJoinFlow = () => {
+    if (!nickname) {
+      setNicknameDialogOpen(true);
+      return;
+    }
+    setPositionDialogOpen(true);
+  };
 
-  if (!isAuthed) {
-    return <SignInToJoinButton label={t("signInToJoin")} />;
+  if (!hydrated) {
+    return (
+      <Button size="lg" disabled>
+        …
+      </Button>
+    );
   }
+
   if (status === "cancelled") {
     return (
       <Button size="lg" disabled>
@@ -122,7 +107,7 @@ export function JoinButton({
       </Button>
     );
   }
-  if (isPast && !myParticipant) {
+  if (isPast && !isInRoster) {
     return (
       <div className="flex flex-col items-end gap-1">
         <Button size="lg" disabled>
@@ -135,7 +120,7 @@ export function JoinButton({
     );
   }
 
-  if (isConfirmed) {
+  if (isInRoster) {
     return (
       <motion.div
         layout
@@ -146,7 +131,7 @@ export function JoinButton({
       >
         <span className="inline-flex items-center gap-2 rounded-md bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-900 dark:bg-emerald-900/30 dark:text-emerald-100">
           <Check className="size-4" />
-          {t("confirmedAs", { position: optimisticParticipant!.position })}
+          {t("confirmedAsNickname", { nickname: nickname! })}
         </span>
         <Button
           variant="outline"
@@ -157,41 +142,6 @@ export function JoinButton({
           className="tap-target"
         >
           {pending ? t("cancelling") : t("cancelRsvp")}
-        </Button>
-      </motion.div>
-    );
-  }
-
-  if (isPending) {
-    return (
-      <motion.div
-        layout
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={m.snappySpring}
-        className="flex flex-col items-end gap-2 sm:flex-row sm:items-center"
-      >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.span
-            key={optimisticParticipant!.position}
-            initial={{ opacity: 0, y: -2 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 2 }}
-            transition={m.fast}
-            className="inline-flex items-center gap-2 rounded-md bg-amber-50 px-3 py-2 text-sm font-medium text-amber-900 dark:bg-amber-900/30 dark:text-amber-100"
-          >
-            <Clock className="size-4" />
-            {t("requestPending", { position: optimisticParticipant!.position })}
-          </motion.span>
-        </AnimatePresence>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleCancel}
-          disabled={pending}
-          className="tap-target"
-        >
-          {pending ? t("cancelling") : t("withdrawRequest")}
         </Button>
       </motion.div>
     );
@@ -214,40 +164,30 @@ export function JoinButton({
 
   return (
     <>
-      <Button size="lg" onClick={() => setOpen(true)} disabled={pending}>
-        {t("requestToJoin")}
+      <Button size="lg" onClick={startJoinFlow} disabled={pending}>
+        {t("join")}
       </Button>
+      <NicknameDialog
+        open={nicknameDialogOpen}
+        defaultValue={nickname ?? ""}
+        onOpenChange={setNicknameDialogOpen}
+        onSubmit={(next) => {
+          setNickname(next);
+          setNicknameDialogOpen(false);
+          setPositionDialogOpen(true);
+        }}
+      />
       <PositionPickerDialog
-        open={open}
-        onOpenChange={setOpen}
+        open={positionDialogOpen}
+        onOpenChange={setPositionDialogOpen}
         onConfirm={handleJoin}
-        initial={preferredPosition}
+        initial={null}
         pending={pending}
       />
     </>
   );
 }
 
-/**
- * Anonymous-visitor variant of the join CTA. Instead of redirecting to home
- * (which used to surface the auto-opened JoinModal), this surfaces the
- * onboarding modal in-place via AuthGateProvider — the user keeps the
- * event detail context after signing in.
- */
-function SignInToJoinButton({ label }: { label: string }) {
-  const { requireAuth } = useAuthGate();
-  return (
-    <Button size="lg" onClick={requireAuth}>
-      {label}
-    </Button>
-  );
-}
-
-/**
- * Locale-aware "X minutes ago" / "X hours ago" / "X days ago" formatter.
- * Used when the event has already started — gives users a sense of how
- * late they are vs just a flat "Already started" string.
- */
 function formatTimeAgo(locale: string, ms: number): string {
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
   const minutes = Math.floor(ms / 60_000);

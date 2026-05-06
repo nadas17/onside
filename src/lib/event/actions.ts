@@ -1,14 +1,15 @@
 "use server";
 
 /**
- * Event server actions — Phase 3 (spec §11 lifecycle).
+ * Event server actions — nickname-only identity model (post 0019).
  *
- *   createEventAction      organizer = auth.uid(), default status='open'
- *   updateEventAction      organizer-only, locked sonrası restrictions
- *   cancelEventAction      *  → 'cancelled' (state machine kontrolü)
- *   getEventsAction        anasayfa feed; filtreler
- *   getEventByIdAction     detay sayfası
- *   getEventsByVenueAction venue detay sayfası (yaklaşan etkinlikler)
+ *   createEventAction      anonymous create with `organizerNickname` from form
+ *   cancelEventAction      anyone with the link can cancel; posts a system msg
+ *   getEventsAction        public feed; status + city + bbox + skill filters
+ *   getEventByIdAction     detail page
+ *   getEventsByVenueAction venue page upcoming events
+ *
+ * `getMyEventsAction` is gone — there's no per-user identity to filter on.
  */
 
 import { revalidatePath } from "next/cache";
@@ -54,15 +55,9 @@ export async function createEventAction(
   const data = parsed.data;
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    return { ok: false, error: "Oturum bulunamadı.", code: "auth_failed" };
-  }
 
   const insert = {
-    organizer_id: user.id,
+    organizer_nickname: data.organizerNickname,
     venue_id: data.venueId ?? null,
     custom_venue_name: data.customVenueName ?? null,
     custom_venue_url: data.customVenueUrl ?? null,
@@ -111,29 +106,15 @@ export async function cancelEventAction(
   }
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    return { ok: false, error: "Oturum bulunamadı.", code: "auth_failed" };
-  }
 
-  // Mevcut event'i çek + state machine kontrol et.
   const { data: existing } = await supabase
     .from("event")
-    .select("id, status, organizer_id")
+    .select("id, status")
     .eq("id", eventId)
-    .maybeSingle<{ id: string; status: EventStatus; organizer_id: string }>();
+    .maybeSingle<{ id: string; status: EventStatus }>();
 
   if (!existing) {
     return { ok: false, error: "Etkinlik bulunamadı.", code: "not_found" };
-  }
-  if (existing.organizer_id !== user.id) {
-    return {
-      ok: false,
-      error: "Sadece organizatör iptal edebilir.",
-      code: "forbidden",
-    };
   }
   if (!canTransition(existing.status, "cancelled")) {
     return {
@@ -156,7 +137,6 @@ export async function cancelEventAction(
     return { ok: false, error: error.message, code: "db_error" };
   }
 
-  // Sistem mesajı: tüm katılımcılar chat'te görür (spec §11)
   await supabase.rpc("post_system_message", {
     p_event_id: eventId,
     p_content: `📢 Etkinlik iptal edildi: ${parsed.data.reason}`,
@@ -176,9 +156,6 @@ export type EventListItem = {
   min_skill_level: "beginner" | "intermediate" | "advanced" | "pro";
   max_skill_level: "beginner" | "intermediate" | "advanced" | "pro";
   status: EventStatus;
-  // Either a curated venue is linked, or the event uses a custom one-off
-  // location (manual mode in event-form). Both are nullable to express the
-  // XOR enforced by the event_venue_xor CHECK constraint.
   venue: {
     id: string;
     name: string;
@@ -215,27 +192,20 @@ export async function getEventsAction(
     .order("start_at", { ascending: true })
     .limit(f.limit);
 
-  // Status: default open + full
   const statuses = f.status ?? ["open", "full"];
   q = q.in("status", statuses);
 
-  // Date range: default >= now
   const dateFromIso = f.dateFrom ?? new Date().toISOString();
   q = q.gte("start_at", dateFromIso);
   if (f.dateTo) q = q.lte("start_at", f.dateTo);
 
   if (f.format) q = q.eq("format", f.format);
 
-  // `.returns<T>()` overrides the inferred row type — without it Supabase
-  // infers `venue` as an array (PostgREST always returns relationships as
-  // arrays even for FK 1:1) which doesn't match EventListItem's `venue` shape.
   const { data, error } = await q.returns<EventListItem[]>();
   if (error) {
     return { ok: false, error: error.message, code: "db_error" };
   }
 
-  // Server-side post-filter: city, bbox ve skill range (Supabase JS join filter
-  // sınırları nedeniyle daha güvenli).
   let rows: EventListItem[] = data ?? [];
 
   if (f.city) {
@@ -279,11 +249,7 @@ export type EventDetail = {
   status: EventStatus;
   notes: string | null;
   cancelled_reason: string | null;
-  organizer: {
-    id: string;
-    username: string;
-    display_name: string;
-  };
+  organizer_nickname: string;
   venue: {
     id: string;
     name: string;
@@ -305,8 +271,7 @@ export async function getEventByIdAction(
     .select(
       `id, title, description, format, capacity, min_players_to_confirm,
        min_skill_level, max_skill_level, start_at, end_at, status, notes,
-       cancelled_reason, custom_venue_name, custom_venue_url,
-       organizer:organizer_id ( id, username, display_name ),
+       cancelled_reason, organizer_nickname, custom_venue_name, custom_venue_url,
        venue:venue_id ( id, name, address_line, city, lat, lng )`,
     )
     .eq("id", id)
@@ -323,91 +288,6 @@ export async function getEventByIdAction(
   return { ok: true, data };
 }
 
-export type MyEventItem = {
-  id: string;
-  title: string;
-  start_at: string;
-  format: "5v5" | "6v6" | "7v7" | "8v8" | "11v11";
-  capacity: number;
-  status: EventStatus;
-  is_organizer: boolean;
-  venue: {
-    id: string;
-    name: string;
-    city: string;
-  } | null;
-  custom_venue_name: string | null;
-};
-
-/**
- * Kullanıcının yaklaşan etkinlikleri (organize ettiği + onaylandığı).
- * Trigger 0006 sayesinde organizer event_participant'ta confirmed olduğundan
- * tek sorgu yeterli.
- */
-export async function getMyEventsAction(): Promise<
-  ActionResult<MyEventItem[]>
-> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return { ok: true, data: [] };
-
-  type Row = {
-    event: {
-      id: string;
-      title: string;
-      start_at: string;
-      format: MyEventItem["format"];
-      capacity: number;
-      status: EventStatus;
-      organizer_id: string;
-      venue: { id: string; name: string; city: string } | null;
-      custom_venue_name: string | null;
-    } | null;
-  };
-
-  const { data, error } = await supabase
-    .from("event_participant")
-    .select(
-      `id, status,
-       event:event_id (
-         id, title, start_at, format, capacity, status, organizer_id,
-         custom_venue_name,
-         venue:venue_id ( id, name, city )
-       )`,
-    )
-    .eq("profile_id", user.id)
-    .eq("status", "confirmed")
-    .order("joined_at", { ascending: false })
-    .limit(20)
-    .returns<Row[]>();
-
-  if (error) return { ok: false, error: error.message, code: "db_error" };
-
-  const nowIso = new Date().toISOString();
-  const ACTIVE: EventStatus[] = ["open", "full", "locked", "in_progress"];
-
-  const items = (data ?? [])
-    .map((row) => row.event)
-    .filter((e): e is NonNullable<Row["event"]> => Boolean(e))
-    .filter((e) => e.venue && e.start_at >= nowIso && ACTIVE.includes(e.status))
-    .map<MyEventItem>((e) => ({
-      id: e.id,
-      title: e.title,
-      start_at: e.start_at,
-      format: e.format,
-      capacity: e.capacity,
-      status: e.status,
-      is_organizer: e.organizer_id === user.id,
-      venue: e.venue,
-      custom_venue_name: e.custom_venue_name,
-    }))
-    .sort((a, b) => a.start_at.localeCompare(b.start_at));
-
-  return { ok: true, data: items };
-}
-
 export async function getEventsByVenueAction(
   venueId: string,
   limit: number = 5,
@@ -417,6 +297,7 @@ export async function getEventsByVenueAction(
     .from("event")
     .select(
       `id, title, start_at, end_at, format, capacity, min_skill_level, max_skill_level, status,
+       custom_venue_name, custom_venue_url,
        venue:venue_id ( id, name, city, lat, lng )`,
     )
     .eq("venue_id", venueId)

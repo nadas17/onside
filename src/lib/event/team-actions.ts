@@ -1,15 +1,17 @@
 "use server";
 
 /**
- * Team balancing server actions — Phase 6.
+ * Team balancing server actions — nickname-only identity (post 0019).
  *
- *   computeAndSaveTeamsAction(eventId, opts?)  — algoritma çalıştırır + kaydeder
- *   saveTeamsAction(eventId, payload, seed)    — manuel override sonucunu kaydeder
- *   unlockTeamsAction(eventId)                 — locked → open/full geri al
- *   getTeamsAction(eventId)                    — A/B + members list (public read)
+ *   computeAndSaveTeamsAction(eventId, opts?) — algorithm + persist
+ *   saveTeamsAction(eventId, payload, seed)   — manual override persist
+ *   unlockTeamsAction(eventId)                — locked → open/full
+ *   getTeamsAction(eventId)                   — A/B + members (public read)
  *
- * Algoritma `lib/balance/algorithm.ts` (pure). DB persist `save_teams` RPC
- * (atomik, organizer-only, capacity + roster validation).
+ * The balance algorithm runs against `event_participant` rows directly.
+ * `skill_rating` is no longer in the database; we feed every player a flat
+ * 1000 so the algorithm degenerates to pure position-balancing. Skill-aware
+ * balancing returns when ratings come back in a future iteration.
  */
 
 import { revalidatePath } from "next/cache";
@@ -24,18 +26,13 @@ import {
 import type { ActionResult } from "@/lib/types";
 
 type ConfirmedRow = {
-  profile_id: string;
+  nickname: string;
   position: Position;
-  profile: {
-    id: string;
-    skill_rating: number;
-  };
 };
 
 type SaveTeamsRpcOk = {
   ok: true;
   data: {
-    event_id: string;
     team_a_id: string;
     team_b_id: string;
   };
@@ -43,10 +40,7 @@ type SaveTeamsRpcOk = {
 type SaveTeamsRpcErr = { ok: false; code: string; error: string };
 type SaveTeamsRpcResult = SaveTeamsRpcOk | SaveTeamsRpcErr;
 
-type UnlockRpcOk = {
-  ok: true;
-  data: { event_id: string; status: "open" | "full" };
-};
+type UnlockRpcOk = { ok: true };
 type UnlockRpcErr = { ok: false; code: string; error: string };
 type UnlockRpcResult = UnlockRpcOk | UnlockRpcErr;
 
@@ -54,7 +48,7 @@ export type ComputedTeam = {
   label: "A" | "B";
   skillTotal: number;
   members: Array<{
-    profileId: string;
+    nickname: string;
     position: Position;
     skillRating: number;
   }>;
@@ -70,20 +64,17 @@ export type ComputeTeamsResult = {
   positionPenalty: number;
 };
 
-/** Kadrodan oyuncu listesini çek + balance + RPC'ye gönder. */
+const FLAT_SKILL_RATING = 1000;
+
 export async function computeAndSaveTeamsAction(
   eventId: string,
   opts?: { seed?: number; positionWeight?: number },
 ): Promise<ActionResult<ComputeTeamsResult>> {
   const supabase = await createClient();
 
-  // Roster
   const { data: rosterRows, error: rosterErr } = await supabase
     .from("event_participant")
-    .select(
-      `profile_id, position,
-       profile:profile_id ( id, skill_rating )`,
-    )
+    .select(`nickname, position`)
     .eq("event_id", eventId)
     .eq("status", "confirmed")
     .returns<ConfirmedRow[]>();
@@ -101,9 +92,9 @@ export async function computeAndSaveTeamsAction(
   }
 
   const players: Player[] = rows.map((r) => ({
-    id: r.profile_id,
+    id: r.nickname,
     position: r.position,
-    skillRating: r.profile?.skill_rating ?? 1000,
+    skillRating: FLAT_SKILL_RATING,
   }));
 
   const seed = opts?.seed ?? Math.floor(Math.random() * 0x7fffffff);
@@ -129,7 +120,7 @@ export async function computeAndSaveTeamsAction(
       label: "A",
       skillTotal: result.metrics.a.skillTotal,
       members: result.teamA.map((p) => ({
-        profileId: p.id,
+        nickname: p.id,
         position: p.position,
         skillRating: p.skillRating,
       })),
@@ -138,7 +129,7 @@ export async function computeAndSaveTeamsAction(
       label: "B",
       skillTotal: result.metrics.b.skillTotal,
       members: result.teamB.map((p) => ({
-        profileId: p.id,
+        nickname: p.id,
         position: p.position,
         skillRating: p.skillRating,
       })),
@@ -155,7 +146,6 @@ export async function computeAndSaveTeamsAction(
   return { ok: true, data: computed };
 }
 
-/** Manuel drag-drop override sonucunu kaydeder. */
 export async function saveTeamsAction(
   eventId: string,
   payload: { teamA: ComputedTeam; teamB: ComputedTeam },
@@ -180,10 +170,9 @@ export async function saveTeamsAction(
   return { ok: true, data: { eventId } };
 }
 
-/** Locked → open/full geri alır (re-balance için). */
 export async function unlockTeamsAction(
   eventId: string,
-): Promise<ActionResult<{ status: "open" | "full" }>> {
+): Promise<ActionResult<{ eventId: string }>> {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("unlock_teams", {
     p_event_id: eventId,
@@ -193,16 +182,12 @@ export async function unlockTeamsAction(
   if (!result.ok) return { ok: false, error: result.error, code: result.code };
 
   revalidatePath("/", "layout");
-  return { ok: true, data: { status: result.data.status } };
+  return { ok: true, data: { eventId } };
 }
 
 export type TeamMember = {
-  profileId: string;
-  username: string;
-  displayName: string;
+  nickname: string;
   position: Position;
-  skillLevel: "beginner" | "intermediate" | "advanced" | "pro";
-  skillRating: number;
 };
 
 export type TeamView = {
@@ -227,21 +212,12 @@ export async function getTeamsAction(
   type AssignmentRow = {
     team_id: string;
     position: Position;
-    profile: {
-      id: string;
-      username: string;
-      display_name: string;
-      skill_level: "beginner" | "intermediate" | "advanced" | "pro";
-      skill_rating: number;
-    } | null;
+    nickname: string;
   };
 
   const { data: assignments, error: aErr } = await supabase
     .from("team_assignment")
-    .select(
-      `team_id, position,
-       profile:profile_id ( id, username, display_name, skill_level, skill_rating )`,
-    )
+    .select(`team_id, position, nickname`)
     .eq("event_id", eventId)
     .returns<AssignmentRow[]>();
 
@@ -253,14 +229,10 @@ export async function getTeamsAction(
     label: t.label as "A" | "B",
     skillTotal: t.skill_total as number,
     members: assignmentRows
-      .filter((a) => a.team_id === t.id && a.profile)
+      .filter((a) => a.team_id === t.id)
       .map((a) => ({
-        profileId: a.profile!.id,
-        username: a.profile!.username,
-        displayName: a.profile!.display_name,
+        nickname: a.nickname,
         position: a.position,
-        skillLevel: a.profile!.skill_level,
-        skillRating: a.profile!.skill_rating,
       })),
   }));
 
@@ -277,24 +249,22 @@ async function persistTeams(
   computed: ComputeTeamsResult,
   seed: number,
 ): Promise<ActionResult<{ eventId: string }>> {
-  const payload = [
-    {
-      team_label: computed.teamA.label,
-      skill_total: computed.teamA.skillTotal,
+  const payload = {
+    teamA: {
+      skillTotal: computed.teamA.skillTotal,
       members: computed.teamA.members.map((m) => ({
-        profile_id: m.profileId,
+        nickname: m.nickname,
         position: m.position,
       })),
     },
-    {
-      team_label: computed.teamB.label,
-      skill_total: computed.teamB.skillTotal,
+    teamB: {
+      skillTotal: computed.teamB.skillTotal,
       members: computed.teamB.members.map((m) => ({
-        profile_id: m.profileId,
+        nickname: m.nickname,
         position: m.position,
       })),
     },
-  ];
+  };
 
   const { data, error } = await supabase.rpc("save_teams", {
     p_event_id: eventId,

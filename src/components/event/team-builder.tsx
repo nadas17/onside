@@ -43,9 +43,7 @@ import {
 type Position = "GK" | "DEF" | "MID" | "FWD";
 
 type DragItem = {
-  profileId: string;
-  username: string;
-  displayName: string;
+  nickname: string;
   position: Position;
   skillRating: number;
   team: "A" | "B";
@@ -70,11 +68,9 @@ export function TeamBuilder({
   const [items, setItems] = React.useState<DragItem[]>(() =>
     initialTeams.flatMap((team) =>
       team.members.map((m) => ({
-        profileId: m.profileId,
-        username: m.username,
-        displayName: m.displayName,
+        nickname: m.nickname,
         position: m.position,
-        skillRating: m.skillRating,
+        skillRating: 1000,
         team: team.label,
       })),
     ),
@@ -113,7 +109,7 @@ export function TeamBuilder({
     const overIdStr = String(over.id);
 
     // over.id ya bir item profileId'sidir ya da kolon ID ('team-A' / 'team-B')
-    const sourceItem = items.find((i) => i.profileId === activeIdStr);
+    const sourceItem = items.find((i) => i.nickname === activeIdStr);
     if (!sourceItem) return;
 
     let targetTeam: "A" | "B" = sourceItem.team;
@@ -122,7 +118,7 @@ export function TeamBuilder({
     if (overIdStr === "team-A" || overIdStr === "team-B") {
       targetTeam = overIdStr === "team-A" ? "A" : "B";
     } else {
-      const overItem = items.find((i) => i.profileId === overIdStr);
+      const overItem = items.find((i) => i.nickname === overIdStr);
       if (overItem) {
         targetTeam = overItem.team;
       }
@@ -130,13 +126,13 @@ export function TeamBuilder({
 
     setItems((prev) => {
       // Source item'ı kaldır
-      const without = prev.filter((i) => i.profileId !== activeIdStr);
+      const without = prev.filter((i) => i.nickname !== activeIdStr);
       const teamGroup = without.filter((i) => i.team === targetTeam);
       const otherGroup = without.filter((i) => i.team !== targetTeam);
 
       // Hedef konumu bul
       if (overIdStr !== "team-A" && overIdStr !== "team-B") {
-        const idx = teamGroup.findIndex((i) => i.profileId === overIdStr);
+        const idx = teamGroup.findIndex((i) => i.nickname === overIdStr);
         targetIndex = idx >= 0 ? idx : teamGroup.length;
       } else {
         targetIndex = teamGroup.length;
@@ -157,7 +153,7 @@ export function TeamBuilder({
 
       // Aynı takım içinde sıralama swap (sortable)
       if (sourceItem.team === targetTeam) {
-        const oldIdx = teamGroup.findIndex((i) => i.profileId === activeIdStr);
+        const oldIdx = teamGroup.findIndex((i) => i.nickname === activeIdStr);
         const newIdx = targetIndex;
         if (oldIdx >= 0 && newIdx >= 0) {
           const sorted = arrayMove(teamGroup, oldIdx, newIdx);
@@ -183,7 +179,7 @@ export function TeamBuilder({
         label: "A",
         skillTotal: skillTotal(teamA),
         members: teamA.map((p) => ({
-          profileId: p.profileId,
+          nickname: p.nickname,
           position: p.position,
           skillRating: p.skillRating,
         })),
@@ -192,7 +188,7 @@ export function TeamBuilder({
         label: "B",
         skillTotal: skillTotal(teamB),
         members: teamB.map((p) => ({
-          profileId: p.profileId,
+          nickname: p.nickname,
           position: p.position,
           skillRating: p.skillRating,
         })),
@@ -209,7 +205,7 @@ export function TeamBuilder({
     onSaved();
   };
 
-  const activeItem = items.find((i) => i.profileId === activeId) ?? null;
+  const activeItem = items.find((i) => i.nickname === activeId) ?? null;
 
   return (
     <div className="flex flex-col gap-3">
@@ -258,7 +254,7 @@ export function TeamBuilder({
         <DragOverlay>
           {activeItem ? (
             <div className="glass-strong rounded-lg border px-3 py-2 text-sm shadow-xl">
-              {activeItem.displayName}
+              {activeItem.nickname}
             </div>
           ) : null}
         </DragOverlay>
@@ -278,7 +274,7 @@ function TeamColumn({
   items: DragItem[];
   skillTotal: number;
 }) {
-  const ids = items.map((i) => i.profileId);
+  const ids = items.map((i) => i.nickname);
   return (
     <SortableContext id={id} items={ids} strategy={verticalListSortingStrategy}>
       <DroppableArea id={id} hasItems={items.length > 0}>
@@ -290,7 +286,7 @@ function TeamColumn({
         </div>
         <ul className="flex flex-col gap-1.5">
           {items.map((it) => (
-            <SortableItem key={it.profileId} item={it} />
+            <SortableItem key={it.nickname} item={it} />
           ))}
         </ul>
       </DroppableArea>
@@ -335,7 +331,7 @@ function SortableItem({ item }: { item: DragItem }) {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: item.profileId });
+  } = useSortable({ id: item.nickname });
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -359,8 +355,7 @@ function SortableItem({ item }: { item: DragItem }) {
       <span className="bg-secondary text-secondary-foreground rounded px-1.5 py-0.5 font-mono text-[9px] uppercase">
         {item.position}
       </span>
-      <span className="flex-1 truncate font-medium">{item.displayName}</span>
-      <span className="text-muted-foreground text-xs">{item.skillRating}</span>
+      <span className="flex-1 truncate font-medium">{item.nickname}</span>
     </li>
   );
 }

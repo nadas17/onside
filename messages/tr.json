@@ -20,6 +20,17 @@
   "Brand": {
     "wordmarkAlt": "Onside"
   },
+  "Nickname": {
+    "title": "Takma adın ne olsun?",
+    "description": "Bu cihazda kullanılacak. 3–24 karakter; harf, rakam, alt çizgi, boşluk, tire.",
+    "label": "Takma ad",
+    "placeholder": "Örn. Ali",
+    "rules": "3–24 karakter; harf, rakam, _ ve tire.",
+    "cancel": "Vazgeç",
+    "save": "Kaydet",
+    "change": "İsmi değiştir",
+    "current": "Sen: {name}"
+  },
   "Auth": {
     "welcome": "Hoş geldin!",
     "nicknamePrompt": "Google ile tek tıkla başla — geçmişin her cihazda korunur. Veya hızlıca anonim devam et.",
@@ -97,6 +108,9 @@
     "emptyOrganizerHint": "İlk talep geldiğinde burada görünür.",
     "emptyJoinerHint": "İlk katılımcı sen ol — pozisyonunu seç ve talep gönder.",
     "requestToJoin": "Katılım talebi gönder",
+    "join": "Maça katıl",
+    "joined": "Kadroya katıldın!",
+    "alreadyJoined": "Bu takma adla zaten kadrodasın.",
     "joining": "Gönderiliyor…",
     "requested": "Talebin gönderildi! Organizatör onayı bekleniyor.",
     "alreadyRequested": "Talebin zaten beklemede.",
@@ -104,6 +118,7 @@
     "requestPending": "Talebin {position} olarak onay bekliyor",
     "withdrawRequest": "Talebimi geri çek",
     "confirmedAs": "{position} olarak onaylandın",
+    "confirmedAsNickname": "Kadrodasın: {nickname}",
     "cancelRsvp": "Kaydımı iptal et",
     "cancelling": "İptal ediliyor…",
     "rsvpCancelled": "Kayıt iptal edildi.",
@@ -273,8 +288,11 @@
   },
   "Result": {
     "title": "Maç sonucu",
-    "description": "Maç bitti mi? Skoru gir; Elo puanları otomatik güncellenir ve MVP oylaması açılır (7 gün).",
+    "description": "Maç bitti mi? Skoru gir; takımları kim kazandı kayda geçsin.",
     "submit": "Skoru gir",
+    "submitCTA": "Skoru gir",
+    "submitHint": "Maç bittiğinde sonucu girebilirsin.",
+    "submittedBy": "{nickname} tarafından girildi",
     "submitTitle": "Maç skorunu gir",
     "submitted": "Skor kaydedildi",
     "submitError": "Skor kaydedilemedi",

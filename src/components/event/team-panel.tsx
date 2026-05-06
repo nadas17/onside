@@ -35,7 +35,6 @@ const POSITION_GROUPS = ["GK", "DEF", "MID", "FWD"] as const;
 export function TeamPanel({
   eventId,
   initialTeams,
-  isOrganizer,
   status,
   confirmedCount,
   minPlayersToConfirm,
@@ -43,7 +42,6 @@ export function TeamPanel({
 }: {
   eventId: string;
   initialTeams: TeamView[];
-  isOrganizer: boolean;
   status: EventStatus;
   confirmedCount: number;
   minPlayersToConfirm: number;
@@ -108,12 +106,11 @@ export function TeamPanel({
   }, [eventId]);
 
   const canBalance =
-    isOrganizer &&
     (status === "open" || status === "full") &&
     confirmedCount >= minPlayersToConfirm &&
     confirmedCount >= 4;
 
-  const canEdit = isOrganizer && status === "locked";
+  const canEdit = status === "locked";
 
   const handleBalance = async () => {
     setBusy("balance");
@@ -167,8 +164,8 @@ export function TeamPanel({
   // No teams + cannot balance + non-organizer veya min met değil → render etme
   if (teams.length === 0) {
     if (!canBalance) {
-      // Organizer ama min henüz dolmadı → açıklayıcı placeholder
-      if (isOrganizer && (status === "open" || status === "full")) {
+      // Min henüz dolmadı → açıklayıcı placeholder
+      if (status === "open" || status === "full") {
         return (
           <section className="border-border flex flex-col gap-2 rounded-md border border-dashed p-4">
             <div className="flex items-center gap-2 text-sm font-semibold">
@@ -322,16 +319,13 @@ function TeamCard({
               <ul className="flex flex-col gap-0.5">
                 {list.map((m) => (
                   <li
-                    key={m.profileId}
+                    key={m.nickname}
                     className="flex items-center justify-between gap-2 text-sm"
                   >
                     <div className="flex items-center gap-2 truncate">
-                      <Avatar name={m.displayName} />
-                      <span className="truncate">{m.displayName}</span>
+                      <Avatar name={m.nickname} />
+                      <span className="truncate">{m.nickname}</span>
                     </div>
-                    <span className="text-muted-foreground text-xs">
-                      {m.skillRating}
-                    </span>
                   </li>
                 ))}
               </ul>
