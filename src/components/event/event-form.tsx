@@ -168,14 +168,9 @@ function EventFormInner({
   // the final step so a finger still hovering over the same pixel can't
   // trigger an immediate submit.
   const [step3ReadyAt, setStep3ReadyAt] = React.useState<number>(0);
-  const [confirmed, setConfirmed] = React.useState(false);
   React.useEffect(() => {
     if (step === TOTAL_STEPS) {
       setStep3ReadyAt(Date.now() + 700);
-    } else {
-      // Reset the explicit confirmation if the user steps back. They have
-      // to re-affirm after every visit to step 3.
-      setConfirmed(false);
     }
   }, [step]);
   const [, forceTick] = React.useReducer((x: number) => x + 1, 0);
@@ -186,7 +181,7 @@ function EventFormInner({
     const timer = setTimeout(forceTick, remaining + 10);
     return () => clearTimeout(timer);
   }, [step, step3ReadyAt]);
-  const createDisabled = pending || Date.now() < step3ReadyAt || !confirmed;
+  const createDisabled = pending || Date.now() < step3ReadyAt;
 
   const goPrev = () => {
     setError(null);
@@ -208,9 +203,8 @@ function EventFormInner({
     }
 
     // Belt-and-suspenders: even on the final step, ignore submits that
-    // arrive before the user has explicitly ticked the "I reviewed it"
-    // checkbox or before the brief settle window after entering step 3.
-    if (!confirmed || Date.now() < step3ReadyAt) {
+    // arrive before the brief "settle" window after entering it.
+    if (Date.now() < step3ReadyAt) {
       return;
     }
 
@@ -526,16 +520,6 @@ function EventFormInner({
             maxSkill={t(`skillLevels.${maxSkill}`)}
             t={t}
           />
-
-          <label className="border-border bg-card/95 supports-[backdrop-filter]:bg-card/80 flex cursor-pointer items-start gap-3 rounded-lg border p-3 text-sm shadow-sm supports-[backdrop-filter]:backdrop-blur-md">
-            <input
-              type="checkbox"
-              checked={confirmed}
-              onChange={(e) => setConfirmed(e.target.checked)}
-              className="accent-brand mt-0.5 size-4 cursor-pointer"
-            />
-            <span>{t("confirmReviewCheckbox")}</span>
-          </label>
         </fieldset>
       )}
 

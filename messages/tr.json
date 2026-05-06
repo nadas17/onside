@@ -344,8 +344,7 @@
       "advanced": "İleri",
       "pro": "Profesyonel"
     },
-    "noticeNotReservation": "Bu form sahaya randevu/rezervasyon oluşturmaz. Sadece katılımcıların organize olması için bir buluşma kartı yaratır — rezervasyonu organizatörün ayrıca yapması gerekir.",
-    "confirmReviewCheckbox": "Bilgileri kontrol ettim, etkinliği oluşturmaya hazırım."
+    "noticeNotReservation": "Bu form sahaya randevu/rezervasyon oluşturmaz. Sadece katılımcıların organize olması için bir buluşma kartı yaratır — rezervasyonu organizatörün ayrıca yapması gerekir."
   },
   "Venues": {
     "title": "Sahalar",

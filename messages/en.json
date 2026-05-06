@@ -344,8 +344,7 @@
       "advanced": "Advanced",
       "pro": "Pro"
     },
-    "noticeNotReservation": "This form does not book the pitch. It only creates a meet-up card so participants can organise — the organiser still has to reserve the venue separately.",
-    "confirmReviewCheckbox": "I've reviewed the details and want to create the event."
+    "noticeNotReservation": "This form does not book the pitch. It only creates a meet-up card so participants can organise — the organiser still has to reserve the venue separately."
   },
   "Venues": {
     "title": "Venues",

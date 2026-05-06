@@ -344,8 +344,7 @@
       "advanced": "Zaawansowany",
       "pro": "Profesjonalny"
     },
-    "noticeNotReservation": "Ten formularz nie rezerwuje boiska. Tworzy tylko kartę spotkania, aby uczestnicy mogli się umówić — organizator musi zarezerwować boisko osobno.",
-    "confirmReviewCheckbox": "Sprawdziłem dane i chcę utworzyć wydarzenie."
+    "noticeNotReservation": "Ten formularz nie rezerwuje boiska. Tworzy tylko kartę spotkania, aby uczestnicy mogli się umówić — organizator musi zarezerwować boisko osobno."
   },
   "Venues": {
     "title": "Boiska",
