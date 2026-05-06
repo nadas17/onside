@@ -163,6 +163,26 @@ function EventFormInner({
     if (step < TOTAL_STEPS) setStep((step + 1) as Step);
   };
 
+  // Guard against rapid taps when step 2's "Next" button swaps to step 3's
+  // "Create" in place — disable the create button briefly after we land on
+  // the final step so a finger still hovering over the same pixel can't
+  // trigger an immediate submit.
+  const [step3ReadyAt, setStep3ReadyAt] = React.useState<number>(0);
+  React.useEffect(() => {
+    if (step === TOTAL_STEPS) {
+      setStep3ReadyAt(Date.now() + 700);
+    }
+  }, [step]);
+  const [, forceTick] = React.useReducer((x: number) => x + 1, 0);
+  React.useEffect(() => {
+    if (step !== TOTAL_STEPS) return;
+    const remaining = step3ReadyAt - Date.now();
+    if (remaining <= 0) return;
+    const timer = setTimeout(forceTick, remaining + 10);
+    return () => clearTimeout(timer);
+  }, [step, step3ReadyAt]);
+  const createDisabled = pending || Date.now() < step3ReadyAt;
+
   const goPrev = () => {
     setError(null);
     if (step > 1) setStep((step - 1) as Step);
@@ -173,12 +193,18 @@ function EventFormInner({
     setError(null);
 
     // Only the explicit "Create" button on step 3 should commit the event.
-    // Anything else that bubbles up to the form (notably the implicit
-    // form-submit-on-Enter from text inputs on step 1 or 2) is treated as
-    // "advance to the next step" so we never create a match without the
-    // user reviewing the summary first.
+    // Anything else that bubbles up to the form (Enter on a text input,
+    // an accidental double-click on the "Next" → "Create" button as it
+    // swaps in place) is treated as "advance" so the user never skips
+    // the summary review on step 3.
     if (step !== TOTAL_STEPS) {
       goNext();
+      return;
+    }
+
+    // Belt-and-suspenders: even on the final step, ignore submits that
+    // arrive before the brief "settle" window after entering it.
+    if (Date.now() < step3ReadyAt) {
       return;
     }
 
@@ -526,7 +552,7 @@ function EventFormInner({
             {t("next")}
           </Button>
         ) : (
-          <Button type="submit" disabled={pending}>
+          <Button type="submit" disabled={createDisabled}>
             {pending ? t("creating") : t("create")}
           </Button>
         )}
