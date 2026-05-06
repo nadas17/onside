@@ -9,9 +9,7 @@ import { Providers } from "@/components/providers";
 import { CookieBanner } from "@/components/cookie-banner";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { FabCreate } from "@/components/fab-create";
-import { AuthGateProvider } from "@/components/auth/auth-gate-provider";
 import { NicknameProvider } from "@/components/nickname-provider";
-import { createClient } from "@/lib/supabase/server";
 import "../globals.css";
 
 const inter = Inter({
@@ -64,57 +62,36 @@ export default async function LocaleLayout({
   const tA11y = await getTranslations("A11y");
   const tFooter = await getTranslations("Footer");
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const isAuthed = !!user;
-
-  // hasProfile gates whether AuthGateProvider should pop the JoinModal.
-  // An authed-but-no-profile user (Google login mid-flight, or session
-  // restored without a profile row) still needs the onboarding flow.
-  let hasProfile = false;
-  if (user) {
-    const { data: profile } = await supabase
-      .from("profile")
-      .select("id")
-      .eq("id", user.id)
-      .maybeSingle();
-    hasProfile = !!profile;
-  }
-
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className={`${inter.variable} font-sans`}>
         <NextIntlClientProvider locale={locale}>
           <Providers>
             <NicknameProvider>
-              <AuthGateProvider hasProfile={hasProfile}>
-                <a
-                  href="#main-content"
-                  className="focus:bg-card focus-visible:outline-brand sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:shadow-lg focus-visible:outline focus-visible:outline-2"
-                >
-                  {tA11y("skipToContent")}
-                </a>
-                {/* Bottom-padding leaves room for the mobile bottom nav (~64px + safe area). */}
-                <div
-                  id="main-content"
-                  className="pb-[calc(4rem+env(safe-area-inset-bottom))] lg:pb-0"
-                >
-                  {children}
-                </div>
-                <SiteFooter
-                  locale={locale}
-                  labels={{
-                    privacy: tFooter("privacy"),
-                    terms: tFooter("terms"),
-                    tagline: tFooter("tagline"),
-                  }}
-                />
-                <MobileBottomNav isAuthed={isAuthed} />
-                <FabCreate isAuthed={isAuthed} />
-                <CookieBanner />
-              </AuthGateProvider>
+              <a
+                href="#main-content"
+                className="focus:bg-card focus-visible:outline-brand sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:shadow-lg focus-visible:outline focus-visible:outline-2"
+              >
+                {tA11y("skipToContent")}
+              </a>
+              {/* Bottom-padding leaves room for the mobile bottom nav (~64px + safe area). */}
+              <div
+                id="main-content"
+                className="pb-[calc(4rem+env(safe-area-inset-bottom))] lg:pb-0"
+              >
+                {children}
+              </div>
+              <SiteFooter
+                locale={locale}
+                labels={{
+                  privacy: tFooter("privacy"),
+                  terms: tFooter("terms"),
+                  tagline: tFooter("tagline"),
+                }}
+              />
+              <MobileBottomNav />
+              <FabCreate />
+              <CookieBanner />
             </NicknameProvider>
           </Providers>
         </NextIntlClientProvider>

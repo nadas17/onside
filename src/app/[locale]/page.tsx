@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
-import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { AppHeader } from "@/components/app-header";
 import { PageBackground } from "@/components/page-background";
@@ -15,15 +14,10 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  return <HomeView locale={locale} isAuthed={!!user} />;
+  return <HomeView locale={locale} />;
 }
 
-function HomeView({ locale, isAuthed }: { locale: string; isAuthed: boolean }) {
+function HomeView({ locale }: { locale: string }) {
   const t = useTranslations("Home");
 
   return (
@@ -52,16 +46,14 @@ function HomeView({ locale, isAuthed }: { locale: string; isAuthed: boolean }) {
               <Button asChild size="lg" className="w-full sm:w-auto">
                 <Link href={`/${locale}/events`}>{t("browseEvents")}</Link>
               </Button>
-              {isAuthed && (
-                <Button
-                  asChild
-                  size="lg"
-                  variant="cta"
-                  className="w-full sm:w-auto"
-                >
-                  <Link href={`/${locale}/events/new`}>{t("createEvent")}</Link>
-                </Button>
-              )}
+              <Button
+                asChild
+                size="lg"
+                variant="cta"
+                className="w-full sm:w-auto"
+              >
+                <Link href={`/${locale}/events/new`}>{t("createEvent")}</Link>
+              </Button>
               <Button
                 asChild
                 size="lg"

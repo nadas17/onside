@@ -1,5 +1,4 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { redirect } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { EventForm } from "@/components/event/event-form";
 import { AppHeader } from "@/components/app-header";
@@ -21,11 +20,6 @@ export default async function NewEventPage({
   setRequestLocale(locale);
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect({ href: "/", locale });
-
   const { data: venues } = await supabase
     .from("venue")
     .select("id, name, city, address_line")

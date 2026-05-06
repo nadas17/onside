@@ -47,11 +47,7 @@ type Item = {
   trailing?: React.ReactNode;
 };
 
-interface CommandPaletteProps {
-  isAuthed: boolean;
-}
-
-export function CommandPalette({ isAuthed }: CommandPaletteProps) {
+export function CommandPalette() {
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -126,16 +122,14 @@ export function CommandPalette({ isAuthed }: CommandPaletteProps) {
       },
     ];
 
-    if (isAuthed) {
-      list.push({
-        id: "new-event",
-        label: t("newEvent"),
-        group: "actions",
-        icon: <Plus className="size-4" />,
-        keywords: ["create", "oluştur", "stwórz"],
-        onSelect: () => navigate("/events/new"),
-      });
-    }
+    list.push({
+      id: "new-event",
+      label: t("newEvent"),
+      group: "actions",
+      icon: <Plus className="size-4" />,
+      keywords: ["create", "oluştur", "stwórz"],
+      onSelect: () => navigate("/events/new"),
+    });
 
     const NATIVE: Record<Locale, string> = {
       tr: "Türkçe",
@@ -175,7 +169,7 @@ export function CommandPalette({ isAuthed }: CommandPaletteProps) {
     );
 
     return list;
-  }, [t, isAuthed, locale, navigate, switchLocale]);
+  }, [t, locale, navigate, switchLocale]);
 
   const groups: Array<{ key: ItemGroup; heading: string }> = [
     { key: "pages", heading: t("pages") },

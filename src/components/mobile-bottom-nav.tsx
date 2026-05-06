@@ -27,10 +27,7 @@ const TABS: Tab[] = [
   { href: "/venues", labelKey: "venues", Icon: MapPin },
 ];
 
-export function MobileBottomNav({ isAuthed }: { isAuthed: boolean }) {
-  // isAuthed is no longer consulted (the gated /profile tab is gone). Prop
-  // remains so layout.tsx doesn't break this commit; commit 4 drops it.
-  void isAuthed;
+export function MobileBottomNav() {
   const pathname = usePathname();
   const t = useTranslations("Nav");
 

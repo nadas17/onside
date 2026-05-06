@@ -12,17 +12,14 @@ import { Link, usePathname } from "@/i18n/navigation";
  * the event detail page where a sticky CTA owns the bottom).
  * Positioned above the mobile bottom nav (~80px + safe area) at thumb-reach.
  */
-export function FabCreate({ isAuthed }: { isAuthed: boolean }) {
+export function FabCreate() {
   const t = useTranslations("Nav");
   const pathname = usePathname();
-
-  if (!isAuthed) return null;
 
   // Suppress on screens that already have an in-page primary CTA / would clash
   const HIDE_ON: Array<RegExp> = [
     /^\/events\/new$/,
     /^\/events\/[^/]+$/, // event detail
-    /^\/profile\/edit$/, // sticky save bar
     /^\/legal/,
   ];
   if (HIDE_ON.some((re) => re.test(pathname))) return null;

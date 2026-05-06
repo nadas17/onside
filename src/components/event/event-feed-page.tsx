@@ -48,11 +48,9 @@ const MapView = dynamic(
 export function EventFeedPage({
   events,
   locale,
-  isAuthed,
 }: {
   events: EventListItem[];
   locale: string;
-  isAuthed: boolean;
 }) {
   const t = useTranslations("Events");
   const [city, setCity] = React.useState<CityName>(DEFAULT_CITY);
@@ -159,14 +157,12 @@ export function EventFeedPage({
               {t("openMap", { count: pins.length })}
             </button>
           )}
-          {isAuthed && (
-            <Button asChild size="sm" className="ml-auto h-10">
-              <Link href={`/${locale}/events/new`}>
-                <Plus className="size-4" />
-                {t("createEvent")}
-              </Link>
-            </Button>
-          )}
+          <Button asChild size="sm" className="ml-auto h-10">
+            <Link href={`/${locale}/events/new`}>
+              <Plus className="size-4" />
+              {t("createEvent")}
+            </Link>
+          </Button>
         </div>
 
         {filtered.length === 0 ? (
@@ -176,11 +172,9 @@ export function EventFeedPage({
             description={t("emptyFeedHint")}
             size="sm"
             action={
-              isAuthed ? (
-                <Button asChild variant="outline" size="sm">
-                  <Link href={`/${locale}/events/new`}>{t("createFirst")}</Link>
-                </Button>
-              ) : undefined
+              <Button asChild variant="outline" size="sm">
+                <Link href={`/${locale}/events/new`}>{t("createFirst")}</Link>
+              </Button>
             }
           />
         ) : (
