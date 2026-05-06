@@ -1,62 +1,41 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * Smoke test — the app boots and the critical onboarding + navigation paths
+ * Smoke test — the app boots and the critical anonymous browsing paths
  * resolve without server errors.
  *
- * Bu test SUPABASE'IN AYAKTA OLDUĞU bir ortamda çalışır:
  *   - Lokalde: `pnpm test:e2e` (dev server + .env.local)
- *   - Staging: `BASE_URL=https://onside-staging.vercel.app pnpm test:e2e`
+ *   - Staging: `BASE_URL=https://onside-boisko.vercel.app pnpm test:e2e`
  *
- * Anonymous auth provider'ın etkin olduğunu varsayar (JoinModal aksi takdirde
- * `Anonymous sign-ins are disabled` hatası verir; bunu test eden bir senaryo
- * staging-readiness check'i olarak da işe yarar).
+ * No auth required. Identity is now an inline nickname stored in
+ * localStorage, surfaced only when the visitor takes an action that
+ * needs one (RSVP, chat, score submit). The smoke path here just
+ * verifies routing and that public pages render.
  */
 
-const NICKNAME = `e2e_${Date.now().toString(36).slice(-6)}`;
-
 test.describe("smoke", () => {
-  test("onboarding: nickname → home → events → venues", async ({ page }) => {
-    test.skip(
-      process.env.CI === "true" && !process.env.SUPABASE_DB_REACHABLE,
-      "Skipped in CI: anonymous auth requires real Supabase. Re-enable when staging env wired.",
-    );
-    // Test asserts Türkçe UI strings (e.g. "yakındaki maçlar" link),
-    // so navigate to /tr explicitly — independent of the project's
-    // current default locale.
+  test("home → events → venues all render", async ({ page }) => {
     await page.goto("/tr");
     await expect(page).toHaveURL(/\/tr$/);
 
-    // The JoinModal is no longer auto-opened on first visit (anonymous
-    // browsing was made the default). Open it from the header.
-    await page
-      .getByRole("button", { name: /giriş yap|sign in|zaloguj/i })
-      .click();
-    await expect(page.getByRole("dialog")).toBeVisible();
-
-    // Nickname doldur + başla
-    const input = page.getByLabel(/nickname/i);
-    await input.fill(NICKNAME);
-    await page.getByRole("button", { name: /başla|start|zaczynaj/i }).click();
-
-    // Modal kapansın, ana sayfa render olsun
-    await expect(page.getByRole("dialog")).toBeHidden({ timeout: 10_000 });
-
-    // Header'daki kullanıcı adı linkini gör
-    await expect(
-      page.getByRole("link", { name: `@${NICKNAME}` }),
-    ).toBeVisible();
-
-    // /events'e git
+    // Hero CTA ile events feed'e geç
     await page.getByRole("link", { name: /yakındaki maçlar/i }).click();
     await expect(page).toHaveURL(/\/tr\/events$/);
     await expect(
       page.getByRole("heading", { name: /yakındaki maçlar/i }),
     ).toBeVisible();
 
-    // /venues'e git
+    // Venues sayfası
     await page.goto("/tr/venues");
     await expect(page).toHaveURL(/\/tr\/venues$/);
+  });
+
+  test("create event page is publicly reachable", async ({ page }) => {
+    await page.goto("/tr/events/new");
+    // Auth gate kalktı; redirect olmamalı.
+    await expect(page).toHaveURL(/\/tr\/events\/new$/);
+    // Bilgi banner'ı render olmalı (rezervasyon değil uyarısı).
+    await expect(page.getByText(/rezervasyon|randevu/i)).toBeVisible();
   });
 
   test("legal pages render", async ({ page }) => {
