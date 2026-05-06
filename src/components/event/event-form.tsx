@@ -188,25 +188,24 @@ function EventFormInner({
     if (step > 1) setStep((step - 1) as Step);
   };
 
+  // Form-level submit handler. Whatever route fires this (Enter in a text
+  // input, a stray <Button type="submit"> click, etc.) we DO NOT create the
+  // event from here. The form's only job is to advance steps; the actual
+  // create runs strictly from the Create button's onClick (`submitNow`).
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
-    // Only the explicit "Create" button on step 3 should commit the event.
-    // Anything else that bubbles up to the form (Enter on a text input,
-    // an accidental double-click on the "Next" → "Create" button as it
-    // swaps in place) is treated as "advance" so the user never skips
-    // the summary review on step 3.
     if (step !== TOTAL_STEPS) {
       goNext();
-      return;
     }
+    // step === TOTAL_STEPS: do nothing — wait for an explicit click on the
+    // dedicated "Create" button below.
+  };
 
-    // Belt-and-suspenders: even on the final step, ignore submits that
-    // arrive before the brief "settle" window after entering it.
-    if (Date.now() < step3ReadyAt) {
-      return;
-    }
+  // The actual commit. Only invoked from the Create button's onClick.
+  const submitNow = () => {
+    if (createDisabled) return;
+    setError(null);
 
     // Inputs are typed as "YYYY-MM-DDTHH:mm" without a timezone. Interpret
     // them as Europe/Warsaw local time (where matches happen), regardless of
@@ -552,7 +551,11 @@ function EventFormInner({
             {t("next")}
           </Button>
         ) : (
-          <Button type="submit" disabled={createDisabled}>
+          // type="button" — the form's submit event no longer creates the
+          // event. Only this onClick path commits, so a stray Enter or
+          // double-tap on the previous "Next" button can't trigger a
+          // create.
+          <Button type="button" onClick={submitNow} disabled={createDisabled}>
             {pending ? t("creating") : t("create")}
           </Button>
         )}
